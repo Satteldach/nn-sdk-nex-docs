@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['fatal',['Fatal',['../classnn_1_1nex_1_1_event_log.html#aeec6c9932a7149899504d2f049db3c4fa8f11762820efce448b438e700b571aa3',1,'nn::nex::EventLog']]],
+  ['fileio',['FileIO',['../namespacenn_1_1nex_1_1_f_p_d_error_code.html#a71f0d76ab27b201875ccd301cb2b1791a40d628a52db742a7f370c373e46a93d6',1,'nn::nex::FPDErrorCode']]],
+  ['filter_5fgroup_5findex_5f0',['FILTER_GROUP_INDEX_0',['../namespacenn_1_1nex_1_1_ranking_constants.html#acddff1259ccd2a9e7f7849908c2fabeda4fb549fd8174fac78cd1ad2d6944a24e',1,'nn::nex::RankingConstants']]],
+  ['filter_5fgroup_5findex_5f1',['FILTER_GROUP_INDEX_1',['../namespacenn_1_1nex_1_1_ranking_constants.html#acddff1259ccd2a9e7f7849908c2fabeda80fc1b4e6824fcfd08b5408810d219b2',1,'nn::nex::RankingConstants']]],
+  ['filter_5fgroup_5findex_5f2',['FILTER_GROUP_INDEX_2',['../namespacenn_1_1nex_1_1_ranking_constants.html#acddff1259ccd2a9e7f7849908c2fabeda2766495ab41e86b42fa95d10d5e2fb84',1,'nn::nex::RankingConstants']]],
+  ['filter_5fgroup_5findex_5f3',['FILTER_GROUP_INDEX_3',['../namespacenn_1_1nex_1_1_ranking_constants.html#acddff1259ccd2a9e7f7849908c2fabedaba712b425389622a5e53c590bf8ab48f',1,'nn::nex::RankingConstants']]],
+  ['filter_5fgroup_5findex_5fnone',['FILTER_GROUP_INDEX_NONE',['../namespacenn_1_1nex_1_1_ranking_constants.html#acddff1259ccd2a9e7f7849908c2fabedac42e037e441f3c010b79d6376d49d934',1,'nn::nex::RankingConstants']]],
+  ['find_5fmatchmakesession_5fresult_5foption_5fapplication_5fbuffer',['FIND_MATCHMAKESESSION_RESULT_OPTION_APPLICATION_BUFFER',['../namespacenn_1_1nex.html#aa9cd9a482b6d37f3356162716990efd9af469e71f17906fe0b0fcf4ca20e3d3bc',1,'nn::nex']]],
+  ['find_5fmatchmakesession_5fresult_5foption_5fmatchmake_5fparam',['FIND_MATCHMAKESESSION_RESULT_OPTION_MATCHMAKE_PARAM',['../namespacenn_1_1nex.html#aa9cd9a482b6d37f3356162716990efd9a695dea6c7d28cd53dd2f1d4e633d9514',1,'nn::nex']]],
+  ['find_5fmatchmakesession_5fresult_5foption_5fnone',['FIND_MATCHMAKESESSION_RESULT_OPTION_NONE',['../namespacenn_1_1nex.html#aa9cd9a482b6d37f3356162716990efd9a3a48f77ea4408a3aaf72bf72cf3fcade',1,'nn::nex']]],
+  ['firstroundreportreceived',['FirstRoundReportReceived',['../namespacenn_1_1nex_1_1_notification_events.html#a501ae863a600a423505a654e532908e8acaf2883bc7bad43fd02da92196812423',1,'nn::nex::NotificationEvents']]],
+  ['firstuserevent',['FirstUserEvent',['../namespacenn_1_1nex_1_1_participation_events.html#a34c12346f97933265119230ba2a59fa5ab778cabfc683d8c9a910f2f4cc9a6aad',1,'nn::nex::ParticipationEvents']]],
+  ['firstuserfacility',['FirstUserFacility',['../namespacenn_1_1nex_1_1q_result_facility.html#a6e037f7e3e12b7a9cfbb35c79edee12faaf0438d8d41334cea911e0d3202eb8df',1,'nn::nex::qResultFacility']]],
+  ['firstuseridtype',['FirstUserIdType',['../classnn_1_1nex_1_1_identifier_types.html#a6d91c795c2c2e893e3c5a46c46e08f03a364e7096ab8a8209a8d2d32df1185b90',1,'nn::nex::IdentifierTypes']]],
+  ['friend_5franking',['FRIEND_RANKING',['../namespacenn_1_1nex_1_1_ranking2_mode.html#ad3edd385e7b97837d74cc51e6781512ba32994633ec9798dbdb4ae1098128867b',1,'nn::nex::Ranking2Mode']]],
+  ['friendalreadyexists',['FriendAlreadyExists',['../namespacenn_1_1nex_1_1_f_p_d_error_code.html#a71f0d76ab27b201875ccd301cb2b1791aab6aa1da7624dc012801f937d56ef250',1,'nn::nex::FPDErrorCode']]],
+  ['friendnotexists',['FriendNotExists',['../namespacenn_1_1nex_1_1_f_p_d_error_code.html#a71f0d76ab27b201875ccd301cb2b1791ad365a60d5c68543d8579aa43910a616b',1,'nn::nex::FPDErrorCode']]],
+  ['friendnummax',['FriendNumMax',['../namespacenn_1_1nex_1_1_f_p_d_error_code.html#a71f0d76ab27b201875ccd301cb2b1791af8d2b1c3aad559efdf35b95356837916',1,'nn::nex::FPDErrorCode']]]
+];

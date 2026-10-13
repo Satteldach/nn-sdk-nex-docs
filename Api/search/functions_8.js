@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['incamount',['IncAmount',['../classnn_1_1nex_1_1_profiling_unit.html#ae68adfde0a886d34edce7e7d26a803c1',1,'nn::nex::ProfilingUnit']]],
+  ['inetaddress',['InetAddress',['../classnn_1_1nex_1_1_v_socket_1_1_inet_address.html#a989339a327a2d0fe50e5456e8a91c15c',1,'nn::nex::VSocket::InetAddress::InetAddress()'],['../classnn_1_1nex_1_1_v_socket_1_1_inet_address.html#af06da0f4a5f8810ae9de12d147950f79',1,'nn::nex::VSocket::InetAddress::InetAddress(uint32_t uiAddress, uint16_t uiPort, uint8_t uiVPort)']]],
+  ['initialize',['Initialize',['../namespacenn_1_1nex.html#ae1b42ba2fba7c23a7acb964d400aa627',1,'nn::nex']]],
+  ['interrupt',['Interrupt',['../classnn_1_1nex_1_1_pacer.html#a7974098a1d765284634af9d8c38d828e',1,'nn::nex::Pacer']]],
+  ['isa',['IsA',['../classnn_1_1nex_1_1_gathering.html#a09754697c9cc877cc8ac45e6050a972e',1,'nn::nex::Gathering']]],
+  ['isablelogindatacache',['IsAbleLoginDataCache',['../classnn_1_1nex_1_1_back_end_services.html#a0c733aae00fcd97adf8e78e5fbf1d40b',1,'nn::nex::BackEndServices']]],
+  ['isactive',['IsActive',['../classnn_1_1nex_1_1_packet_buffer_manager.html#ab8000d5fd0356ae6ef9f94092f9e0eda',1,'nn::nex::PacketBufferManager']]],
+  ['isakindof',['IsAKindOf',['../classnn_1_1nex_1_1_gathering.html#ab6ecd33bc3805b4040d19330b2d3e7e6',1,'nn::nex::Gathering']]],
+  ['isapirecorderenabled',['IsApiRecorderEnabled',['../classnn_1_1nex_1_1_debug_client.html#a192a0699175cd76b3b2372e717a98c9b',1,'nn::nex::DebugClient']]],
+  ['isbehindnat',['IsBehindNAT',['../classnn_1_1nex_1_1_station_u_r_l.html#adbadb3ebce04d285e561cfdca2780186',1,'nn::nex::StationURL']]],
+  ['isconnected',['IsConnected',['../classnn_1_1nex_1_1_back_end_services.html#abcc207d756734515947dd14a1e948cb7',1,'nn::nex::BackEndServices']]],
+  ['isenabled',['IsEnabled',['../classnn_1_1nex_1_1_profiling_unit.html#aa14892383df33129a0164fc949862b28',1,'nn::nex::ProfilingUnit::IsEnabled()'],['../classnn_1_1nex_1_1_stream_bundling.html#ad5360f6e16f52478ce795758fdde77ac',1,'nn::nex::StreamBundling::IsEnabled()']]],
+  ['isenablepacketbufferpool',['IsEnablePacketBufferPool',['../classnn_1_1nex_1_1_packet_buffer_manager.html#a1da4d45939b87c0be289fcddef5554bb',1,'nn::nex::PacketBufferManager']]],
+  ['isinitialized',['IsInitialized',['../namespacenn_1_1nex.html#aca46d43ae708b4c4d3e15842f4fe16f8',1,'nn::nex']]],
+  ['isnever',['IsNever',['../classnn_1_1nex_1_1_date_time.html#a2e9098c5df9eefd5fc2b84350ddcb7d8',1,'nn::nex::DateTime']]],
+  ['ispublic',['IsPublic',['../classnn_1_1nex_1_1_station_u_r_l.html#ae99b0324bb3ec440164368ea9abc0bce',1,'nn::nex::StationURL']]],
+  ['israted',['IsRated',['../classnn_1_1nex_1_1_data_store_rating_log.html#a52c11593ee6b40a39ef35142a9325df1',1,'nn::nex::DataStoreRatingLog']]],
+  ['isthreadsafe',['IsThreadSafe',['../classnn_1_1nex_1_1_core.html#a8b7d15a59204f24aa2c9b84b5ca5402a',1,'nn::nex::Core']]],
+  ['isusinginternalthread',['IsUsingInternalThread',['../classnn_1_1nex_1_1_core.html#ad0aee43290ea3aef0b86eea6d35d8664',1,'nn::nex::Core']]],
+  ['isusingtransportbufferthread',['IsUsingTransportBufferThread',['../classnn_1_1nex_1_1_core.html#a342cb9c07a2ae6c5cacadbbe273d8df5',1,'nn::nex::Core']]],
+  ['isvalid',['IsValid',['../classnn_1_1nex_1_1_date_time.html#abd8a26d44466b22977f09fdbf69907ad',1,'nn::nex::DateTime::IsValid()'],['../classnn_1_1nex_1_1_matchmake_session_search_criteria.html#ae29713f34b73dd9a93ebae974b134c1b',1,'nn::nex::MatchmakeSessionSearchCriteria::IsValid()'],['../classnn_1_1nex_1_1_matchmake_referee_stats.html#a802d6c9938d1af39516521124c314951',1,'nn::nex::MatchmakeRefereeStats::IsValid()'],['../classnn_1_1nex_1_1_unique_id_info.html#a0b4b2f2b58f2c113f76d3ac8a94e78d1',1,'nn::nex::UniqueIdInfo::IsValid()'],['../classnn_1_1nex_1_1_data_store_data_code.html#a2ce42b2d7ddd4c7987c105f80e03f8b5',1,'nn::nex::DataStoreDataCode::IsValid()'],['../classnn_1_1nex_1_1_data_store_meta_info.html#a0ff713e7e25093113df57180767e71c8',1,'nn::nex::DataStoreMetaInfo::IsValid()'],['../classnn_1_1nex_1_1_data_store_password_info.html#ae0307ce5a3bf3e458c2a15c0a7d6d86f',1,'nn::nex::DataStorePasswordInfo::IsValid()'],['../classnn_1_1nex_1_1_data_store_persistence_info.html#a691001ae14989501eff0fbb12e6f3864',1,'nn::nex::DataStorePersistenceInfo::IsValid()'],['../classnn_1_1nex_1_1_ranking2_chart_info.html#ad1b07ea7fe4250c39cef1b80bedcebf1',1,'nn::nex::Ranking2ChartInfo::IsValid()']]],
+  ['isvalidnexuniqueid',['IsValidNexUniqueId',['../classnn_1_1nex_1_1_utility_client.html#a9636e6e0155e94fe51f2ea0ca417b462',1,'nn::nex::UtilityClient']]],
+  ['isvalidpersistentgatheringcode',['IsValidPersistentGatheringCode',['../classnn_1_1nex_1_1_matchmake_extension_client.html#a139a0a4e24955ed8e94e8d61045705ac',1,'nn::nex::MatchmakeExtensionClient']]]
+];

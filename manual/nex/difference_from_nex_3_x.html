@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../tocData.js"></script>
+<link href="../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>Changes From NEX 3.x — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="nex3">
+<span id="difference-from-nex-3-x-top"></span><h1>Changes From NEX 3.x</h1>
+<p>This document provides an overview of the main changes from NEX 3.x in NEX 4.0.</p>
+<div class="section" id="nex">
+<h2>Overall Changes to NEX</h2>
+<div class="section" id="id1">
+<h3>Migration Considerations</h3>
+<ul>
+<li><p class="first">The internal character encoding was changed from UCS-2 (UTF-16 without surrogate pairs) to UTF-8. The <code>qChar</code> type used to be a <code>typedef</code> of <code>wchar_t</code>. <code>qChar</code> is now a <code>typedef</code> of <code>char</code>. <code>wchar_t</code>-type strings passed to the <a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html"><code>String</code></a> class constructor are now converted from wide characters to UTF-8.</p>
+</li>
+<li><p class="first">Changed the name of the <code>_T</code> macro that determines whether the <code>L</code> prefix (which indicates that a string is a wide character literal) is appended when strings are defined to <code>NEX_T</code>.</p>
+</li>
+<li><p class="first">NEX_T("ABC") would substitute "ABC", not L"ABC".</p>
+</li>
+<li><p class="first">The C99 standard integer types are now used for integer definitions. The following table shows the correspondence between the standard integer types and the proprietary defined types that start with a lowercase q in NEX3 and NEX4.</p>
+<blockquote>
+<div><span id="nex3-to-nex4-table-basic-type"></span><table border="1" class="docutils" id="id7">
+<caption><span class="caption-text">Correspondence Between Basic Types Defined by NEX and the SDK</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">NEX3</th>
+<th class="head">NEX4</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>qBool</td>
+<td>bool</td>
+</tr>
+<tr class="row-odd"><td>qByte</td>
+<td>Same</td>
+</tr>
+<tr class="row-even"><td>qInt8</td>
+<td>int8_<wbr/>t</td>
+</tr>
+<tr class="row-odd"><td>qUnsignedInt8</td>
+<td>uint8_<wbr/>t</td>
+</tr>
+<tr class="row-even"><td>qInt16</td>
+<td>int16_<wbr/>t</td>
+</tr>
+<tr class="row-odd"><td>qUnsignedInt16</td>
+<td>uint16_<wbr/>t</td>
+</tr>
+<tr class="row-even"><td>qInt32</td>
+<td>int32_<wbr/>t</td>
+</tr>
+<tr class="row-odd"><td>qUnsignedInt32</td>
+<td>uint32_<wbr/>t</td>
+</tr>
+<tr class="row-even"><td>qInt64</td>
+<td>int64_<wbr/>t</td>
+</tr>
+<tr class="row-odd"><td>qUnsignedInt64</td>
+<td>uint64_<wbr/>t</td>
+</tr>
+<tr class="row-even"><td>qInt</td>
+<td>int</td>
+</tr>
+<tr class="row-odd"><td>qUnsignedInt</td>
+<td>unsigned int</td>
+</tr>
+<tr class="row-even"><td>qFloat</td>
+<td>Same</td>
+</tr>
+<tr class="row-odd"><td>qDouble</td>
+<td>Same</td>
+</tr>
+<tr class="row-even"><td>qReal</td>
+<td>float</td>
+</tr>
+<tr class="row-odd"><td>qChar</td>
+<td>Same</td>
+</tr>
+<tr class="row-even"><td>qChar8</td>
+<td>char</td>
+</tr>
+<tr class="row-odd"><td>qChar16</td>
+<td>char16_<wbr/>t</td>
+</tr>
+<tr class="row-even"><td>qWideChar</td>
+<td>wchar_<wbr/>t</td>
+</tr>
+<tr class="row-odd"><td><a href="../external.html?file=../Api/classnn_&lt;wbr /&gt;1_&lt;wbr /&gt;1nex_&lt;wbr /&gt;1_&lt;wbr /&gt;1q_&lt;wbr /&gt;vector.html">qVector</a>, <a href="../external.html?file=../Api/classnn_&lt;wbr /&gt;1_&lt;wbr /&gt;1nex_&lt;wbr /&gt;1_&lt;wbr /&gt;1q_&lt;wbr /&gt;map.html">qMap</a>, and the like.</td>
+<td>Same</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>The legacy <code>qInt</code> types are still defined to preserve compatibility and can be used as expected.</p>
+</li>
+<li><p class="first"><code>uint32_t</code>, <code>uint64_t</code>, and the like, were used in places to represent data length and size, including for the return values of the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html#af3fb046a24227a134a91c13e74283ca1">String::GetLength</a>()</code> function. <code>size_t</code> is now used for data length and size. (In some cases, such as code related to communication formats, no changes were made.) Because <code>size_t</code> is defined as having a width of 64 bits in 64-bit computing, there may be a notification indicating that values have been truncated during compilation time if the <code>size_t</code> value is assigned something like <code>uint32_t</code>. If this happens, change the data type or cast to an appropriate type.</p>
+</li>
+<li><p class="first">In accordance with this change, the signatures of the following callback functions have been changed. If you are overriding these callback functions on 64-bit architectures, you will have to use <code>size_t</code> for all such values. Non-pure virtual functions in particular may not work correctly if you do not use <code>size_t</code> everywhere (even though no compiler errors will occur).</p>
+<p>When you overload the <a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_get_object_event_listener.html#a2353b96348315b618003a9e2aa662be9"><code>DataStoreGetObjectEventListener::Begin</code><a/>() function, for example, when using LLVM/Clang to compile for 64-bit architectures, the <code>MyDataStoreGetObjectEventListener::Begin hides overloaded virtual function [-Woverloaded-virtual]</code> warning is displayed if you are not using <code>size_t</code> throughout.</p>
+<ul class="simple">
+<li><a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_get_object_event_listener.html#a2353b96348315b618003a9e2aa662be9">DataStoreGetObjectEventListener::Begin</a>()</li>
+<li><a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_get_object_event_listener.html#a85ba4184f2f16bad4fcefe1a44d2d323">DataStoreGetObjectEventListener::ProcessResponse</a>()</li>
+<li><a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_post_object_event_listener.html#ad0bdeb58464aec38fe3b3ba32da0ee57">DataStorePostObjectEventListener::PostChunkedBuffer</a>()</li>
+</ul>
+</li>
+<li><p class="first">In NX, principal IDs are <code>uint64_t</code> values rather than <code>uint32_t</code> values. Principal IDs are still <code>uint32_t</code> values on CTR and Wii U. This change was made so that principal IDs have the same type as network service account IDs. For more information about network service accounts, see the NX Account Guide. For more information about user management, see the User Management section of the programming manual.</p>
+</li>
+<li><p class="first">The NX uses HTTPS for communication with the game server. HTTPS communication is carried out using libcurl.</p>
+<ul class="simple">
+<li>Specify a thread-safe allocator regardless of the NEX thread mode when designating a proprietary memory allocator to libcurl. For more information, see <a class="reference internal" href="common/memory.html#libcurl-memory-replacement-explain"><span class="std std-ref">libcurl Initialization [Required]</span></a>.</li>
+</ul>
+</li>
+<li><p class="first">Although a proprietary <code>zlib</code> library was included in NEX, it was removed. Note that an error will occur when trying to link <code>libosdk_zlib</code> in the way it was originally linked.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h3>Additions and Changes</h3>
+<ul class="simple">
+<li>Added support for the NX account feature. For more information, see <a class="reference internal" href="serverservice/user_account_management.html#user-account-top"><span class="std std-ref">User Management</span></a> or <a class="reference internal" href="serverservice/login_logout.html#login-logout-login"><span class="std std-ref">Connecting to a Game Server</span></a>.</li>
+<li>Added support for the NX friend and block lists.</li>
+<li>The <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html#af3fb046a24227a134a91c13e74283ca1">String::GetLength</a>()</code> function returns the length of a string in bytes. Use the <a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html#ad3d10bec24975f827390ba4753a4aac7">String::GetWideCharLength()</a> function to get the length of a string in characters.</li>
+<li>Added functions to set and get the thread priority used when connecting to the game server: <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_root_transport.html#ab296d275226b24c6323fc9c327cf8f73">RootTransport::SetConnectThreadPriority()</a></code> and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_root_transport.html#a1965166fa4db0bcaaf1bf326eff2232f">RootTransport::GetConnectThreadPriority()</a></code>. Also added functions to set and get the CPU core that will run: <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_root_transport.html#a13b1cec0d380aef79f0a3fca3121a165">RootTransport::SetConnectThreadCoreNo()</a></code> and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_root_transport.html#a867105690f8d6c52373a5dac32d3d844">RootTransport::GetConnectThreadCoreNo()</a></code>.</li>
+<li>Added functions to set and get internal thread priority: <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a442f7a914c83ae7e73e5c48551893663">Core::SetInternalThreadPriority</a>()</code> and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_core.html#aac20535c62cee9525c5fd2e5270aea6f">Core::GetInternalThreadPriority</a>()</code>. Also added functions to set and get the CPU core that will run: <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a516bd0277828a22f5001bde386f6a404">Core::SetInternalThreadCoreNo</a>()</code> and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a235866c73c22db2c7484a74124d9ae9f">Core::GetInternalThreadCoreNo</a>()</code>.</li>
+<li>Previously, when the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a2248ae83d2f46616b338d76b69442bd5">Scheduler::SetInternalThreadDispatchInterval</a>()</code> function was used, internal threads would go to sleep for the specified amount of time after calling the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function. Now, the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function is called again, after the specified amount of time elapses after the previous call to <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code>. That is, the amount of the next sleep time is reduced accordingly when the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function takes an extended amount of time to run.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>Messaging</h2>
+<div class="section" id="id4">
+<h3>Additions and Changes</h3>
+<ul class="simple">
+<li>Deprecated the <code>UserMessage::GetRecipientID()</code> function. Use the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_user_message.html#a16ce4e716f130980b9cbca50ac56a86b">UserMessage::GetRecipientPrincipalID</a>()</code> or <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_user_message.html#ae0572bfb4a8d31b51ba63c754edd2311">UserMessage::GetRecipientGatheringID</a>()</code> function instead.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>Matchmaking</h2>
+<div class="section" id="id6">
+<h3>Additions and Changes</h3>
+<ul class="simple">
+<li>Changed the type of the values that can be determined by the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a040abab846bf0204b55eaa8348e7ab07">NotificationEvent::GetParam1</a>()</code>, <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a0d927da06c783b43d8a5a6b15631be24">NotificationEvent::GetParam2</a>()</code>, and <code>NotificationEvent::GetParam3()</code> functions from <code>uint32_t</code> to <code>uint64_t</code>. As a result, the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#abe0def2322ac347eac61b6acb7fe155e">NotificationEvent::GetUInt64Param1</a>()</code> function is deprecated. You can now use the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a040abab846bf0204b55eaa8348e7ab07">NotificationEvent::GetParam1</a>()</code> function to get the same value. To maintain backward compatibility, you can continue to use the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#abe0def2322ac347eac61b6acb7fe155e">NotificationEvent::GetUInt64Param1</a>()</code> function when migrating from NEX 3.x. In addition, the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a040abab846bf0204b55eaa8348e7ab07">NotificationEvent::GetParam1</a>()</code> function now gets the <code>NotificationEvents::RoundStarted</code>, <code>NotificationEvents::FirstRoundReportReceived</code>, and <code>NotificationEvents::RoundSummarized</code> states instead of the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#abe0def2322ac347eac61b6acb7fe155e">NotificationEvent::GetUInt64Param1</a>()</code> function.</li>
+<li>You can now specify negative values for the <code><var>score</var></code> parameter in the score conversion settings for the scored auto-matchmaking feature. For more information, see <a class="reference internal" href="serverservice/webapi_matchmake.html#matchmake-webapi-set-score-conversion-setting"><span class="std std-ref">Setting Score Conversion Settings</span></a>.</li>
+<li>You can use the score conversion settings for the scored auto-matchmaking feature to specify threshold values used when selecting a matchmaking session to join from a list of candidates. For more information, see <a class="reference internal" href="serverservice/webapi_matchmake.html#matchmake-webapi-set-score-conversion-setting"><span class="std std-ref">Setting Score Conversion Settings</span></a>.</li>
+<li>Deprecated the <code>MatchmakeExtensionClient::GetPlayingSession()</code> function and added the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a4d4239193de656663034af8246e88aba">MatchmakeExtensionClient::FindMatchmakeSessionByParticipant</a>()</code> function as a replacement.</li>
+<li>Added the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a3acd52596dc218553549749deadf378d">MatchmakeExtensionClient::FindMatchmakeSessionByGatheringId</a>()</code> function to enable searching for a <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html">MatchmakeSession</a></code> using the specified <code>GatheringID</code>.</li>
+<li>Added the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a3cce1ed33673d1a09027faa1034a1eab">MatchmakeExtensionClient::FindMatchmakeSessionByOwner</a>()</code> function to enable searching for a <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html">MatchmakeSession</a></code> using the specified owner <code>principal ID</code>.</li>
+<li>The <code>MatchmakeExtensionClient::UpdatePrivacySetting()</code> function is now private.</li>
+<li><em>Blacklists</em> are now called <em>block lists</em>.</li>
+<li>Added the <a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_block_list_param.html">MatchmakeBlockListParam</a> parameter class, which specifies whether to ignore the block list settings. This class can be used with the version of the <a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a8fb60f3d80bc0aac4218111be9262c05">MatchmakeExtensionClient::AutoMatchmake</a>() function that takes <a href="../external.html?file=../Api/classnn_1_1nex_1_1_auto_matchmake_param.html">AutoMatchmakeParam</a> as a parameter, and with the versions of the <a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a7ed086de4be4e00bdac7b1ab1eecbd8b">MatchmakeExtensionClient::JoinMatchmakeSession</a>() and <a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a4d4239193de656663034af8246e88aba">MatchmakeExtensionClient::FindMatchmakeSessionByParticipant</a>() functions that take <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_join_matchmake_session_param.html">JoinMatchmakeSessionParam</a></code> as a parameter.</li>
+<li>The friend matchmaking functionality that specifies <code>MATCHMAKE_SYSTEM_TYPE_FRIEND</code> will be removed. To replace this functionality, instead use the device's friend presence functionality to get a list of friends currently online, and then use <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a4d4239193de656663034af8246e88aba">MatchmakeExtensionClient::FindMatchmakeSessionByParticipant</a>()</code> to get a list of joinable matchmaking sessions.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

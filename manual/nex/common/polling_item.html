@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>6. Required and Recommended Periodic Checks — NX NEX Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="polling-item-explain">
+<span id="id1"></span><h1>6. Required and Recommended Periodic Checks</h1>
+<p>There are various items in NEX that need to be checked periodically, and various items that Nintendo recommends checking periodically.</p>
+<div class="section" id="id2">
+<h2>6.1. Game Server Connectivity Check</h2>
+<p>After logging in to the game server successfully with the <tt><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html#a88027e43cd2641ffbb0497a04352e406">NgsFacade::Login</a>()</tt> function, you can check for connectivity with the game server using the <tt><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_back_end_services.html#abcc207d756734515947dd14a1e948cb7">NgsFacade::IsConnected</a>()</tt> function. NEX detects network disconnections as server disconnections.</p>
+<p>A disconnection from the server will end the availability for NEX server services. Check server connectivity when it is appropriate to do so within your game specifications. Display an error when a disconnection is detected, and call <tt><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html#ae3566a0cacdb0d59d20d7a880e4c91be">NgsFacade::Logout()</a></tt> to destroy <tt><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html">NgsFacade</a></tt>.</p>
+<p>By setting <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a82bcddd1655012c8d0fefca529955b1b">Core::GetInstance</a>()-&gt;SetTerminateImmediately(true)</code> before calling <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html#ae3566a0cacdb0d59d20d7a880e4c91be">NgsFacade::Logout</a>()</code>, the overall finalization process becomes faster by not completing the standard disconnect process. This is an irregular termination when there is a network communication error. Do not use it in a standard finalization sequence.</p>
+<p>For more information, see the API reference.</p>
+</div>
+</div>
+</div>
+
+</body>
+</html>

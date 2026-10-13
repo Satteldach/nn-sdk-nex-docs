@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>5. NEX Library: General (Dispatching, Asynchronous Processing, Data Integrity) — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="nex">
+<span id="overall-top"></span><h1>5. NEX Library: General (Dispatching, Asynchronous Processing, Data Integrity)</h1>
+<div class="section" id="overall-basic-type">
+<span id="id1"></span><h2>5.1. Basic Types Defined by NEX</h2>
+<p>NEX independently defines basic types, such as <code>int</code>, but you can also directly use the basic types defined in the SDK. <a class="reference internal" href="#overall-table-basic-type"><span class="std std-ref">Table 5.1</span></a> shows the correspondence between the basic types defined by NEX and the basic types defined in the SDK.</p>
+<span id="overall-table-basic-type"></span><table border="1" class="docutils" id="id12">
+<caption><span class="caption-text">Table 5.1. Correspondence Between Basic Types Defined by NEX and the SDK</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Names of Types Defined by NEX</th>
+<th class="head">Corresponding Names in SDK</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>nn::<wbr/>nex::<wbr/>qBool</td>
+<td>bool</td>
+</tr>
+<tr class="row-odd"><td>nn::<wbr/>nex::<wbr/>qByte</td>
+<td>uint8_<wbr/>t</td>
+</tr>
+<tr class="row-even"><td>nn::<wbr/>nex::<wbr/>qInt8</td>
+<td>int8_<wbr/>t</td>
+</tr>
+<tr class="row-odd"><td>nn::<wbr/>nex::<wbr/>qUnsignedInt8</td>
+<td>uint8_<wbr/>t</td>
+</tr>
+<tr class="row-even"><td>nn::<wbr/>nex::<wbr/>qInt16</td>
+<td>int16_<wbr/>t</td>
+</tr>
+<tr class="row-odd"><td>nn::<wbr/>nex::<wbr/>qUnsignedInt16</td>
+<td>uint16_<wbr/>t</td>
+</tr>
+<tr class="row-even"><td>nn::<wbr/>nex::<wbr/>qInt32</td>
+<td>int32_<wbr/>t</td>
+</tr>
+<tr class="row-odd"><td>nn::<wbr/>nex::<wbr/>qUnsignedInt32</td>
+<td>uint32_<wbr/>t</td>
+</tr>
+<tr class="row-even"><td>nn::<wbr/>nex::<wbr/>qInt</td>
+<td>int</td>
+</tr>
+<tr class="row-odd"><td>nn::<wbr/>nex::<wbr/>qUnsignedInt</td>
+<td>uint_<wbr/>t</td>
+</tr>
+<tr class="row-even"><td>nn::<wbr/>nex::<wbr/>qFloat</td>
+<td>float</td>
+</tr>
+<tr class="row-odd"><td>nn::<wbr/>nex::<wbr/>qDouble</td>
+<td>double</td>
+</tr>
+<tr class="row-even"><td>nn::<wbr/>nex::<wbr/>Real</td>
+<td>float</td>
+</tr>
+<tr class="row-odd"><td>nn::<wbr/>nex::<wbr/>qInt64</td>
+<td>int64_<wbr/>t</td>
+</tr>
+<tr class="row-even"><td>nn::<wbr/>nex::<wbr/>qUnsignedInt64</td>
+<td>uint64_<wbr/>t</td>
+</tr>
+<tr class="row-odd"><td>nn::<wbr/>nex::<wbr/>qChar8</td>
+<td>char</td>
+</tr>
+<tr class="row-even"><td>nn::<wbr/>nex::<wbr/>qChar16</td>
+<td>char16_<wbr/>t</td>
+</tr>
+<tr class="row-odd"><td>nn::<wbr/>nex::<wbr/>qWideChar</td>
+<td>wchar_<wbr/>t</td>
+</tr>
+<tr class="row-even"><td>nn::<wbr/>nex::<wbr/>qChar</td>
+<td>char</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="overall-job-dispatch">
+<span id="id2"></span><h2>5.2. Overview of Dispatch Processing</h2>
+<p>NEX performs internal processing, and sends and receives packets by periodically running the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function. A <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html">Scheduler</a> object is created within the NEX library such as when NEX is initialized due to calling <code>Initialize()</code>, and the object can be obtained with <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a76af17f312b8a2e12a6578efd3fc32d4">Scheduler::GetInstance</a>()</code>. Call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function periodically while a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html">Scheduler</a></code> object exists. The <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html">Scheduler</a> object is also deleted automatically when NEX terminates, such as by calling functions such as <code>Finalize()</code>.</p>
+<p>Because <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a5625249d6e466a2b1c9007f3bf9cfe3d">CallContext::Wait</a>()</code> calls <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> internally, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> does not need to be called while <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a5625249d6e466a2b1c9007f3bf9cfe3d">CallContext::Wait</a>()</code> is in the process of blocking. When in thread-safe mode, both <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a5625249d6e466a2b1c9007f3bf9cfe3d">CallContext::Wait</a>()</code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> may each be called in parallel.</p>
+<p>The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#af891ae9986e9f9b373f58b6b26ee385a">Scheduler::DispatchAll</a>()</code> member function dispatches all jobs in the dispatch queue for processing. This member function exits when all jobs to dispatch are finished.</p>
+<p>On the other hand, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> can specify a timeout, and processing continues until the timeout period has passed or the dispatch queue is empty. Use the <code><var>uiDispatchTimeout</var></code> parameter to specify the timeout in milliseconds. The default value for <code><var>uiDispatchTimeout</var></code> is infinite (equivalent to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#af891ae9986e9f9b373f58b6b26ee385a">Scheduler::DispatchAll</a>()</code>). Use <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#ace9158c968e2cff23bdb5f3c79b788aa">Scheduler::GetReadyJobsSize</a>()</code> to get the number of jobs that can be run by the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html">Scheduler</a>. When this function is called after <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code>, it returns a value of 1 or higher. If the return value is getting larger, the timeout for processing will not be long enough. Either increase the timeout or reduce the amount of data being sent.</p>
+<p>NEX automatically performs dispatch processing internally when using <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99ada07de3703afd06bcede7692458ff1b6">Core::ThreadModeInternal</a></code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99ace3148fd4b6c40d50268c6c957f6f246">Core::ThreadModeInternalTransportBuffer</a></code> in thread mode. As a result, calling <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> is not required.</p>
+<div class="section" id="id3">
+<h3>5.2.1. Example of Recommended Usage of Dispatching to Minimize Communication Latency</h3>
+<p>This section describes the recommended usage of dispatching to minimize communication latency.</p>
+<ol class="arabic simple">
+<li>Execute the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#af891ae9986e9f9b373f58b6b26ee385a">Scheduler::DispatchAll</a>()</code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function (assumed for receiving).</li>
+<li>The application handles the received data.</li>
+<li>Change the game state (such as physics, AI, and so on).</li>
+<li>Send and receive data.</li>
+<li>Execute the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#af891ae9986e9f9b373f58b6b26ee385a">Scheduler::DispatchAll</a>()</code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function (assumed for sending).</li>
+<li>The application performs rendering and other operations.</li>
+</ol>
+<p>Make the displatch interval no more than 100 milliseconds. Longer intervals will cause communication delays.</p>
+</div>
+</div>
+<div class="section" id="overall-async-job">
+<span id="id4"></span><h2>5.3. Asynchronous Processing</h2>
+<p>To run asynchronous processing with NEX—while communicating with a server, for example—pass a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a></code> class or its subclass <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> as the first argument to an asynchronous function. In other words, the functions that take <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a></code> or its subclasses as the first argument are functions that perform asynchronous processing. <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a></code> can be used to set the callback function that is called when asynchronous processing is complete, block processes until asynchronous processing is complete, or to get information related to asynchronous processing results. It can also be used to configure cancel and timeout settings. The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a></code> class can also be called a <em>calling context</em>.</p>
+<p>After asynchronous processing completes, the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a> state and results will be changed. Use <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a77cd37e3a72c1fe5d901d02335b4b1f4">CallContext::GetState</a>()</code> to get the state, and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#acb03838807a46d921f5517fcc887bdcf">CallContext::GetOutcome</a>()</code> to get the results. The state is represented by the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16">CallContext::State</a></code> enumerator, and can be one of the following five states: <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a3fdc2e468eae9393255e805e44ca728a">CallContext::Available</a></code>, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a470c84f794c0a15eee45533e4cd6c26f">CallContext::CallInProgress</a></code>, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16ae60e076a9fa7d231b645c700825cc390">CallContext::CallSuccess</a></code>, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a1218cfbe78597558b0c4558c530e680b">CallContext::CallFailure</a></code>, or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a60673045e1359c752a575b959e991de7">CallContext::CallCancelled</a></code>. The initial state is <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a3fdc2e468eae9393255e805e44ca728a">CallContext::Available</a></code>. If asynchronous processing is called, the state first transitions to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a470c84f794c0a15eee45533e4cd6c26f">CallContext::CallInProgress</a></code> and then transitions to either <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16ae60e076a9fa7d231b645c700825cc390">CallContext::CallSuccess</a></code>, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a1218cfbe78597558b0c4558c530e680b">CallContext::CallFailure</a></code>, or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a60673045e1359c752a575b959e991de7">CallContext::CallCancelled</a></code>. If the calling context is in the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a470c84f794c0a15eee45533e4cd6c26f">CallContext::CallInProgress</a></code> state, you can use <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a134fcf01f0478baee44c72fc735183c3">CallContext::Cancel</a></code> to cancel the calling context. In this case, the state will be <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a60673045e1359c752a575b959e991de7">CallContext::CallCancelled</a></code>. If the state is either <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16ae60e076a9fa7d231b645c700825cc390">CallContext::CallSuccess</a>, <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a1218cfbe78597558b0c4558c530e680b">CallContext::CallFailure</a>, or <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a60673045e1359c752a575b959e991de7">CallContext::CallCancelled</a>, you can call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a212609ed311163c12d4e37049de17326">CallContext::Reset</a>()</code> function to reset the state to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a3fdc2e468eae9393255e805e44ca728a">CallContext::Available</a></code>. When the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a5625249d6e466a2b1c9007f3bf9cfe3d">CallContext::Wait</a>()</code> function is used, thread execution waits until asynchronous processing ends.</p>
+<div class="figure" id="id13">
+<span id="overall-fig-callcontext"></span><img alt="../_images/Fig_Overall_CallContext.png" src="../_images/Fig_Overall_CallContext.png"/>
+<p class="caption"><span class="caption-text">Figure 5.1. CallContext State Transition Chart</span></p>
+</div>
+<p>You can cause a user-defined callback to be invoked at the same time that a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a></code> object completes. By using a completion callback, you avoid continuously polling <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a></code> after asynchronous processing is invoked to determine whether processing has completed. Callback functions can be registered to each <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a></code> using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a7323489c606b149e32537ce2bbdaeed1">CallContext::RegisterCompletionCallbackGeneric</a>()</code> function.</p>
+<div class="literal-block-wrapper docutils container" id="id14">
+<span id="overall-callcontext-callback"></span><div class="code-block-caption"><span class="caption-text">Code 5.1. Adding Callbacks</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">CallbackFunc</span><span class="p">(</span><span class="n">CallContext</span><span class="o">*</span> <span class="n">pContext</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">Example</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">CallContext</span> <span class="n">cc</span><span class="p">;</span>
+    <span class="n">cc</span><span class="p">.</span><span class="n">RegisterCompletionCallbackGeneric</span><span class="p">(</span><span class="o">&amp;</span><span class="n">CallbackFunc</span><span class="p">);</span>
+    <span class="n">SomeAsyncCall</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cc</span><span class="p">,</span> <span class="p">...);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>The first argument of <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a7323489c606b149e32537ce2bbdaeed1">CallContext::RegisterCompletionCallbackGeneric</a>()</code> can be specified as the function pointer, function object, or lambda expression that takes <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a>*</code> as an argument. (The preceding example specifies function pointers.) The <code><var>pContext</var></code> that is passed to the callback function as an argument is a pointer to the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a></code> object linked to the callback function. The callback function is called from the thread that called the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function.</p>
+<div class="section" id="overall-api-error">
+<span id="id5"></span><h3>5.3.1. Asynchronous Processing Return Values</h3>
+<p>Most functions that perform asynchronous processing return a Boolean value. This value indicates whether the asynchronous processing was successfully started. If <code>false</code> is returned, the specified <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a> state is <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a470c84f794c0a15eee45533e4cd6c26f">CallContext::CallInProgress</a></code>, and asynchronous processing cannot be started. This value indicates that it is being used in other asynchronous processing. Because this is a programming error, it causes an assertion failure and halts execution on non-release builds.</p>
+<p>Follow the description in the API Reference if the asynchronous processing function does not return <code>bool</code>, or has a special note.</p>
+</div>
+<div class="section" id="overall-async-job-error">
+<span id="id6"></span><h3>5.3.2. Asynchronous Processing Error Handling</h3>
+<p>You can get asynchronous processing results with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#acb03838807a46d921f5517fcc887bdcf">CallContext::GetOutcome</a>()</code> function. <code><var><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html">qResult</a></var></code> contains two sets of macros: <code>QRESULT_SUCCESS</code> and <code>QRESULT_ERROR</code>, which generate the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html">qResult</a> class that includes the specified return code; and <code>QSUCCESS</code> and <code>QERROR</code> macros, which represent the return code itself. In addition to using <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html#a830e2e38ab08225f2d1afce3612aeaf5">qResult::GetReturnCode</a>()</code> to get the return code and compare it to the return code generated by the <code>QERROR</code> macro, an operator for comparing return codes is defined for <code><var><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html">qResult</a></var></code> so you can compare them directly. While you can compare the <code><var><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html">qResult</a></var></code> object to the <code><var><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html">qResult</a></var></code> object generated by the <code>QRESULT_ERROR</code> macro, processing is faster when comparing the return codes generated by the <code>QSUCCESS</code> and <code>QERROR</code> macros.</p>
+<p>If the error is on the list of errors for the application to handle, use the application to perform the appropriate error handling. For more information, see the API Reference, or the sections on error handling for the various features.</p>
+<p>When an unlisted error occurs, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html#ad88a83b6db9d69fd1d1a061c97c5ede9">qResult::GetNnResult</a>()</code> function to get <code>nn::Result</code>, or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html#a01cb4ff331eda28fc8abbb1bcf2c205e">qResult::GetErrorCodeStruct</a>()</code> to get the error code, and perform any communication termination processes after passing the result to the error viewer applet (see <a class="reference internal" href="#code-error-handling"><span class="std std-ref">Code 5.2</span></a>).</p>
+</div>
+<div class="section" id="overall-common-error">
+<span id="id7"></span><h3>5.3.3. Common Errors</h3>
+<p>The following section describes common errors that occur for all APIs.</p>
+<p>You can select whether to have the application handle the following errors or pass the error to the error viewer applet.</p>
+<table border="1" class="docutils" id="id15">
+<caption><span class="caption-text">Table 5.2. Common Errors for All APIs (Errors That Can Be Handled By the Application)</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Error</th>
+<th class="head">Conditions for Occurrence, Status, etc.</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>QERROR(Core, OperationAborted)</td>
+<td>Asynchronous processing was interrupted by a logout.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(RendezVous, ConnectionDisconnected)</td>
+<td>Asynchronous processing was interrupted by disconnecting from the game server.</td>
+</tr>
+<tr class="row-even"><td>QERROR(RendezVous, ConnectionDisconnectedForConcurrentLogin)</td>
+<td>Disconnected from the game server due to the same account logging in from a different device, which caused the asynchronous processing to be interrupted.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(Transport, Unknown)</td>
+<td>A network error occurred for which NEX itself cannot determine the cause, such as disconnecting from the wireless LAN, causing asynchronous processing to fail.</td>
+</tr>
+</tbody>
+</table>
+<p>For the following errors, as with unlisted errors, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html#ad88a83b6db9d69fd1d1a061c97c5ede9">qResult::GetNnResult</a>()</code> function to get <code>nn::Result</code>, or <a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html#a01cb4ff331eda28fc8abbb1bcf2c205e">qResult::GetErrorCodeStruct</a> to get the error code, and perform any communication termination processes after passing the result to the error viewer applet (see <a class="reference internal" href="#code-error-handling"><span class="std std-ref">Code 5.2</span></a>).</p>
+<table border="1" class="docutils" id="id16">
+<caption><span class="caption-text">Table 5.3. Common Errors for All APIs (Errors That Are Handled In The Same Way as Unlisted Errors)</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Error</th>
+<th class="head">Conditions for Occurrence, Status, etc.</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>QERROR(PythonCore, Exception)</td>
+<td>An unexpected error occurred with the server. Contact Nintendo Support.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(RendezVous, LimitExceeded)</td>
+<td>Generated if the number of function access attempts is much higher than the maximum number established by the guidelines, or if the total number of calls per unit time is high. Also generated even when the user seeking matchmaking already own 20 matchmaking sessions. Review your programming. This problem does not occur on a production server. Do not restrict API calls based on an assumption that this error will be returned.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id8">
+<h3>5.3.4. Errors for the Application to Handle</h3>
+<ul class="simple">
+<li>Common<ul>
+<li><code>QERROR(Core, Cancelled)</code>: Asynchronous processing was canceled.</li>
+</ul>
+</li>
+<li>Matchmaking<ul>
+<li><code>QERROR(RendezVous, SessionVoid)</code> The gathering does not exist.</li>
+<li><code>QERROR(RendezVous, SessionFull)</code> The maximum number of participants has already been reached.</li>
+<li><code>QERROR(RendezVous, PersistentGatheringCreationMax)</code> The registration limit for the persistent gathering has been exceeded.</li>
+<li><code>QERROR(RendezVous, PersistentGatheringParticipationMax)</code> The limit on persistent gathering participants has been exceeded.</li>
+<li><code>QERROR(RendezVous, InvalidGatheringPassword)</code> The password does not match the persistent gathering password.</li>
+<li><code>QERROR(RendezVous, WithoutParticipationPeriod)</code> The session is not within the available participation period.</li>
+<li><code>QERROR(RendezVous, DeniedByParticipants)</code> Matchmaking session participants have the local station registered on their block list.</li>
+<li><code>QERROR(RendezVous, ParticipantInBlockList)</code> A participant in the matchmaking session is registered in the local block list.</li>
+<li><code>QERROR(RendezVous, NotParticipatedGathering)</code> The specified user has not joined the gathering.</li>
+<li><code>QERROR(RendezVous, MatchmakeSessionUserPasswordUnmatch)</code> The matchmaking session user password does not match.</li>
+<li><code>QERROR(RendezVous, MatchmakeSessionSystemPasswordUnmatch)</code> The matchmaking session system password does not match.</li>
+<li><code>QERROR(RendezVous, UserIsOffline)</code> The specified user is offline.</li>
+<li><code>QERROR(RendezVous, NotFriend)</code> The specified user is not a friend.</li>
+<li><code>QERROR(RendezVous, SessionClosed)</code> The gathering is closed.</li>
+<li><code>QERROR(MatchmakeReferee, InvalidArgument)</code> An argument is invalid.</li>
+<li><code>QERROR(MatchmakeReferee, AlreadyExists)</code> Personal statistics already exist.</li>
+<li><code>QERROR(MatchmakeReferee, NotParticipatedGathering)</code> Not a participant in the gathering.</li>
+<li><code>QERROR(MatchmakeReferee, NotParticipatedRound)</code> Not a participant in the round.</li>
+<li><code>QERROR(MatchmakeReferee, StatsNotFound)</code> Statistical data was not found.</li>
+<li><code>QERROR(MatchmakeReferee, RoundNotFound)</code> The round was not found.</li>
+<li><code>QERROR(MatchmakeReferee, RoundArbitrated)</code> The round has been summarized.</li>
+<li><code>QERROR(MatchmakeReferee, RoundNotArbitrated)</code> The round has not been summarized.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<div><p>You can choose to either handle the following error messages in the application or pass them to the error viewer applet.</p>
+<blockquote>
+<div><ul class="simple">
+<li><code>QERROR(RendezVous, GameServerMaintenance)</code> Game server maintenance will begin.</li>
+<li><code>QERROR(RendezVous, InvalidOperation)</code> Attempted an invalid operation.</li>
+<li><code>QERROR(RendezVous, AlreadyParticipatedGathering)</code> Already joined the gathering.</li>
+<li><code>QERROR(RendezVous, PermissionDenied)</code> Attempted an operation without having the permission to do so.</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<ul class="simple">
+<li>Ranking<ul>
+<li><code>QERROR(Ranking, NotFound)</code> Data not found.</li>
+</ul>
+</li>
+<li>Ranking2<ul>
+<li><code>QERROR(Ranking2, InvalidScore)</code> An invalid score was uploaded.</li>
+</ul>
+</li>
+<li>DataStore<ul>
+<li><code>QERROR(DataStore, NotFound)</code> Data not found in specified data ID or persistence slot.</li>
+<li><code>QERROR(DataStore, PermissionDenied)</code> Attempted operation without password on data to which user does not have privilege.</li>
+<li><code>QERROR(DataStore, UnderReviewing)</code> Access denied because data is under review.</li>
+<li><code>QERROR(DataStore, InvalidPassword)</code> Attempted operation with incorrect password.</li>
+<li><code>QERROR(DataStore, ValueNotEqual)</code> Could not update because values are not equal.</li>
+</ul>
+</li>
+<li>Matchmaking Voice Chat<ul>
+<li><code>QERROR(SmartDeviceVoiceChat, UserNotFound)</code>: A user who has not logged in to Nintendo Switch Online attempted to use Matchmaking Voice Chat.</li>
+<li><code>QERROR(SmartDeviceVoiceChat, NetworkServiceLicenseRequired)</code>: The voice chat server detected that online play rights expired.</li>
+<li><code>QERROR(SmartDeviceVoiceChat, AccountLibraryError)</code>: The account library API returned an error during <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a> processing.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<div><p>You can select whether to have the application handle the following errors or pass them to the error viewer applet.</p>
+<blockquote>
+<div><ul class="simple">
+<li><code>QERROR(SmartDeviceVoiceChat, UnderMaintenance)</code>: The voice chat server is undergoing maintenance.</li>
+<li><code>QERROR(SmartDeviceVoiceChat, ServiceNoLongerAvailable)</code>: The voice chat service has ended.</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<div class="literal-block-wrapper docutils container" id="id17">
+<span id="code-error-handling"></span><div class="code-block-caption"><span class="caption-text">Code 5.2. Error Handling</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">MatchmakeExtensionClient</span> <span class="n">client</span><span class="p">;</span>
+<span class="n">ProtocolCallContext</span> <span class="n">context</span><span class="p">;</span>
+
+<span class="c1">// Call asynchronous processing.</span>
+<span class="n">client</span><span class="p">.</span><span class="n">JoinMatchmakeSession</span><span class="p">(</span><span class="o">&amp;</span><span class="n">context</span><span class="p">,</span> <span class="n">gid</span><span class="p">,</span> <span class="n">NEX_T</span><span class="p">(</span><span class="s">"join message"</span><span class="p">));</span>
+
+<span class="c1">// Block and wait for asynchronous processing to complete.</span>
+<span class="n">context</span><span class="p">.</span><span class="n">Wait</span><span class="p">();</span>
+
+<span class="k">if</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">GetState</span><span class="p">()</span> <span class="o">!=</span> <span class="n">CallContext</span><span class="o">::</span><span class="n">CallSuccess</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">qResult</span> <span class="n">result</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">GetOutcome</span><span class="p">();</span>
+
+    <span class="c1">// Errors that must be handled by the application.</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">GetReturnCode</span><span class="p">())</span>
+    <span class="p">{</span>
+        <span class="k">case</span> <span class="n">QERROR</span><span class="p">(</span><span class="n">RendezVous</span><span class="p">,</span> <span class="n">SessionVoid</span><span class="p">)</span><span class="o">:</span>
+            <span class="c1">// There is no matchmaking session.</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nf">QERROR</span><span class="p">(</span><span class="n">RendezVous</span><span class="p">,</span> <span class="n">SessionFull</span><span class="p">)</span><span class="o">:</span>
+            <span class="c1">// The matchmaking session is full.</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">default</span><span class="o">:</span>
+        <span class="p">{</span>
+            <span class="c1">// Use error display for other unexpected errors that do not need to be handled by the application.</span>
+
+
+            <span class="n">nn</span><span class="o">::</span><span class="n">err</span><span class="o">::</span><span class="n">ErrorCode</span> <span class="n">errorCode</span> <span class="o">=</span> <span class="n">result</span><span class="p">.</span><span class="n">GetErrorCodeStruct</span><span class="p">();</span>
+            <span class="c1">// Start the error viewer applet.</span>
+            <span class="n">nn</span><span class="o">::</span><span class="n">err</span><span class="o">::</span><span class="n">ShowError</span><span class="p">(</span><span class="n">errorCode</span><span class="p">);</span>
+
+            <span class="c1">// Log out and shut down.</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="thread-callback">
+<span id="id9"></span><h2>5.4. Cautions for Processing in Callbacks</h2>
+<p>Callbacks are called in a locked system state by using <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a44e6cce93da35e2ce170ead8307a9a92">Scheduler::SystemLock</a>()</code>. Do not, however, call any of the following from within a callback: <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code>, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#af891ae9986e9f9b373f58b6b26ee385a">Scheduler::DispatchAll</a>()</code>, or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a5625249d6e466a2b1c9007f3bf9cfe3d">CallContext::Wait</a>()</code>.</p>
+</div>
+<div class="section" id="overall-socket-port">
+<span id="id10"></span><h2>5.5. Socket Port Numbers Used With NEX</h2>
+<p>NEX uses HTTPS for communication with the server. When configuring a router or firewall, enable communications to any server on TCP port 443.</p>
+<p>Also use UDP for direct communication between terminals (real-time communication feature). Use an environment that enables receiving and sending on all UDP ports.</p>
+</div>
+<div class="section" id="overall-detect-changes">
+<span id="id11"></span><h2>5.6. NEX Communications: Data Integrity</h2>
+<p>The NEX client uses HTTPS for communication with servers. If data tampering occurs over the communication channel, errors occur in the HTTPS send-receive processing and the function returns an error. There is no need for concern about packet tampering over communication channels in the application itself.</p>
+<p>For direct communication between terminals (real-time communication feature), hash values are used to detect tampering with the communication data. If received data has unexpected hash values, those packets are destroyed in the library, behavior on the communication channels remains the same, with the invalid packets being dropped without being passed to the application. You do not need to worry about packet tampering over communication channels in the application itself.</p>
+</div>
+<div class="section" id="nex-id">
+<span id="overall-id-uniqueness"></span><h2>5.7. Uniqueness of NEX Server Services IDs</h2>
+<p>The IDs issued by NEX server services (NEX unique ID, session ID, gathering ID, data ID, and so on) are not unique across game servers. These IDs can be duplicated if the server environment or game server ID is different. For example, the same NEX unique ID that was issued in the development environment might also exist in the Lotcheck environment. If you are using an independent server, do not design it on the assumption that these IDs are unique.</p>
+<p>The gathering IDs are assigned starting from <code>0</code> and a different value is assigned each time a matchmaking session, persistent gathering, or official persistent gathering is created. Matchmaking sessions and persistent gatherings will never have the same gathering ID even though they are different types of gatherings.</p>
+<p>In general, the gathering ID increments monotonically. However, there are exceptions where the value might be reset. Do not implement your application expecting the value to increment monotonically.</p>
+</div>
+</div>
+</div>
+
+</body>
+</html>

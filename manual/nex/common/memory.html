@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>3. Memory Management — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="memory-top">
+<span id="id1"></span><h1>3. Memory Management</h1>
+<div class="section" id="memory-replacement-explain">
+<span id="id2"></span><h2>3.1. Changing the Memory Allocator [Recommended]</h2>
+<p>The NEX library frequently performs dynamic memory allocation. Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_memory_manager.html#a346e93b188e228f020d830ff28fd831d">MemoryManager::SetBasicMemoryFunctions</a>()</code> function to set a memory allocator prepared in the application. The NEX library allocates memory using the standard <code>malloc()</code> and <code>free()</code> functions when no memory allocator has been set. We recommend using an application-specific memory management mechanism in the product.</p>
+<p>If a memory allocator is specified, it is used by the NEX library for dynamic memory allocation, and by the application when <code>new</code> occurs for public classes that inherit <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_root_object.html">RootObject</a></code>. (If a class does not inherit <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_root_object.html">RootObject</a></code>, this will be noted in its description. )</p>
+</div>
+<div class="section" id="libcurl">
+<span id="libcurl-memory-replacement-explain"></span><h2>3.2. libcurl Initialization [Required]</h2>
+<p>The NEX library uses the libcurl library to communicate with the game server and storage server. Initialize libcurl by having the application call one of the following functions.</p>
+<ul class="simple">
+<li><code>curl_global_init_mem()</code> (Recommended)</li>
+<li><code>curl_global_init()</code></li>
+</ul>
+<p>Note that these functions are not thread-safe. For more information, see the libcurl manual.</p>
+</div>
+<div class="section" id="id3">
+<h2>3.3. Changing the libcurl Memory Allocator [Recommended]</h2>
+<p>A single allocator can be set for the entire libcurl. libcurl allocates memory using the standard <code>malloc()</code> or <code>free()</code> when no memory allocator has been set.</p>
+<p>We recommend using an application-specific memory management mechanism in the product. Specify a thread-safe memory allocator as a proprietary memory management mechanism regardless of the NEX thread mode. The <code>curl_global_cleanup()</code> function must be run before releasing the memory allocator region.</p>
+<p>The following example shows how to replace the memory allocator using <code>nn::mem:StandardAllocator</code>.</p>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">Code 3.1. Using nn::mem:StandardAllocator</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;cstring&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;curl/curl.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;nn/mem.h&gt;</span><span class="cp"></span>
+
+<span class="k">namespace</span>
+<span class="p">{</span>
+    <span class="n">nn</span><span class="o">::</span><span class="n">mem</span><span class="o">::</span><span class="n">StandardAllocator</span> <span class="n">s_curlHeapHandle</span><span class="p">;</span>
+    <span class="kt">uint8_t</span><span class="o">*</span> <span class="n">s_pCurlMemory</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="kt">uint8_t</span><span class="o">*</span> <span class="n">s_pCurlMemory</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="c1">// Memory size for libcurl</span>
+    <span class="c1">// Around 750 KB of memory are required when using DataStore, and around 275 KB are required when not using DataStore.</span>
+    <span class="c1">// The amount of memory used in Win is different from that in NX.</span>
+    <span class="k">const</span> <span class="kt">size_t</span> <span class="n">CURL_MEMORY_SIZE</span> <span class="o">=</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Memory allocator helper function for CURL.</span>
+<span class="kt">void</span> <span class="o">*</span><span class="n">CurlMallocCallback</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">s_curlHeapHandle</span><span class="p">.</span><span class="n">Allocate</span><span class="p">(</span><span class="n">size</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">CurlFreeCallback</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">ptr</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">s_curlHeapHandle</span><span class="p">.</span><span class="n">Free</span><span class="p">(</span><span class="n">ptr</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="o">*</span><span class="n">CurlReallocCallback</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">s_curlHeapHandle</span><span class="p">.</span><span class="n">Reallocate</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="o">*</span><span class="n">CurlCallocCallback</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">nmemb</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">void</span> <span class="o">*</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">CurlMallocCallback</span><span class="p">(</span><span class="n">nmemb</span> <span class="o">*</span> <span class="n">size</span><span class="p">);</span>
+    <span class="n">memset</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">nmemb</span> <span class="o">*</span> <span class="n">size</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">ptr</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">char</span> <span class="o">*</span><span class="n">CurlStrdupCallback</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">void</span><span class="o">*</span> <span class="n">pNewString</span> <span class="o">=</span> <span class="n">CurlMallocCallback</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">str</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+
+    <span class="n">memcpy</span><span class="p">(</span><span class="n">pNewString</span><span class="p">,</span> <span class="n">str</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">str</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">pNewString</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="n">CurlGlobalInitMem</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">s_pCurlMemory</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">uint8_t</span><span class="p">[</span><span class="n">CURL_MEMORY_SIZE</span><span class="p">];</span>
+    <span class="n">s_curlHeapHandle</span><span class="p">.</span><span class="n">Initialize</span><span class="p">(</span><span class="n">s_pCurlMemory</span><span class="p">,</span> <span class="n">CURL_MEMORY_SIZE</span><span class="p">);</span>
+
+    <span class="c1">// Set the memory allocator for CURL and initialize.</span>
+    <span class="c1">// Regardless of the NEX thread mode, it has to be a thread-safe memory allocator.</span>
+    <span class="c1">// Also includes curl_global_init() processing.</span>
+    <span class="k">return</span> <span class="nf">curl_global_init_mem</span><span class="p">(</span><span class="n">CURL_GLOBAL_ALL</span><span class="p">,</span>
+        <span class="n">CurlMallocCallback</span><span class="p">,</span>
+        <span class="n">CurlFreeCallback</span><span class="p">,</span>
+        <span class="n">CurlReallocCallback</span><span class="p">,</span>
+        <span class="n">CurlStrdupCallback</span><span class="p">,</span>
+        <span class="n">CurlCallocCallback</span><span class="p">)</span> <span class="o">==</span> <span class="n">CURLE_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Call instead of curl_global_cleanup.</span>
+<span class="kt">void</span> <span class="n">CurlGlobalCleanup</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">curl_global_cleanup</span><span class="p">();</span> <span class="c1">// Must be run after NEX finalization is complete because this function is not thread-safe.</span>
+                           <span class="c1">// In addition, it must be run before the memory region set with <code>curl_global_init_mem()</code> is released.</span>
+
+    <span class="n">s_curlHeapHandle</span><span class="p">.</span><span class="n">Finalize</span><span class="p">();</span>
+    <span class="k">delete</span><span class="p">[]</span> <span class="n">s_pCurlMemory</span><span class="p">;</span>
+    <span class="n">s_pCurlMemory</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>3.4. Preparing for Memory Exhaustion [Required]</h2>
+<p>The NEX library includes code that presumes dynamic memory allocation always succeeds. For this reason, make sure that your implementation returns a valid memory address. Specifically, it must be implemented as follows.</p>
+<ul class="simple">
+<li>Shut down the library if you allocate more memory than expected.</li>
+<li>Allocate a memory parachute of several kilobytes beforehand, enough to run until the library can be shut down normally. If an allocation fails, deallocate the memory parachute. Then shut down the library.</li>
+<li>Have plenty of memory available beforehand. (Perform enough debugging to make sure that there is enough memory if the communication environment worsens, or in other scenarios.)</li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h2>3.5. Thread Safety Considerations</h2>
+<p>You must use a thread-safe allocator when using the NEX API from multiple threads because memory is also allocated from multiple threads. For more information, see <a class="reference internal" href="initialize_detail.html#thread-top"><span class="std std-ref">4.1</span></a>.</p>
+</div>
+<div class="section" id="nex">
+<h2>3.6. Using the NEX Allocator From Your Application</h2>
+<p>You can use the allocator specified in <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_memory_manager.html#a346e93b188e228f020d830ff28fd831d">MemoryManager::SetBasicMemoryFunctions</a> by calling <code>new</code> from a class that inherits <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_root_object.html">RootObject</a>.</p>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">Code 3.2. Using the NEX Allocator</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// Because NATTraversalClient inherits from RootObject,</span>
+<span class="c1">// The following code uses the allocator configured by <code>MemoryManager::SetBasicMemoryFunctions</code>.</span>
+<span class="n">NATTraversalClient</span><span class="o">*</span> <span class="n">pNATTraversalClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">NATTraversalClient</span><span class="p">();</span>
+<span class="k">delete</span> <span class="n">pNATTraversalClient</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="overall-memory-usage">
+<span id="id6"></span><h2>3.7. Guide for Memory Needed for Server Features</h2>
+<p>The following recommendations apply when <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99a906d5d9f7d0056954a4bef3a3c97bc17">nn::nex::Core::ThreadModeSafeTransportBuffer</a> is specified for the thread mode. However, the guide for memory required when using the NEX server functions differs according to the functions used and how often they are called.</p>
+<ul class="simple">
+<li><strong>During asynchronous processing <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html#a88027e43cd2641ffbb0497a04352e406">NgsFacade::Login()</a>:</strong> Uses a maximum of approximately 671 KB.</li>
+<li><strong>After logging in to the game server without running asynchronous processing while continuously calling only <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch()</a> in a static state:</strong> Approximately 656 KB.</li>
+<li><strong>Matchmaking:</strong> When the auto matchmaking feature is used without calling asynchronous processing multiple times simultaneously, approximately 122 KB is added to the memory required when in a static state whether you are the owner or host.</li>
+<li><strong>Ranking:</strong> Approximately the amount obtained by <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a5d6aef10dea52a8ef48b3b9d8ece9eb5">RankingClient::GetRanking()</a>. When 20 are obtained, approximately 88 KB is added to the memory used when in a static state. When 255 are obtained, about 197 KB of memory is added.</li>
+</ul>
+<p>Then, in addition to this memory, allocate about 20 percent extra memory for emergencies. We also recommend performing immediate logout processing when more memory than anticipated is consumed.</p>
+</div>
+<div class="section" id="nx">
+<span id="overall-socket-memory-usage"></span><h2>3.8. NX Socket Buffer Usage</h2>
+<p>Socket buffers that are 96*1024 bytes in size are required to connect to a game server. If several users are logged in at the same time, the socket buffer size must be multplied by the number of users. You need a socket buffer that is <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#aa51f0e165d6f5e452827b41eac824913">DataStoreClient::GetHttpSendSocketBufferSize()</a></code> + <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#a4e969d5eb868b89fa6e3b97059e4dedd">DataStoreClient::GetHttpRecvSocketBufferSize()</a></code> in size for each connection to the storage server when using the DataStore storage server.</p>
+</div>
+<div class="section" id="overall-memory-pb">
+<span id="id7"></span><h2>3.9. Packet Buffer Memory Management</h2>
+<p>Within NEX memory allocation, the packet buffer manager performs memory management of packet buffers used in real-time communication.</p>
+<p>The packet buffer manager is a feature that allocates a dedicated memory pool (the packet buffer pool) as a batch process before starting real-time communication, and then allocates memory from that packet buffer pool according to packet buffer memory allocation requests.</p>
+<p>The packet buffer manager used by the packet buffer pool is enabled by default.</p>
+<p>Memory for the packet buffer pool is allocated using the same method as other NEX objects.</p>
+<p>NEX-wide memory consumption errors caused by transmitting and receiving large packets is prevented because memory for the packet buffer pool is allocated in advance and limited in size.</p>
+<p>The packet buffers used with the following communications are not managed with the packet buffer manager but have the same memory management as other NEX objects.</p>
+<ul class="simple">
+<li>Communication with the server</li>
+<li>Sending and receiving data in excess of the maximum size that the packet buffer manager can allocate (1364 bytes)</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">Because transmission of data packets that are large in size is out of the management scope of the packet buffer manager, exercise caution when manually transmitting these packets can have an effect on the system memory of the NEX.</p>
+</div>
+<div class="section" id="id8">
+<h3>3.9.1. Disabling the Packet Buffer Pool</h3>
+<p>To manage the memory in the same manner as other NEX objects and bypass the packet buffer pool, set <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_packet_buffer_manager.html#ab639ebd8f80c5dcf1a5cb72202985264">PacketBufferManager::EnablePacketBufferPool</a>()</code> to <code>false</code>.</p>
+<p>Change this setting before initiating real-time communication.</p>
+<p>This must be set for each initialization of NEX. The set values are maintained until NEX terminates.</p>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">Code 3.3 Example of Managing Memory for the Packet Buffer in the Same Way as Other NEX Objects</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">PacketBufferManager</span><span class="o">::</span><span class="n">EnablePacketBufferPool</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="n">ret</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// This cannot be set during peer-to-peer transmission and will throw an exception if called.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id9">
+<h3>3.9.2. Packet Buffer Pool</h3>
+<p>The packet buffer pool is a memory pool used to allocate memory for real-time communication.</p>
+<p>The packet buffer pool is allocated before starting real-time communication and is deallocated when real-time communication stops. Specifically, it is allocated the moment the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_connectivity_manager.html#ad90552d393fe63e009e5a20327c0cea7">ConnectivityManager::StartNATSession</a>()</code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html#a1636739ff8e3a71ad6c2fdd5c738771c">VSocket::Open</a>()</code> function is called and deallocated when the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_connectivity_manager.html#af53350f0c1b57a18bec8604ef5de4a5a">ConnectivityManager::StopNATSession</a>()</code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html#a4733c2dd5e0bc073a12b8ae804201468">VSocket::Close</a>()</code> function is called.</p>
+<p>The packet buffer pool is managed by using multiple unit heaps and is used to allocate objects used for managing packets attached to payloads that are not packet payloads. For the payload unit heap, the unit size and number of memory blocks can be customized on the application side. Customize according to the application communication data size.</p>
+<p>Packet buffer allocation attempts to allocate memory from the unit heap with the smallest unit size and uses the first unit heap that can be allocated. The packet buffer pool enters a depleted state when it is not possible to allocate the largest possible size unit heap to an object (buffers exceeding 1364 bytes are out of scope for allocation by the packet buffer pool).</p>
+<p>The default packet buffer uses a 1364-byte unit heap for payloads, and uses a 300-KB region for the object used in packet management.</p>
+</div>
+<div class="section" id="memory-unit-heap-customization">
+<span id="id10"></span><h3>3.9.3. Customizing the Unit Heap Configuration</h3>
+<p>The unit heap configuration for payloads can be set by calling <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_packet_buffer_manager.html#a648663af4d3890472c790e5c8ef23cee">PacketBufferManager::SetUnitHeapParam</a>()</code>. The unit heap for packet management objects will automatically be set internally by NEX in accordance with the unit heap for payloads.</p>
+<p>Change the configuration for unit heaps before initiating peer-to-peer communication. This cannot be set during peer-to-peer communication. After the unit heap configuration has been set, the value persists until NEX terminates. There is no need to reset this value on a peer-to-peer session basis.</p>
+<p>The unit heap configuration must meet the following requirements.</p>
+<ul class="simple">
+<li>The unit size must be set in multiples of four and be less than or equal to 1364 bytes.</li>
+<li>It must include a unit heap of the maximum size (1364 bytes).</li>
+</ul>
+<p>The largest size unit heap is required for use in increasing the transmission efficiency of packets through bundling and NEX internal transmission. Additionally, ensure that the memory block count is equal to or greater than 64. If this is not enough, increase it.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<ul class="last simple">
+<li>Take the headers added internally by NEX into consideration when setting the unit size and add 80 bytes to the size you want to set. This should be adjusted to multiples of four.</li>
+<li>If an illegal unit heap configuration has been set, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_packet_buffer_manager.html#a648663af4d3890472c790e5c8ef23cee">PacketBufferManager::SetUnitHeapParam</a>()</code> will cause an assertion failure.</li>
+</ul>
+</div>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text">Code 3.4 Example of Setting the Unit Heap Configuration</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">qVector</span><span class="o">&lt;</span><span class="n">PacketBufferManager</span><span class="o">::</span><span class="n">UnitHeapParam</span><span class="o">&gt;</span> <span class="n">paramList</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="c1">// For short size packet use</span>
+.<span class="n">paramList</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">unitSize</span> <span class="o">=</span> <span class="mi">128</span><span class="o">+</span><span class="mi">80</span><span class="p">;</span> <span class="c1">// The additional 80 bytes is in consideration of the header added by NEX</span>
+<span class="n">paramList</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">unitNum</span> <span class="o">=</span> <span class="mi">32</span><span class="p">;</span>
+<span class="c1">// The main size used in the application plus an additional 64 bytes</span>
+<span class="n">paramList</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">unitSize</span> <span class="o">=</span> <span class="mi">500</span><span class="o">+</span><span class="mi">+80</span><span class="p">;</span> <span class="c1">// The additional 80 bytes is in consideration of the header added by NEX.</span>
+<span class="n">paramList</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">unitNum</span> <span class="o">=</span> <span class="mi">64</span><span class="p">;</span>
+<span class="c1">// Packet size used for packet bundling (using a maximum of 1364 bytes)</span>
+<span class="n">paramList</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="n">unitSize</span> <span class="o">=</span> <span class="mi">1364</span><span class="p">;</span>
+<span class="n">paramList</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="n">unitNum</span> <span class="o">=</span> <span class="mi">128</span><span class="p">;</span> <span class="c1">// Set the unit number to take as many blocks as possible.</span>
+<span class="kt">bool</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">PacketBufferManager</span><span class="o">::</span><span class="n">SetUnitHeapParam</span><span class="p">(</span><span class="n">paramList</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="n">ret</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// This cannot be set during peer-to-peer transmission and will throw an exception if called.</span>
+    <span class="c1">// If an illegal unit heap configuration has been set this will cause an assertion failure.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>As shown in the example above, apart from setting the configuration individually with <code><a href="../../external.html?file=../Api/structnn_1_1nex_1_1_packet_buffer_manager_1_1_unit_heap_param.html">PacketBufferManager::UnitHeapParam</a></code>, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_packet_buffer_manager.html#a0df754bdbfcccc9383037ec6de380e85">PacketBufferManager::GetSimpleUnitHeapParam</a>()</code> can also be used to get the simple configuration.</p>
+<p><code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_packet_buffer_manager.html#a0df754bdbfcccc9383037ec6de380e85">PacketBufferManager::GetSimpleUnitHeapParam</a>()</code> sets the size of the packet buffer pool and average transmission data size. Simple structures are calculated to fit in a packet buffer pool for which the memory totals for the unit heaps for the payload and for the packet management objects were specified. Half of the memory used by the unit heap for payloads is allocated as a unit heap the size of the average send data, and the remaining half is allocated as an unit heap of the maximum size (1364). Note that the unit size takes the header attached inside NEX, and the average send data send size is increased by 80 and is revised to a value that is a multiple of 4.</p>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-text">Code 3.5 Example of Setting the Simple Configuration</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// The pool size is 500 KB, the average data transmission size is 500 bytes</span>
+<span class="n">qVector</span><span class="o">&lt;</span><span class="n">PacketBufferManager</span><span class="o">::</span><span class="n">UnitHeapParam</span><span class="o">&gt;</span> <span class="n">param</span><span class="p">;</span>
+<span class="kt">bool</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">PacketBufferManager</span><span class="o">::</span><span class="n">GetSimpleUnitHeapParam</span><span class="p">(</span><span class="mi">500</span><span class="o">*</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">param</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="n">ret</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// This throws an exception if the pool size is too small or if an illegal average data transmission size is defined.</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">PacketBufferManager</span><span class="o">::</span><span class="n">SetUnitHeapParam</span><span class="p">(</span><span class="n">param</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="n">ret</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// This cannot be set during peer-to-peer transmission and will throw an exception if called.</span>
+        <span class="c1">// If an illegal unit heap configuration has been set this will cause an assertion failure.</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id11">
+<h3>3.9.4. Getting Statistical Information</h3>
+<p>Statistical information on unit heap memory allocation for the payload can be obtained by calling <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_packet_buffer_manager.html#a6eda1c5e924d04963b44b9d525b956af">PacketBufferManager::GetUnitHeapDebugInfo</a>()</code>. This obtains information about the memory blocks used and memory allocation errors. The information can be used as a guideline for setting your unit heap configuration or as a method for checking memory exhaustion status.</p>
+<p>NEX checks whether there is enough memory before allocating buffers. When there is not enough, it may be counted as an occurrence of memory exhaustion. For this reason, the count for memory exhaustion occurrences may increase without the peak value of the actual allocated number reaching the maximum.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">When the memory exhaustion occurrence count for the unit heap with the largest unit size increases, set the unit heap structure so that the maximum for the number of memory blocks is increased.</p>
+</div>
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-text">Code 3.6 Example of Verifying the Out of Memory Status of the Packet Buffer</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">qVector</span><span class="o">&lt;</span><span class="n">PacketBufferManager</span><span class="o">::</span><span class="n">UnitHeapDebugInfo</span><span class="o">&gt;</span> <span class="n">debugInfo</span><span class="p">;</span>
+<span class="n">PacketBufferManager</span><span class="o">::</span><span class="n">GetUnitHeapDebguInfo</span><span class="p">(</span><span class="n">debugInfo</span><span class="p">);</span>
+<span class="n">qVector</span><span class="o">&lt;</span><span class="n">PacketBufferManager</span><span class="o">::</span><span class="n">UnitHeapDebugInfo</span><span class="o">&gt;::</span><span class="n">const_iterator</span> <span class="n">it</span><span class="p">;</span>
+<span class="n">it</span> <span class="o">=</span> <span class="n">debugInfo</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">it</span> <span class="o">!=</span> <span class="n">debugInfo</span><span class="p">.</span><span class="n">end</span><span class="p">())</span>
+<span class="p">{</span>
+    <span class="c1">// Displaying the unit size of each unit heap and the out of memory count</span>
+    <span class="n">QLOG</span><span class="p">(</span><span class="n">EventLog</span><span class="o">::</span><span class="n">Info</span><span class="p">,</span> <span class="n">NEX_T</span><span class="p">(</span><span class="s">"unitSize:"</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">it</span><span class="o">-&gt;</span><span class="n">unitSize</span> <span class="o">&lt;&lt;</span> <span class="n">NEX_T</span><span class="p">(</span><span class="s">" outOfMemory:"</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">it</span><span class="o">-&gt;</span><span class="n">outOfMemory</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

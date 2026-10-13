@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>7. Data Stores — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="datastore-top">
+<span id="id1"></span><h1>7. Data Stores</h1>
+<div class="section" id="datastore-first-of-all">
+<span id="id2"></span><h2>7.1. Introduction</h2>
+<p>A data store is a storage service that provides features to manipulate arbitrary data, including uploading, downloading, updating, and deleting. Data is uploaded to data stores on game servers, in addition to dedicated <em>storage servers</em>. There are two ways to use data stores: using just the game server, or a redundant method that uses the game server in conjunction with the storage server. The application must choose which method to use when uploading data. Following are the advantages and disadvantages of each method.</p>
+<ul>
+<li><dl class="first docutils">
+<dt>Using only the game server (storage server not used)</dt>
+<dd><p class="first">Advantage: Processing is performed quickly because the processing completes by accessing the game server only.</p>
+<p class="last">Disadvantage: The maximum data size that can be uploaded is 1024 bytes.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Using the game server and storage server</dt>
+<dd><p class="first">Advantage: The maximum data size that can be uploaded is 10 MiB. You can use the game server data area (meta binary), the storage server data area, or both. If you use both, you can upload any large data to the storage server, while storing items (such as titles and authors that are accessed frequently, or multiple items that are retrieved as a batch process and displayed, for example, by calling the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#add817538c1616d7104e559252d7dad26">DataStoreClient::SearchObject()</a> function) on the game server.</p>
+<p class="last">Disadvantage: Processing may take time because of HTTP access to the storage server, depending on the API, in addition to game server access.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Choose the method to use based on the size of the data that you will be uploading.</p>
+</div>
+<div class="section" id="datastore-overview">
+<span id="id3"></span><h2>7.2. Overall Flow of Data Stores</h2>
+<p>A data store uses the following overall flow.</p>
+<ol class="arabic simple">
+<li>Log in to the game server.</li>
+<li>Initialize the HTTP library. (This process is not required if you are only using the game server.)</li>
+<li>Initialize the service client.</li>
+<li>Upload data. As necessary, use features to download, update, delete, search, and evaluate data, and get and edit metadata.</li>
+<li>Finalize the HTTP library. (This process is not required if you are only using the game server.)</li>
+<li>Finalize the service client, and log out from the game server.</li>
+</ol>
+</div>
+<div class="section" id="datastore-initialize">
+<span id="id4"></span><h2>7.3. Initialization and Finalization</h2>
+<p>Initialization and finalization of the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html">DataStoreClient</a></code> object is the same as for the matchmaking service client. However, you must initialize and finalize the HTTP library when you use the storage server. For more information, see <a class="reference internal" href="#datastore-code-init"><span class="std std-ref">Code 7.1</span></a>.</p>
+<p>In NX, the size of the socket buffers must be adjusted according to the size of the data being exchanged with the storage server. Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#a0e76fdefd2b897e4fd8d5382f072a93d">DataStoreClient::SetHttpSendSocketBufferSize()</a></code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#af581f9b63756f1b20173e4be30386587">DataStoreClient::SetHttpRecvSocketBufferSize()</a></code> functions to set the size of the socket buffers.</p>
+<p>In most cases, NEX storage servers are physically located in Japan or on the East Coast of the US. The default value is 64*1024 bytes for both sending and receiving data. Assuming an ideal communication environment between Japan and the US East Coast that has a round trip latency of 0.18 seconds, no loss, and no network line speed bottleneck, only 364 KB of data can be sent per second (64*1024 bytes/0.18 seconds) due to limitations of the socket buffers. Therefore, to reduce the time needed to send/receive all of amounts of data, the sizes of the send/receive buffers must both be increased.</p>
+<p>In Windows, these sizes are set automatically, so any settings configured here are ignored.</p>
+<div class="literal-block-wrapper docutils container" id="id39">
+<span id="datastore-code-init"></span><div class="code-block-caption"><span class="caption-text">Code 7.1. Initializing and Finalizing the Data Store Client</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// Log in to the game server.</span>
+<span class="n">LoginGameSevrer</span><span class="p">(</span><span class="n">pNgsFacade</span><span class="p">);</span>
+<span class="n">Credentials</span><span class="o">*</span> <span class="n">pCredentials</span> <span class="o">=</span> <span class="n">pNgsFacade</span><span class="o">-&gt;</span><span class="n">GetCredentials</span><span class="p">();</span>
+
+
+
+
+
+<span class="c1">// Create a ServiceClient instance for each login attempt.</span>
+<span class="n">DataStoreClient</span><span class="o">*</span> <span class="n">pDataStoreClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DataStoreClient</span><span class="p">();</span>
+
+<span class="n">pDataStoreClient</span><span class="o">-&gt;</span><span class="n">Bind</span><span class="p">(</span><span class="n">pCredentials</span><span class="p">);</span>
+
+<span class="c1">// Do the processing.</span>
+<span class="n">pDataStoreClient</span><span class="o">-&gt;</span><span class="n">DoSomething</span><span class="p">();</span>
+
+<span class="c1">// Destroy the object before logout.</span>
+<span class="k">delete</span> <span class="n">pDataStoreClient</span><span class="p">;</span>
+
+<span class="c1">// Log out from the game server, and then destroy the object.</span>
+<span class="n">LogoutGameServer</span><span class="p">(</span><span class="n">pNgsFacade</span><span class="p">)</span>
+<span class="k">delete</span> <span class="n">pNgsFacade</span><span class="p">;</span>
+
+<span class="c1">// Finalize the HTTP library.</span>
+<span class="n">curl_global_cleanup</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">You can change the memory allocator used by the HTTP library by using the <code>curl_global_init_mem()</code> function instead of <code>curl_global_init()</code>. If there is no change, the standard <code>malloc</code>, <code>free</code>, <code>realloc</code>, <code>strdup</code>, and <code>calloc</code> functions are used. Note that the memory allocator set by the <code>MemoryManager::SetBasicMemoryFunctions()</code> function is not used from the HTTP library. You can use a thread-unsafe memory allocator with libcurl if you are not downloading or uploading in parallel with DataStore or conducting HTTP communication in parallel with other libraries. Use a thread-safe memory allocator when you are doing anything in parallel. For example, one thread is generated internally when you call the <code>DataStoreClient::GetObject()</code> function. Note that if you call this function again without waiting for it to finalize, downloading takes place in parallel.</p>
+</div>
+</div>
+<div class="section" id="datastore-upload">
+<span id="id5"></span><h2>7.4. Uploading Data</h2>
+<p>Use the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#a6572e177409bcd6eca95166339e1adf0">DataStoreClient::PostObject()</a> function to upload data. The following methods for uploading data are available.</p>
+<p><em>Using only the game server</em></p>
+<ul class="simple">
+<li>Set the data to upload by using the <code>DataStorePostParam::SetMetaBinary()</code> function on the <code>DataStorePostParam</code> object. The maximum uploadable data size is 1024 bytes. You must either not call <code>DataStorePostParam::SetSize()</code> and use the default value of <code>0</code>, or explicitly specify <code>0</code>.</li>
+</ul>
+<p><em>Using the game server and the storage server</em></p>
+<p>Two upload methods are available. The maximum uploadable data size for either method is 10 MiB.</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Method of specifying the buffer directly in the parameter</dt>
+<dd>Specify the data to upload in the <code><var>buffer</var></code> parameter, and set the size using the <code>DataStorePostParam::SetSize()</code> function on the <code>DataStorePostParam</code> object.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Method of using an event listener</dt>
+<dd>Specify a class object that inherits <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_post_object_event_listener.html">DataStorePostObjectEventListener</a> and that overrides the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_post_object_event_listener.html#ad0bdeb58464aec38fe3b3ba32da0ee57">DataStorePostObjectEventListener::PostChunkedBuffer()</a> function in the <code><var>eventListener</var></code> parameter. Use this if you want to upload your data in chunks when you cannot allocate enough memory at one time.</dd>
+</dl>
+</li>
+</ul>
+<p>If the upload succeeds, a unique ID identifying the uploaded data is stored in the <code><var>dataId</var></code> parameter. This ID is called the data ID. The parameters in <a class="reference internal" href="#datastore-table-postparam"><span class="std std-ref">Table 7.1</span></a> can be set with <code>DataStorePostParam</code> as metadata for the data specified when uploading. The person who uploads the data becomes the owner, and the principal ID of the owner is registered in the server as the owner ID. <a class="reference internal" href="#datastore-permission"><span class="std std-ref">Privileges and Passwords</span></a>, <a class="reference internal" href="#datastore-tag"><span class="std std-ref">Tags</span></a>, <a class="reference internal" href="#datastore-rating-init"><span class="std std-ref">Initializing Ratings</span></a>, <a class="reference internal" href="#datastore-metabinary"><span class="std std-ref">Meta-binaries</span></a>, and <a class="reference internal" href="#datastore-data-flag"><span class="std std-ref">Settings Flags</span></a> are described individually.</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p>There are a finite number of 64-bit data IDs. Used data IDs are also not reused after the data is deleted. Make sure that you do not use more than this number during the service period.</p>
+<p>Also, your implementation must not assume the following.</p>
+<ul class="simple">
+<li>Data IDs are assigned in order, starting with 1.</li>
+<li>Data ID values continually increase.</li>
+</ul>
+<p class="last">This data has an expiration date that marks the end of its period of validity. When the uploaded data has expired, no operations on the data can be performed. Make sure to specify an appropriate period in your implementation that is long enough (maximum 365 days) so that deleting the data after it expires does not cause problems. Use the <code>DataStorePostParam::SetPeriod()</code> function to specify this value. The expiration date may be extended by calling an API. For more information, see <a class="reference internal" href="#datastore-timestamp-change"><span class="std std-ref">Changing Timestamp Values</span></a>.</p>
+</div>
+<span id="datastore-table-postparam"></span><table border="1" class="docutils" id="id40">
+<caption><span class="caption-text">Table 7.1. DataStorePostParam Parameters</span></caption>
+<colgroup>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Overview</th>
+<th class="head">Initial Value</th>
+<th class="head">Function Used</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Size (<strong>Required.</strong>)</td>
+<td>The size of the data to upload. This value must match the actual size of the uploaded data. The maximum value is 10,485,760 bytes. You must set it to 0 when you are not using the storage server.</td>
+<td>0</td>
+<td>SetSize()</td>
+</tr>
+<tr class="row-odd"><td>Name</td>
+<td>The name of the data to upload.</td>
+<td>Empty string</td>
+<td>SetName()</td>
+</tr>
+<tr class="row-even"><td>Data type</td>
+<td>The type of the data to upload. The value that is set can be used as a search condition by the <code>DataStoreClient::<wbr/>SearchObject()</code> function and the <code>DataStoreClient::<wbr/>SearchObjectLight()</code> function.</td>
+<td>0</td>
+<td>SetDataType()</td>
+</tr>
+<tr class="row-odd"><td>Access privileges</td>
+<td>The scope of users who can access or search the data to upload.</td>
+<td>DataStorePermission(DataStoreConstants::<wbr/>PERMISSION_<wbr/>PRIVATE)</td>
+<td>SetAccessPermission()</td>
+</tr>
+<tr class="row-even"><td>Update permissions</td>
+<td>Update permissions for the data to upload.</td>
+<td>DataStorePermission(DataStoreConstants::<wbr/>PERMISSION_<wbr/>PRIVATE)</td>
+<td>SetUpdatePermission()</td>
+</tr>
+<tr class="row-odd"><td>Configuration flag</td>
+<td>This function specifies the flags to set for the upload.</td>
+<td>DataStoreConstants::<wbr/>DATA_<wbr/>FLAG_<wbr/>NONE</td>
+<td>SetDataFlag()</td>
+</tr>
+<tr class="row-even"><td>The number of valid days</td>
+<td>This function specifies the period (in days) during which uploaded data can be accessed. It can be up to 365 days.</td>
+<td>DataStoreConstants::<wbr/>DEFAULT_<wbr/>PERIOD</td>
+<td>SetPeriod()</td>
+</tr>
+<tr class="row-odd"><td>Tags</td>
+<td>Tags to add to the data to upload. A maximum of <code>DataStoreConstants::<wbr/>NUM_<wbr/>TAG_<wbr/>SLOT</code> tags can be specified.</td>
+<td>Empty</td>
+<td>SetTags()</td>
+</tr>
+<tr class="row-even"><td>Initialization of rating slots</td>
+<td>Initialization is required if you use rating features. Specify a slot number in the range from 0 to 15 for the <code>map</code> key, and the initialization parameters for each slot for the value.</td>
+<td>Empty</td>
+<td>SetRatingSetting()</td>
+</tr>
+<tr class="row-odd"><td>Meta-binary data</td>
+<td>Binary data to store in the metadata. If you are using only the game server without using a storage server, store the data to be uploaded here.</td>
+<td>Empty</td>
+<td>SetMetaBinary()</td>
+</tr>
+<tr class="row-even"><td>Persistence setting</td>
+<td>Set this parameter to perpetuate the data at the same time that it is uploaded.</td>
+<td>DataStorePersistenceInitParam()</td>
+<td>SetPersistenceInitParam()</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="datastore-data-type">
+<span id="id6"></span><h3>7.4.1. Data Types</h3>
+<p>Data types are application-defined values that represent different types of data. By specifying a data type as a search condition, you can filter the searches you perform with the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#add817538c1616d7104e559252d7dad26">DataStoreClient::SearchObject()</a> or <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a28d11a3604d2b72c6866a80269cc52d1">DataStoreClient::SearchObjectLight()</a> function by that data type. Categorizing data by data type improves search performance. Set the data type when you upload data to take advantage of this increase in search performance.</p>
+<p>Note that uploading all data with a single data type results in a spike in game server load when searching that data. This spike can lead to sluggish responses to search requests, and to an increased rate of failure when users attempt to log in to the game server.</p>
+<p>You could also potentially use tags to categorize data, but depending on the type of data at hand, search responses can still sometimes be sluggish even when searching by tag. We strongly recommend using data types rather than tags to categorize data uploaded to the game server.</p>
+</div>
+<div class="section" id="datastore-permission">
+<span id="id7"></span><h3>7.4.2. Privileges and Passwords</h3>
+<p>When you upload data, you can set the following five privilege types for both accessing and updating the data. Use the privilege type for such purposes as exchanging data with specific friends.</p>
+<span id="datastore-table-permission"></span><table border="1" class="docutils" id="id41">
+<caption><span class="caption-text">Table 7.2. Privilege Types</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Privilege</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>DataStoreConstants::<wbr/>PERMISSION_<wbr/>PUBLIC</td>
+<td>All principal IDs have permission.</td>
+</tr>
+<tr class="row-odd"><td>DataStoreConstants::<wbr/>PERMISSION_<wbr/>FRIEND</td>
+<td>Only the principal IDs of friends of the owner have permission.</td>
+</tr>
+<tr class="row-even"><td>DataStoreConstants::<wbr/>PERMISSION_<wbr/>SPECIFIED</td>
+<td>Only certain specified principal IDs have permission.</td>
+</tr>
+<tr class="row-odd"><td>DataStoreConstants::<wbr/>PERMISSION_<wbr/>PRIVATE</td>
+<td>Only the owner has permission.</td>
+</tr>
+<tr class="row-even"><td>DataStoreConstants::<wbr/>PERMISSION_<wbr/>SPECIFIED_<wbr/>FRIEND</td>
+<td>Only the friends among a certain number of specified principal IDs have permission. The server confirms that the principal IDs are those of friends.</td>
+</tr>
+</tbody>
+</table>
+<p>The user that uploaded the data has owner privileges. The user with the owner role can access and update the data, and in addition can perform certain operations that only the owner has permission to perform. The user with the owner role can always access and update the target data, regardless of the privilege type of the data.</p>
+<p>Users that do not have privileges can also manipulate the target data by specifying a password. A password can be obtained with the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#aa704bc05e78982dc39481759170b3396">DataStoreClient::GetPasswordInfo()</a> function. An access password and update password is set for all data when it is uploaded. Users that then receive those passwords from the data owner can enter them to enable use of all of the same operations that are available to users that actually have the corresponding privileges. No error occurs if a user with privileges enters an incorrect password, and that user still has permission to access and update the data. There is no password that grants owner privileges when entered. Also, passwords cannot be specified with some functions. Depending on the status of the data, referencing and updating cannot be performed even if there is permission. For more information, see <a class="reference internal" href="#datastore-data-status"><span class="std std-ref">Data Status</span></a>.</p>
+<p>For more information about the privileges required for each operation, see <a class="reference internal" href="#datastore-table-rmc-permission"><span class="std std-ref">Table 7.3</span></a>.</p>
+<span id="datastore-table-rmc-permission"></span><table border="1" class="docutils" id="id42">
+<caption><span class="caption-text">Table 7.3. Required Privileges</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Function Name</th>
+<th class="head">Required Privileges</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>DataStoreClient::<wbr/>GetObject()</td>
+<td>See Also</td>
+</tr>
+<tr class="row-odd"><td>DataStoreClient::<wbr/>PostObject()</td>
+<td>N/A</td>
+</tr>
+<tr class="row-even"><td>DataStoreClient::<wbr/>UpdateObject()</td>
+<td>Update</td>
+</tr>
+<tr class="row-odd"><td>DataStoreClient::<wbr/>DeleteObject()</td>
+<td>Update</td>
+</tr>
+<tr class="row-even"><td>DataStoreClient::<wbr/>ChangeMeta()</td>
+<td>Update</td>
+</tr>
+<tr class="row-odd"><td>DataStoreClient::<wbr/>GetMeta()</td>
+<td>See Also</td>
+</tr>
+<tr class="row-even"><td>DataStoreClient::<wbr/>SearchObject()</td>
+<td>See Also</td>
+</tr>
+<tr class="row-odd"><td>DataStoreClient::<wbr/>SearchObjectLight()</td>
+<td>See Also</td>
+</tr>
+<tr class="row-even"><td>DataStoreClient::<wbr/>GetRating()</td>
+<td>See Also</td>
+</tr>
+<tr class="row-odd"><td>DataStoreClient::<wbr/>RateObject()</td>
+<td>See Also</td>
+</tr>
+<tr class="row-even"><td>DataStoreClient::<wbr/>ResetRating()</td>
+<td>Update</td>
+</tr>
+<tr class="row-odd"><td>DataStoreClient::<wbr/>TouchObject()</td>
+<td>See Also</td>
+</tr>
+<tr class="row-even"><td>DataStoreClient::<wbr/>GetPersistenceInfo()</td>
+<td>See Also</td>
+</tr>
+<tr class="row-odd"><td>DataStoreClient::<wbr/>PerpetuateObject()</td>
+<td>Owner</td>
+</tr>
+<tr class="row-even"><td>DataStoreClient::<wbr/>UnperpetuateObject()</td>
+<td>Owner</td>
+</tr>
+<tr class="row-odd"><td>DataStoreClient::<wbr/>GetPasswordInfo()</td>
+<td>Owner</td>
+</tr>
+<tr class="row-even"><td>DataStoreClient::<wbr/>CompleteSuspendedPostObject()</td>
+<td>Owner</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="datastore-tag">
+<span id="id8"></span><h3>7.4.3. Tags</h3>
+<p>You can specify up to <code>NUM_TAG_SLOT</code> tags as metadata of the data to upload. Each tag can have up to <code>MAX_TAG_LENGTH</code> of either printable ASCII characters or multiple-byte characters. Empty string tags cannot be specified. For multibyte characters, use UTF-8 byte strings with the <code>\x</code> hexadecimal notation. Do not end a tag string with an ASCII space (0x20). If you do so, the system ignores the trailing space when setting and searching on the tag. You cannot set the same tag more than once for a particular data object.</p>
+<div class="literal-block-wrapper docutils container" id="id43">
+<span id="datastore-code-tag"></span><div class="code-block-caption"><span class="caption-text">Code 7.2. Setting Tags</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">DataStorePostParam</span> <span class="n">postParam</span><span class="p">;</span>
+// Set the tags. You cannot set the same tag more than once per data object.</span>
+<span class="n">qVector</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">tags</span><span class="p">;</span>
+<span class="n">tags</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="s">"ABC"</span><span class="p">);</span>
+<span class="n">tags</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">NEX_T</span><span class="p">(</span><span class="s">"DEF"</span><span class="p">));</span>
+
+<span class="n">postParam</span><span class="p">.</span><span class="n">SetTags</span><span class="p">(</span><span class="n">tags</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="datastore-rating-init">
+<span id="id9"></span><h3>7.4.4. Initializing Ratings</h3>
+<p>Data stores make it possible to rate uploaded data. To use this feature, the first time you upload the data, you must set and initialize a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_rating_init_param.html">DataStoreRatingInitParam</a></code> object with the <code>DataStorePostParam::SetRatingSetting()</code> function. <a class="reference internal" href="#datastore-table-rating-init"><span class="std std-ref">Table 7.4</span></a> shows the values that can be set. To use the rating feature on initialized data, use the data rating functions. For more information, see section <a class="reference internal" href="#datastore-rating"><span class="std std-ref">7.10</span></a>.</p>
+<span id="datastore-table-rating-init"></span><table border="1" class="docutils" id="id44">
+<caption><span class="caption-text">Table 7.4. DataStoreRatingInitParam Parameters</span></caption>
+<colgroup>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Overview</th>
+<th class="head">Initial Value</th>
+<th class="head">Function Used</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Initial value for the ratings total value</td>
+<td>Sets the initial value for the ratings total value.</td>
+<td>0</td>
+<td>SetInitialValue()</td>
+</tr>
+<tr class="row-odd"><td>Minimum rating value</td>
+<td>Sets the minimum value for the ratings values that can be rated at the same time.</td>
+<td>Not set.</td>
+<td>SetRangeMin()</td>
+</tr>
+<tr class="row-even"><td>Maximum rating value</td>
+<td>Sets the maximum value for the ratings values that can be rated at the same time.</td>
+<td>Not set.</td>
+<td>SetRangeMax()</td>
+</tr>
+<tr class="row-odd"><td>Duplicate lock</td>
+<td>Sets the duplicate lock when rating. You can specify several restrictions, such as making users wait for an hour before making another rating, or only allowing one rating per day.</td>
+<td>Not set.</td>
+<td>SetLock()</td>
+</tr>
+<tr class="row-even"><td>Option flags</td>
+<td>Specify options for ratings. See <a class="reference internal" href="#datastore-table-rating-option"><span class="std std-ref">Table 7.5</span></a>.</td>
+<td>Not set.</td>
+<td>SetFlag()</td>
+</tr>
+</tbody>
+</table>
+<span id="datastore-table-rating-option"></span><table border="1" class="docutils" id="id45">
+<caption><span class="caption-text">Table 7.5. Rating Option Flags</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Privilege</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>DataStoreConstants::<wbr/>RATING_<wbr/>FLAG_<wbr/>MODIFIABLE</td>
+<td>Ratings are editable. If the same user makes another rating, the new rating value replaces the first rating value. If this flag is not set, then each rating is added as a separate rating.</td>
+</tr>
+<tr class="row-odd"><td>DataStoreConstants::<wbr/>RATING_<wbr/>FLAG_<wbr/>ROUND_<wbr/>MINUS</td>
+<td>Negative ratings total values are rounded to zero.</td>
+</tr>
+<tr class="row-even"><td>DataStoreConstants::<wbr/>RATING_<wbr/>FLAG_<wbr/>DISABLE_<wbr/>SELF_<wbr/>RATING</td>
+<td>Prevent users from rating themselves.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p>About Duplicate Locks (<a class="reference internal" href="#datastore-code-duplicate-lock"><span class="std std-ref">Code 7.4</span></a>)</p>
+<p>Set the locking method by specifying a <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_rating_lock_init_param.html">DataStoreRatingLockInitParam</a> object with the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_rating_init_param.html#a942d541802e7fdc802ac107c4ca2e815">DataStoreRatingInitParam::SetLock()</a> function.</p>
+<ul class="last simple">
+<li><dl class="first docutils">
+<dt>Set with the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_rating_lock_init_param.html#a0482e24b7fc5efc78f035092aea94731">DataStoreRatingLockInitParam::SetIntervalLock()</a> function.</dt>
+<dd>Specifies a lock in seconds. Specify the number of seconds with <code><var>intervalSec</var></code>. This setting prevents another rating for the specified number of seconds (such as 900) from the last one.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set with the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_rating_lock_init_param.html#a90e1c659b5f630120b15c2f9425e6a57">DataStoreRatingLockInitParam::SetPeriodicLock()</a> function.</dt>
+<dd>Locks ratings for the specified period. Specify a period for <code><var>period</var></code> (for example, every Monday through every Sunday, until the first of the next month, and so on), and specify a time in the range from <code>-23</code> to <code>23</code> (UTC) for <code><var>hour</var></code>. For example, you can specify to reset rating locks every Monday at 0:00 Japan Standard Time.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set with the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_rating_lock_init_param.html#a15222801822504163fb8af4112d6f8c0">DataStoreRatingLockInitParam::SetDaysAfterLock()</a> function.</dt>
+<dd>Locks ratings for the specified number of days. Specify a number of days for <code><var>days</var></code>, and specify a time from -23 to 23 (UTC) for <code><var>hour</var></code>. For example, you can allow ratings to be made once per day.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Set with the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_rating_lock_init_param.html#ac21b93a6bb94d70565f232cc7d1d19b8">DataStoreRatingLockInitParam::SetPermanentLock()</a> function.</dt>
+<dd>Sets a permanent lock. This setting sets a permanent lock, so that after a rating is made it cannot be rated again.</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="literal-block-wrapper docutils container" id="id46">
+<span id="datastore-code-rating-init"></span><div class="code-block-caption"><span class="caption-text">Code 7.3. Initializing Ratings</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">DataStorePostParam</span> <span class="n">postParam</span><span class="p">;</span>
+<span class="n">DataStoreRatingInitParam</span> <span class="n">ratingInitParam</span><span class="p">;</span>
+<span class="c1">// Initialize the rating (use three slots).</span>
+<span class="n">qMap</span><span class="o">&lt;</span><span class="kt">int8_t</span><span class="p">,</span> <span class="n">DataStoreRatingInitParam</span><span class="o">&gt;</span> <span class="n">ratings</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">int8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ratings</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ratingInitParam</span><span class="p">));</span>
+<span class="p">}</span>
+<span class="n">postParam</span><span class="p">.</span><span class="n">SetRatingSetting</span><span class="p">(</span><span class="n">ratings</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id47">
+<span id="datastore-code-duplicate-lock"></span><div class="code-block-caption"><span class="caption-text">Code 7.4. Specifying Duplicate Locks</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// Lock for the specified number of seconds. Lock for 900 seconds.</span>
+<span class="n">DataStoreRatingInitParam</span> <span class="n">ratingInitParam</span><span class="p">;</span>
+<span class="n">DataStoreRatingLockInitParam</span> <span class="n">ratingLockInitParam</span><span class="p">;</span>
+<span class="n">ratingLockInitParam</span><span class="p">.</span><span class="n">SetIntervalLock</span><span class="p">(</span><span class="mi">900</span><span class="p">);</span>
+<span class="n">ratingInitParam</span><span class="p">.</span><span class="n">SetLock</span><span class="p">(</span><span class="n">ratingLockInitParam</span><span class="p">);</span>
+
+<span class="c1">// Lock for the specified number of days. You can make one rating per day. Rating locks are reset at 0:00 JST (15:00 UTC).</span>
+<span class="n">DataStoreRatingInitParam</span> <span class="n">ratingInitParam</span><span class="p">;</span>
+<span class="n">DataStoreRatingLockInitParam</span> <span class="n">ratingLockInitParam</span><span class="p">;</span>
+<span class="n">ratingLockInitParam</span><span class="p">.</span><span class="n">SetDaysAfterLock</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">);</span>
+<span class="n">ratingInitParam</span><span class="p">.</span><span class="n">SetLock</span><span class="p">(</span><span class="n">ratingLockInitParam</span><span class="p">);</span>
+
+<span class="c1">// Lock for the specified period. Reset locks every Monday at 0:00 UTC.</span>
+<span class="n">DataStoreRatingInitParam</span> <span class="n">ratingInitParam</span><span class="p">;</span>
+<span class="n">DataStoreRatingLockInitParam</span> <span class="n">ratingLockInitParam</span><span class="p">;</span>
+<span class="n">ratingLockInitParam</span><span class="p">.</span><span class="n">SetPeriodicLock</span><span class="p">(</span><span class="n">DataStoreConstants</span><span class="o">::</span><span class="n">RATING_LOCK_PERIOD_MON</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="n">ratingInitParam</span><span class="p">.</span><span class="n">SetLock</span><span class="p">(</span><span class="n">ratingLockInitParam</span><span class="p">);</span>
+
+<span class="c1">// Lock for the specified period. Reset locks at the end of each month JST.</span>
+<span class="n">DataStoreRatingInitParam</span> <span class="n">ratingInitParam</span><span class="p">;</span>
+<span class="n">DataStoreRatingLockInitParam</span> <span class="n">ratingLockInitParam</span><span class="p">;</span>
+<span class="n">ratingLockInitParam</span><span class="p">.</span><span class="n">SetPeriodicLock</span><span class="p">(</span><span class="n">DataStoreConstants</span><span class="o">::</span><span class="n">RATING_LOCK_PERIOD_DAY1</span><span class="p">,</span> <span class="o">-</span><span class="mi">9</span><span class="p">);</span>
+<span class="n">ratingInitParam</span><span class="p">.</span><span class="n">SetLock</span><span class="p">(</span><span class="n">ratingLockInitParam</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="datastore-metabinary">
+<span id="id10"></span><h3>7.4.5. Meta-Binaries</h3>
+<p>You can store up to 1024 bytes of binary data in the metadata. Storing and retrieving meta-binaries only accesses the game server, so it is faster than using the storage server. For this reason, you can allocate usage based on the data size and purpose, such as using meta-binaries for small amounts of data, and a storage server for larger data.</p>
+<div class="literal-block-wrapper docutils container" id="id48">
+<span id="datastore-code-metabinary"></span><div class="code-block-caption"><span class="caption-text">Code 7.5. Setting Meta-Binary Data</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="n">META_BINARY_SIZE</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="n">DataStorePostParam</span> <span class="n">postParam</span><span class="p">;</span>
+<span class="c1">// Set the binary data.</span>
+<span class="n">qByte</span> <span class="n">metaBinary</span><span class="p">[</span><span class="n">META_BINARY_SIZE</span><span class="p">];</span>
+<span class="n">memcpy</span><span class="p">(</span><span class="n">metaBinary</span><span class="p">,</span> <span class="s">"123"</span><span class="p">,</span> <span class="n">META_BINARY_SIZE</span><span class="p">);</span>
+<span class="n">postParam</span><span class="p">.</span><span class="n">SetMetaBinary</span><span class="p">(</span><span class="n">metaBinary</span><span class="p">,</span> <span class="n">META_BINARY_SIZE</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="datastore-data-flag">
+<span id="id11"></span><h3>7.4.6. Settings Flags</h3>
+<p>The settings for the data that is uploaded are configured by the <code>DataStorePostParam::SetDataFlag()</code> function. <a class="reference internal" href="#datastore-table-data-flag"><span class="std std-ref">Table 7.6</span></a> shows the meanings of the different flags. Do not specify flags that are not shown in the table.</p>
+<span id="datastore-table-data-flag"></span><table border="1" class="docutils" id="id49">
+<caption><span class="caption-text">Table 7.6. Settings Flags</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Flag</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>DataStoreConstants::<wbr/>DATA_<wbr/>FLAG_<wbr/>NONE</td>
+<td>None of the settings flags are used.</td>
+</tr>
+<tr class="row-odd"><td>DataStoreConstants::<wbr/>DATA_<wbr/>FLAG_<wbr/>NEED_<wbr/>REVIEW</td>
+<td>When the uploading has completed, the status of the data is <code>DataStoreConstants::<wbr/>DATA_<wbr/>STATUS_<wbr/>PENDING</code> and it cannot be seen by anybody except the owner. To make data viewable, the operator must use NMAS to change the status of the data, as described in section <a class="reference internal" href="#datastore-nmas"><span class="std std-ref">7.17</span></a>.</td>
+</tr>
+<tr class="row-even"><td>DataStoreConstants::<wbr/>DATA_<wbr/>FLAG_<wbr/>PERIOD_<wbr/>FROM_<wbr/>LAST_<wbr/>REFERRED</td>
+<td>The period of validity is extended when the data is accessed or updated by functions like <code>GetObject()</code>, <code>UpdateObject()</code>, and <code>ChangeMeta()</code>. For more information, see <a class="reference internal" href="#datastore-timestamp-change"><span class="std std-ref">7.15.2</span></a>.</td>
+</tr>
+<tr class="row-odd"><td>DataStoreConstants::<wbr/>DATA_<wbr/>FLAG_<wbr/>NEED_<wbr/>COMPLETION</td>
+<td>The data on the server is disabled after the <code>DataStoreClient::<wbr/>PostObject()</code> function has ended and it remains in that state until the <code>DataStoreClient::<wbr/>CompleteSuspendedPostObject()</code> function is called. For more information, see <a class="reference internal" href="#datastore-atomic-post"><span class="std std-ref">7.4.7</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="datastore-atomic-post">
+<span id="id12"></span><h3>7.4.7. Batch Uploading</h3>
+<p>You can use the batch-upload feature to upload multiple related data sets. Use this feature to guarantee the atomicity of data store operations; that is, either all of the data is uploaded or none of the data is uploaded. Use this feature to prevent data from being partially uploaded, such as when the console is accidentally turned off or disconnected from the network.</p>
+<p>To use this feature, first set the <code>DataStoreConstants::DATA_FLAG_NEED_COMPLETION</code> flag, and then upload an arbitrary number of data sets with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#a6572e177409bcd6eca95166339e1adf0">DataStoreClient::PostObject</a>()</code> function. When the upload completes, the data is registered on the server in a status that cannot be accessed by anyone including the owner. After all of the data is uploaded, enable all of the data on the server at the same time by passing the corresponding data IDs as arguments to the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a0afccd31290434a90e2ef99b1cd1d54c">DataStoreClient::CompleteSuspendedPostObject</a>()</code> function. The data can then be accessed or updated just like normal data.</p>
+<p>If any of the data that corresponds to the data IDs given to the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a0afccd31290434a90e2ef99b1cd1d54c">DataStoreClient::CompleteSuspendedPostObject</a>()</code> function is invalid for any reason, or the process fails, the process is rolled back. If an error occurs, you can get the first error with <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#acb03838807a46d921f5517fcc887bdcf">CallContext::GetOutcome</a>()</code>. If persistence settings were configured for the data, they take effect when this asynchronous process is successful. Uploaded data must be enabled with this function within three hours from when the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#a6572e177409bcd6eca95166339e1adf0">DataStoreClient::PostObject</a>()</code> function was started. After three hours, the data on the server is automatically deleted. If <code>DataStoreConstants::DATA_FLAG_NEED_COMPLETION</code> was not specified, this function does not need to be called because the data on the server becomes valid at the same time that the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#a6572e177409bcd6eca95166339e1adf0">DataStoreClient::PostObject</a>()</code> function completes. You do not need to use this feature when you upload only a single data set. Atomicity of data store operations is guaranteed for a single set of data even when <code>DataStoreConstants::DATA_FLAG_NEED_COMPLETION</code> is not specified, and it is not possible for that data to be only partially uploaded to the server.</p>
+</div>
+<div class="section" id="datastore-dataid-specified-post">
+<span id="id"></span><h3>7.4.8. Uploading with a Specific Data ID</h3>
+<p>When data is uploaded, a data ID is usually assigned automatically. If you want to upload data to a predetermined data ID, there is a feature that lets you specify the data ID when uploading. When this feature is used, you can implement a series of actions where the upload and rating slot are initialized if the specified data ID does not contain any data, and then the usual rating process takes place.</p>
+<p>For ratings, you can perform this entire series of actions using <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a8398fb58ef33901decd1f9aba0a3b297">DataStoreClient::RateObjectWithPosting</a>()</code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a588eb854f22c987a9e5942c48115a629">DataStoreClient::RateObjectsWithPosting</a>()</code>. If there is no data at the specified data ID, these functions both initialize and perform the rating; if there is data at the specified data ID, they perform the rating as usual.</p>
+<p>This feature has the following limitations.</p>
+<ul class="simple">
+<li>The specified data ID must be between <code>900000</code> and <code>999999</code>. Normally, uploaded data items are indexed starting at 1,000,000, so IDs exceeding the range cannot be specified.</li>
+<li>The data can only be used by the game server and cannot be uploaded to a storage server.</li>
+<li>The principal ID of the official user (1500443851674475083) is used for the owner, not the principal ID of the user that uploaded the data.</li>
+<li>The data does not expire and cannot be deleted.</li>
+<li>Access and update permissions are fixed at <code>DataStoreConstants::PERMISSION_PUBLIC</code>.</li>
+<li>Data cannot be deleted using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a7c5c3182ac60bee7831bf62374d53316">DataStoreClient::DeleteObject</a>()</code> function. Use NMAS if the data needs to be deleted.</li>
+<li>Data cannot be updated using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a1e2d8e4e6b340cc312a70ecd71cd3385">DataStoreClient::ChangeMeta</a>()</code> function.</li>
+<li>Tags cannot be assigned.</li>
+<li>Cannot be set in a persistence slot.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">The default value of access and update permissions for <code>DataStorePostParam</code> is <code>DataStoreConstants::PERMISSION_PRIVATE</code>. Use the <code>DataStorePostParam::SetAccessPermission()</code> and <code>DataStorePostParam::SetUpdatePermission()</code> functions to set <code>DataStoreConstants::PERMISSION_PUBLIC</code> explicitly.</p>
+</div>
+<p>Only some parameters can be set using <code>DataStorePostParam</code>. In <a class="reference internal" href="#datastore-table-postparam"><span class="std std-ref">Table 7.1</span></a>, these parameters are the name, data type, initial rating slot setting, and meta-binary.</p>
+<ul class="simple">
+<li>DataStorePostParam::SetName()</li>
+<li>DataStorePostParam::SetDataType()</li>
+<li>DataStorePostParam::SetRatingSetting()</li>
+<li>DataStorePostParam::SetMetaBinary()</li>
+</ul>
+<p>If you call a member function other than one of these and set something other than the default value, <code>QERROR(DataStore, InvalidArgument)</code> will be returned when you call <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#a6572e177409bcd6eca95166339e1adf0">DataStoreClient::PostObject</a>()</code>.</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Batch processing</dt>
+<dd>You can specify multiple data IDs and upload multiple data items. Up to <code>BATCH_PROCESSING_CAPACITY_POST_OBJECT</code> IDs can be specified.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Runtime errors</dt>
+<dd>The following errors are returned by <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#acb03838807a46d921f5517fcc887bdcf">CallContext::GetOutcome</a>()</code>.<ul class="last">
+<li><code>QERROR(DataStore, OperationNotAllowed)</code>: The specified data ID already contains data.</li>
+<li><code>QERROR(DataStore, InvalidArgument)</code>: The parameter is invalid.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="datastore-download">
+<span id="id13"></span><h2>7.5. Downloading Data</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#a695b74a002fc3f3b1c36e9026f806004">DataStoreClient::GetObject</a>()</code> function to download uploaded data. The following methods for downloading data are available.</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Method of specifying the buffer directly in the parameter</dt>
+<dd>Specify the pointer to the buffer where the data to download is to be saved in the <code><var>buffer</var></code> parameter, and specify the buffer size in the <code><var>bufferSize</var></code> parameter. The buffer size must be larger than the size of the data to download.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Using an event listener</dt>
+<dd>Specify a class object that inherits <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_get_object_event_listener.html">DataStoreGetObjectEventListener</a></code> and that overrides the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_get_object_event_listener.html#a85ba4184f2f16bad4fcefe1a44d2d323">DataStoreGetObjectEventListener::ProcessResponse</a>()</code> function in the <code><var>eventListener</var></code> parameter. Use if you want to download your data in chunks when you cannot allocate enough memory at one time.</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">When using an event listener, if the DataStoreGetObjectEventListener::ProcessResponse() function of the class being overridden returns <code>false</code> for a set period of time, the connection with the storage server is broken, causing the data download to fail. Avoid an implementation where the returned value is <code>false</code> for longer than 10 seconds. In addition, this function is intended for flow control. Do not use it to pause or stop downloads.</p>
+</div>
+<p>If the process succeeds, specify <code>DataStoreConstants::DATA_FLAG_PERIOD_FROM_LAST_REFERRED</code> when uploading data to update the expiration. For more information, see <a class="reference internal" href="#datastore-timestamp-change"><span class="std std-ref">7.15.2</span></a>.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">You cannot use the <code>DataStoreClient::GetObject()</code> function unless you are using a storage server. When you want to get data, use the <code>DataStoreClient::GetMeta()</code> function to get the metadata. For more information, see <a class="reference internal" href="#datastore-get-meta"><span class="std std-ref">7.11</span></a>.</p>
+</div>
+</div>
+<div class="section" id="datastore-update">
+<span id="id14"></span><h2>7.6. Updating Data</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#af1a6275ca310b2f4aa8dbf2111bc5f8a">DataStoreClient::UpdateObject</a>()</code> function to update uploaded data. The following methods for updating data are available. Use an event listener if you want to upload your data in chunks because you cannot allocate enough memory at one time.</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Using a buffer</dt>
+<dd>Specify the following arguments: a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> object, a <code>DataStoreUpdateParam</code> object, a pointer to a buffer of the data to upload, and whether to copy the contents of the buffer inside the library.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Using an event listener</dt>
+<dd>Specify the following arguments: a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> object, a <code>DataStoreUpdateParam</code> object, and a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_post_object_event_listener.html">DataStorePostObjectEventListener</a></code> object.</dd>
+</dl>
+</li>
+</ul>
+<p>If the action is successful, the date modified and the expiration date (metadata in the updated data) are updated. For more information, see <a class="reference internal" href="#datastore-timestamp-change"><span class="std std-ref">7.15.2</span></a>.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">You cannot use the <code>DataStoreClient::UpdateObject()</code> function unless you are using a storage server. When you want to update your data, use the <code>DataStoreClient::ChangeMeta()</code> function to update metadata. For more information, see <a class="reference internal" href="#datastore-update-meta"><span class="std std-ref">7.12</span></a>.</p>
+</div>
+</div>
+<div class="section" id="datastore-delete">
+<span id="id15"></span><h2>7.7. Deleting Data</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a7c5c3182ac60bee7831bf62374d53316">DataStoreClient::DeleteObject</a>()</code> function to delete uploaded data. Note that deleted date cannot be recovered. To specify a persistence slot ID and delete data, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#af8d5a8f05fcf340b9ef5718f83df6663">DataStoreClient::UnperpetuateObject</a>()</code> function. When persistent data is deleted, it is automatically made non-persistent.</p>
+<div class="section" id="datastore-delete-all">
+<span id="id16"></span><h3>7.7.1 Batch Processing</h3>
+<p>You can delete uploaded data as a batch process. Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a7c5c3182ac60bee7831bf62374d53316">DataStoreClient::DeleteObject</a>()</code> function in the same way as when you make individual deletions.</p>
+</div>
+<div class="section" id="datastore-delete-type">
+<span id="id17"></span><h3>7.7.2. Logically and Physically Deleting Data</h3>
+<p>Data that has been manually deleted by the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a7c5c3182ac60bee7831bf62374d53316">DataStoreClient::DeleteObject()</a> function is in a logically deleted state (its status is <code>DELETING</code>, described later).</p>
+<p>Similarly, existing data that is deleted by one of the following operations for making data persistent will also be in this logically deleted state.</p>
+<ul class="simple">
+<li>When <code>true</code> is specified for the <code><em>deleteLastObject</em></code> parameter of the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_persistence_init_param.html">DataStorePersistenceInitParam</a></code> constructor</li>
+<li>When <code>true</code> is specified for the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_persistence_init_param.html#a531ff50ef57fa7a81d94ce23df3aca26">DataStorePersistenceInitParam::SetDeleteLastObject()</a> function.</li>
+</ul>
+<p>Logically deleted data cannot be fetched by the application, but it continues to exist as data on the server. When data has entered this logically deleted state, the validity period will be renewed at either the current expiration date, or the current date/time plus 7 days, whichever comes first.</p>
+<p>Later, the data will enter the physically deleted state (the <code>DELETED</code> status, described later) when the expiration date that was set for the data has passed. When the data is physically deleted, it is completely deleted from the storage server.</p>
+</div>
+</div>
+<div class="section" id="datastore-search">
+<span id="id18"></span><h2>7.8. Searching for Data</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#add817538c1616d7104e559252d7dad26">DataStoreClient::SearchObject</a>()</code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a28d11a3604d2b72c6866a80269cc52d1">DataStoreClient::SearchObjectLight</a>()</code> function to search for uploaded data. The search results are received as a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_result.html">DataStoreSearchResult</a></code> object. <a class="reference internal" href="#datastore-table-searchresult"><span class="std std-ref">Table 7.7</span></a> lists the information that can be obtained. When searching for data, a maximum of 100 hits can be obtained at one time.</p>
+<p>The items shown in <a class="reference internal" href="#datastore-table-searchparam"><span class="std std-ref">Table 7.8</span></a> can be set as search conditions in <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_param.html">DataStoreSearchParam</a></code>.</p>
+<ul class="simple">
+<li>The data covered by the search type set by the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_param.html#acea6c805810eafa699cf2f3ecef102be">DataStoreSearchParam::SetSearchType</a>()</code> function is shown in <a class="reference internal" href="#datastore-fig-searchtype"><span class="std std-ref">Figure 7.1</span></a>.</li>
+<li>Specify the appropriate flags in the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_param.html#ab8d09e9ed05fe0ea3f73f6c02b37e138">DataStoreSearchParam::SetResultOption</a>()</code> function to include tags, ratings information, and meta-binaries.</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">When getting search results including meta-binary data, your implementation must adjust the number of results retrieved so that the total size of the search results is not too large. If the overall size is large, it may take longer to retrieve the data due to lower packet transfer efficiency. As a rule, keep the total size of meta-binary data in metadata to no more than 20 KiB. For example, if the size of the meta-binary data is 1 KiB, adjust the number retrieved at one time to 20.</p>
+</div>
+<span id="datastore-table-searchresult"></span><table border="1" class="docutils" id="id50">
+<caption><span class="caption-text">Table 7.7. Information Retrievable From DataStoreSearchResult</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Get Function</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Total number of search hits</td>
+<td>GetTotalCount()</td>
+</tr>
+<tr class="row-odd"><td>Search results</td>
+<td>GetResult()</td>
+</tr>
+<tr class="row-even"><td>Whether the number of search matches is accurate</td>
+<td>GetTotalCountType()</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p>The number of search matches (the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_result.html#a680601f73475b18615d0cdbe49a888e8">DataStoreSearchResult::GetTotalCountType</a>()</code> function).</p>
+<p>When it comes to searches, a fast response is the highest priority, so the feature to get the number of hits is disabled by default. To enable this feature, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_param.html#afb2e041b59298efd65aa0fdc86a509c5">DataStoreSearchParam::SetTotalCountEnabled</a>()</code> function. Note that this feature cannot be enabled if you search using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a28d11a3604d2b72c6866a80269cc52d1">DataStoreClient::SearchObjectLight</a>()</code> function.</p>
+<p>Also note that even if you enable the feature to get the number of hits, the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_result.html#ac545212bcebe5e09909ed82ef9d324e0">DataStoreSearchResult::GetTotalCount</a>()</code> function may not return an accurate count if the number of search matches exceeds a certain value. Account for the following in your implementation.</p>
+<ul class="last simple">
+<li><dl class="first docutils">
+<dt>When the feature to get the number of search matches is enabled</dt>
+<dd><ul class="first last">
+<li>If the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_result.html#a680601f73475b18615d0cdbe49a888e8">DataStoreSearchResult::GetTotalCountType</a>()</code> is <code>DataStoreConstants::SEARCH_RESULT_TOTAL_EXACT</code>, the count is accurate. However, there are small errors with frequent search conditions because the system caches searches for a set period.</li>
+<li>If the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_result.html#a680601f73475b18615d0cdbe49a888e8">DataStoreSearchResult::GetTotalCountType</a>()</code> is <code>DataStoreConstants::SEARCH_RESULT_TOTAL_MINIMUM</code>, it indicates that there is more matching data than the value that <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_result.html#ac545212bcebe5e09909ed82ef9d324e0">DataStoreSearchResult::GetTotalCount</a>()</code> returned.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>When the feature to get the number of search matches is disabled</dt>
+<dd><ul class="first last">
+<li>The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_result.html#a680601f73475b18615d0cdbe49a888e8">DataStoreSearchResult::GetTotalCountType</a>()</code> function is set to <code>DataStoreConstants::SEARCH_RESULT_TOTAL_DISABLED</code>, and the number of search matches is always <code>0</code>. What is contained in the search results is the data itself that was hit in the search.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<span id="datastore-table-searchparam"></span><table border="1" class="docutils" id="id51">
+<caption><span class="caption-text">Table 7.8. DataStoreSearchParam Parameters</span></caption>
+<colgroup>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Overview</th>
+<th class="head">Initial Value</th>
+<th class="head">Function Used</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Search type</td>
+<td>Set what data to search for in accordance with access privileges. ( <a class="reference internal" href="#datastore-fig-searchtype"><span class="std std-ref">Figure 7.1</span></a> )</td>
+<td>DataStoreConstants::<wbr/>SEARCH_<wbr/>TYPE_<wbr/>PUBLIC</td>
+<td>SetSearchType()</td>
+</tr>
+<tr class="row-odd"><td>Targeted principle IDs</td>
+<td>Specify this parameter to narrow the search to the principal IDs of the owners.</td>
+<td>Empty</td>
+<td>SetOwnerIds()</td>
+</tr>
+<tr class="row-even"><td>Type of targeted principle IDs</td>
+<td>Specify this parameter to narrow the search to a type of data owner principal ID.</td>
+<td>DataStoreConstants::<wbr/>SEARCH_<wbr/>TARGET_<wbr/>ANYBODY</td>
+<td>SetOwnerType()</td>
+</tr>
+<tr class="row-odd"><td>Principal ID of access permissions owner</td>
+<td>You can specify this parameter when the search type is <code>SEARCH_<wbr/>TYPE_<wbr/>PUBLIC</code> or <code>SEARCH_<wbr/>TYPE_<wbr/>FRIEND</code>. It can be used to choose access rights for the send destination and also search for data that a specific person has received.</td>
+<td>Empty</td>
+<td>SetDestinationIds()</td>
+</tr>
+<tr class="row-even"><td>Data type</td>
+<td>The type of data to search for.</td>
+<td>Empty</td>
+<td>SetDataType()</td>
+</tr>
+<tr class="row-odd"><td>Start time of data upload</td>
+<td>Data with the specified date or later.</td>
+<td>DataStoreConstants::<wbr/>INVALID_<wbr/>DATE_<wbr/>TIME)</td>
+<td>SetCreatedAfter()</td>
+</tr>
+<tr class="row-even"><td>Date uploaded end</td>
+<td>Data with the specified date or sooner.</td>
+<td>DataStoreConstants::<wbr/>INVALID_<wbr/>DATE_<wbr/>TIME)</td>
+<td>SetCreatedBefore()</td>
+</tr>
+<tr class="row-odd"><td>Column to sort on</td>
+<td>The column on which to sort the search results.</td>
+<td>DataStoreConstants::<wbr/>SEARCH_<wbr/>SORT_<wbr/>COLUMN_<wbr/>DATAID</td>
+<td>SetSearchSortOrderColumn()</td>
+</tr>
+<tr class="row-even"><td>Sort order</td>
+<td>Whether to sort the search results in ascending or descending order.</td>
+<td>DataStoreConstants::<wbr/>SEARCH_<wbr/>SORT_<wbr/>ORDER_<wbr/>ASC</td>
+<td>SetSearchSortOrder()</td>
+</tr>
+<tr class="row-odd"><td>Return value option</td>
+<td>Specify this parameter to include tags, rating values, or binary data in the search results.</td>
+<td>0</td>
+<td>SetResultOption()</td>
+</tr>
+<tr class="row-even"><td>Tags</td>
+<td>Tags to search for. Items matching all specified tags are retrieved. Tags cannot be specified with the <code>DataStoreClient::<wbr/>SearchObjectLight()</code> function.</td>
+<td>Empty</td>
+<td>SetTags()</td>
+</tr>
+<tr class="row-odd"><td>Search range</td>
+<td>The range in which to search.</td>
+<td>ResultRange()</td>
+<td>SetResultRange()</td>
+</tr>
+<tr class="row-even"><td>Whether the search result cache is used.</td>
+<td>Sets whether to use the search results cache. When the cache in enabled, search results are retrieved from a cache maintained on the server.</td>
+<td>false</td>
+<td>SetUseCache()</td>
+</tr>
+<tr class="row-odd"><td>Whether to get the number of search matches</td>
+<td>Specifies whether to get the number of search matches. You cannot get this hit total with the <code>DataStoreClient::<wbr/>SearchObjectLight()</code> function.</td>
+<td>false</td>
+<td>SetTotalCountEnabled()</td>
+</tr>
+</tbody>
+</table>
+<div class="figure" id="id52">
+<span id="datastore-fig-searchtype"></span><img alt="../_images/Fig_Datastore_SearchType.png" src="../_images/Fig_Datastore_SearchType.png"/>
+<p class="caption"><span class="caption-text">Figure 7.1. Data Searched by Search Type</span></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">For example, when access privileges for the search data is set to <code>DataStoreConstants::PERMISSION_PUBLIC</code>, if the search type is set to <code>DataStoreConstants::SEARCH_TYPE_PUBLIC</code>, the data is the search target data for anyone who searches and the data can be in the search hits. If the access privileges are <code>DataStoreConstants::PERMISSION_FRIEND</code>, you can set the search type to <code>DataStoreConstants::SEARCH_TYPE_FRIEND</code> to enable data to be searched and hits returned when it is a friend doing the searching. Normally, only data with a status of <code>NONE</code> can be searched, but data with status of <code>PENDING</code> or <code>REJECTED</code> where the local user is the owner can be searched if <code>DataStoreConstants::SEARCH_TYPE_OWN_PENDING</code>, <code>DataStoreConstants::SEARCH_TYPE_OWN_REJECTED</code>, or <code>DataStoreConstants::SEARCH_TYPE_OWN_ALL</code> is used.</p>
+</div>
+<div class="section" id="datastoreclient-searchobject-datastoreclient-searchobjectlight">
+<h3>7.8.1. Differences Between DataStoreClient::SearchObject() and DataStoreClient::SearchObjectLight()</h3>
+<p>The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a28d11a3604d2b72c6866a80269cc52d1">DataStoreClient::SearchObjectLight</a>()</code> function is limited in that you cannot specify the following search criteria, which places a high load on the game server. If you want to specify these search criteria, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#add817538c1616d7104e559252d7dad26">DataStoreClient::SearchObject</a>()</code> function.</p>
+<ul class="simple">
+<li>Tags</li>
+<li>Whether to get the number of search matches</li>
+</ul>
+<p>Although the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a28d11a3604d2b72c6866a80269cc52d1">DataStoreClient::SearchObjectLight</a>()</code> function cannot specify these search criteria, the up side is that the frequency of API calls is less restrictive with this function than with <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#add817538c1616d7104e559252d7dad26">DataStoreClient::SearchObject</a>()</code>.</p>
+</div>
+<div class="section" id="datastore-search-cache">
+<span id="id19"></span><h3>7.8.2. Search Result Cache</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_param.html#a3cf1665e597d53ac2fa887a4bb7f88cb">DataStoreSearchParam::SetUseCache</a>()</code> function to enable the search result cache. When the search result cache is enabled, search results are temporarily cached on the server and then retrieved from the cache if a search with the same criteria is performed at a later time. By default, search results are cached for three minutes. Using the search result cache can improve the speed of search responses in most cases.</p>
+<p>Because search results are retrieved from the cache, however, if the target search data was updated or new data was uploaded since the last search, the updated or new data may not be included in your search results depending on when the subsequent search is performed.</p>
+<p>We recommend using the search results cache if it is not critical that search results always be up to date or if several users will be searching using the same search conditions in your application. In such cases, limit the number of cached searches to 200.</p>
+<p>Searching by tags or sorting search results by a column other than data ID can result in spikes in game server load, which in turn can make search responses sluggish and increase the rate of failure when users attempt to log in to the game server. We also recommend caching search results if users are likely to perform these types of computationally expensive searches.</p>
+</div>
+</div>
+<div class="section" id="datastore-show-dataid">
+<span id="id20"></span><h2>7.9. Displaying Data IDs</h2>
+<p>Depending on the application, displaying data IDs as is may make it easy for malicious users to determine the scope of services or level of security in the application. Allowing users to search using raw data IDs may enable them to specify unexpected values to gain invalid access to data that they are not supposed to have access to.</p>
+<p>Converting data IDs using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_data_code.html">DataStoreDataCode</a></code> class allows you to get data code strings unique to each title that are both suitable for display in the application and cannot be easily predicted.</p>
+<p>Datacode strings can be a maximum of 14 characters in length including the data ID (up to 56 bits) and checksum (8 bits), and can contain any of the following 28 characters: 0 1 2 3 4 5 6 7 8 9 B C D F G H J K L M N P R T V W X Y. The length of datacode strings varies depending on the data ID values. For example, data IDs from 0 to 268,435,455 can be represented with 1 to 8 characters, and data IDs from 0 to 4,294,967,295 can be represented with 1 to 9 characters.</p>
+<p>To get a data code string, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_data_code.html#ac9fc0a7a8cb56e8bfbef9c031cf6650b">DataStoreDataCode::CreateFromDataId</a>()</code> function to create a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_data_code.html">DataStoreDataCode</a></code> object, and then use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_data_code.html#ab48706b25b548398a55b819a93062b0b">DataStoreDataCode::ToDataCodeString</a>()</code> function. To ensure that data code strings are always 14 characters long, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_data_code.html#a22aabe2a235f935d6332dd853b24532e">DataStoreDataCode::ToDataCodeStringZeroPad</a>()</code> function to left-pad data codes with zeros.</p>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_data_code.html#a7b79bb0f6a25977f18950dbe0665afae">DataStoreDataCode::CreateFromDataCodeString</a>()</code> function to convert data code strings back to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_data_code.html">DataStoreDataCode</a></code> objects. Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_data_code.html#a2ce42b2d7ddd4c7987c105f80e03f8b5">DataStoreDataCode::IsValid</a>()</code> function to determine whether a data code string is valid. Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_data_code.html#ae1680efb2d0d851d5ad4d7deee9c7000">DataStoreDataCode::GetDataId</a>()</code> function to get the data ID corresponding to a data code string. In the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_data_code.html#a7b79bb0f6a25977f18950dbe0665afae">DataStoreDataCode::CreateFromDataCodeString</a>()</code> function, lowercase characters are converted to uppercase characters, and characters that are suspected to be typos are converted to the appropriate characters. (I-&gt;1, Q-&gt;0, O-&gt;0, Z-&gt;2, S-&gt;5)</p>
+<p>Specify the access key for your title as the checksum key when using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_data_code.html#ac9fc0a7a8cb56e8bfbef9c031cf6650b">DataStoreDataCode::CreateFromDataId</a>()</code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_data_code.html#a7b79bb0f6a25977f18950dbe0665afae">DataStoreDataCode::CreateFromDataCodeString</a>()</code> functions. These functions still work if you specify a value other than the access key for your title, but you will lose the ability to calculate and test datacode strings on non-client systems.</p>
+</div>
+<div class="section" id="datastore-rating">
+<span id="id21"></span><h2>7.10. Rating Data</h2>
+<p>With Data Store, 16 fields (called slots) are provided for each data ID that is uploaded, and ranking total value and information about the number of times ranked are saved and can be accessed. This feature is designed to allow public ratings of content, such as a five point scale or a “like” system, and to allow those ratings to be accessed.</p>
+<p>You must initialize the ratings of data when you upload it to use these features. For more information, see <a class="reference internal" href="#datastore-rating-init"><span class="std std-ref">7.4.4</span></a>. The following features are available for data that has been initialized.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">Your ratings implementation must ensure that total ratings values fit into a 64-bit signed <code>int</code>. If the total exceeds this range, it is rounded to the maximum or minimum value.</p>
+</div>
+<ul>
+<li><dl class="first docutils">
+<dt>Calculating ratings total values</dt>
+<dd><p class="first last">Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#af5bbbb448484bbfd02f6bc222be0cd9a">DataStoreClient::RateObject</a>()</code> function to calculate ratings total values. When initializing ratings, only the provided slot can be rated.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Getting ratings information</dt>
+<dd><p class="first">Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#ad2d52cbc4140c6b86ea0ffd732581fe6">DataStoreClient::GetRating</a>()</code> function to get the ratings information or ratings log. When initializing ratings, ratings information can be obtained only from the provided slot. You can get rating information by using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_rating_info.html">DataStoreRatingInfo</a></code> object, and the rating log by using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_rating_log.html">DataStoreRatingLog</a></code> object. The information you get from these is shown in <a class="reference internal" href="#datastore-table-rating-info"><span class="std std-ref">Table 7.9</span></a> and <a class="reference internal" href="#datastore-table-rating-log"><span class="std std-ref">Table 7.10</span></a>, respectively.</p>
+<span id="datastore-table-rating-info"></span><table border="1" class="docutils" id="id53">
+<caption><span class="caption-text">Table 7.9. Information Retrievable From <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_rating_info.html">DataStoreRatingInfo</a></span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Get Function</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>The total value of the rating</td>
+<td>GetTotalValue()</td>
+</tr>
+<tr class="row-odd"><td>Number of times rated</td>
+<td>GetCount()</td>
+</tr>
+<tr class="row-even"><td>Initial value for the ratings total value</td>
+<td>GetInitialValue()</td>
+</tr>
+</tbody>
+</table>
+<span id="datastore-table-rating-log"></span><table border="1" class="last docutils" id="id54">
+<caption><span class="caption-text">Table 7.10. Information Retrievable From <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_rating_log.html">DataStoreRatingLog</a></span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Get Function</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Whether oneself rated in the past</td>
+<td>IsRated()</td>
+</tr>
+<tr class="row-odd"><td>Rating value when oneself rated previously</td>
+<td>GetRatingValue()</td>
+</tr>
+<tr class="row-even"><td>Date and time the duplicate lock was released</td>
+<td>GetLockExpirationTime()</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Resetting ratings information</dt>
+<dd><p class="first last">Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a3a6b4b557ec372fc2fe1e84f8722d7f7">DataStoreClient::ResetRating</a>()</code> function to reset ratings information and the ratings log. The ratings total value is restored to the default value, and the number of times rated becomes 0. The ratings log is cleared.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="section" id="datastore-rating-all">
+<span id="id22"></span><h3>7.10.1. Batch Processing</h3>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Rating as a batch process</dt>
+<dd>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#af5bbbb448484bbfd02f6bc222be0cd9a">DataStoreClient::RateObject</a>()</code> function in the same way as when you rate individual objects.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Getting rating information as a batch process</dt>
+<dd>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#ad2d52cbc4140c6b86ea0ffd732581fe6">DataStoreClient::GetRating</a>()</code> function in the same way as when you get individual ratings. There is no function to get ratings as a batch process along with the ratings log.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Resetting ratings information as a batch process</dt>
+<dd>As with resetting a single rating, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a3a6b4b557ec372fc2fe1e84f8722d7f7">DataStoreClient::ResetRating</a>()</code> function to reset multiple ratings.</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="datastore-get-meta">
+<span id="id23"></span><h2>7.11. Getting Metadata</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#aa418a79890323ba3bbc0780d308b8475">DataStoreClient::GetMeta</a>()</code> function to get the metadata of uploaded data.</p>
+<p>If the metadata you want to get is a tag, rating information, meta-binary, or principal ID with privileges, specify the flag for the data you want to get with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_get_meta_param.html#a1e910e7cd9b8d520a4e45fcdf5981efe">DataStoreGetMetaParam::SetResultOption</a>()</code> function. If the operation succeeds, the function stores the value of the metadata in the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_meta_info.html">DataStoreMetaInfo</a></code> object. <a class="reference internal" href="#datastore-table-metainfo"><span class="std std-ref">Table 7.11</span></a> shows the information that you can get from a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_meta_info.html">DataStoreMetaInfo</a></code> object.</p>
+<span id="datastore-table-metainfo"></span><table border="1" class="docutils" id="id55">
+<caption><span class="caption-text">Table 7.11. Information Retrievable From DataStoreMetaInfo</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Get Function</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Data ID</td>
+<td>GetDataId()</td>
+</tr>
+<tr class="row-odd"><td>Principal ID</td>
+<td>GetOwnerId()</td>
+</tr>
+<tr class="row-even"><td>Data size</td>
+<td>GetSize()</td>
+</tr>
+<tr class="row-odd"><td>Status</td>
+<td>GetStatus()</td>
+</tr>
+<tr class="row-even"><td>Name</td>
+<td>GetName()</td>
+</tr>
+<tr class="row-odd"><td>Data type</td>
+<td>GetDataType()</td>
+</tr>
+<tr class="row-even"><td>Access privileges</td>
+<td>GetAccessPermission()</td>
+</tr>
+<tr class="row-odd"><td>Update permissions</td>
+<td>GetUpdatePermission()</td>
+</tr>
+<tr class="row-even"><td>Creation date and time</td>
+<td>GetCreatedTime()</td>
+</tr>
+<tr class="row-odd"><td>Date modified</td>
+<td>GetUpdatedTime()</td>
+</tr>
+<tr class="row-even"><td>The number of valid days</td>
+<td>GetPeriod()</td>
+</tr>
+<tr class="row-odd"><td>Configuration flag</td>
+<td>GetDataFlag()</td>
+</tr>
+<tr class="row-even"><td>Period of validity</td>
+<td>GetExpireTime()</td>
+</tr>
+<tr class="row-odd"><td>Tags</td>
+<td>GetTags()</td>
+</tr>
+<tr class="row-even"><td>Rating information</td>
+<td>GetRating()</td>
+</tr>
+<tr class="row-odd"><td>Meta-binary data</td>
+<td>GetMetaBinary()</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="datastore-get-meta-all">
+<span id="id24"></span><h3>7.11.1 Batch Processing</h3>
+<p>You can get metadata from uploaded data as a batch process. Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#aa418a79890323ba3bbc0780d308b8475">DataStoreClient::GetMeta</a>()</code> function in the same way as when you get individual metadata items.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">When getting the data including meta-binary as a batch process, your implementation must adjust the amount of data to obtain so that the total size of the batch results is not too large. If the overall size is large, it may take longer to retrieve the data due to lower packet transfer efficiency. As a rule, keep the total size of meta-binary data in metadata to no more than 20 KiB. For example, if the size of the meta-binary data is 1 KiB, adjust the number retrieved at one time to 20.</p>
+</div>
+</div>
+</div>
+<div class="section" id="datastore-update-meta">
+<span id="id25"></span><h2>7.12. Updating Metadata</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a1e2d8e4e6b340cc312a70ecd71cd3385">DataStoreClient::ChangeMeta</a>()</code> function to update the metadata of uploaded data. Specify the flag for the metadata you want to update with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_change_meta_param.html#a5534af1958e9d8a9177502c41614e02a">DataStoreChangeMetaParam::SetModificationFlag</a>()</code> function. <a class="reference internal" href="#datastore-table-modificationflag"><span class="std std-ref">Table 7.12</span></a> provides a list of flags that can be set as metadata to update.</p>
+<p>If the action completes normally, and <code>DataStoreConstants::MODIFICATION_FLAG_PERIOD</code> and <code>DataStoreConstants::MODIFICATION_FLAG_UPDATED_TIME</code> have been set to flags, the update time and period of validity (expiration date) are updated as shown in <a class="reference internal" href="#datastore-timestamp-change"><span class="std std-ref">7.15.2</span></a>.</p>
+<span id="datastore-table-modificationflag"></span><table border="1" class="docutils" id="id56">
+<caption><span class="caption-text">Table 7.12. Metadata Update Flags</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Flag</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>DataStoreConstants::<wbr/>MODIFICATION_<wbr/>FLAG_<wbr/>NONE</td>
+<td>Not set.</td>
+</tr>
+<tr class="row-odd"><td>DataStoreConstants::<wbr/>MODIFICATION_<wbr/>FLAG_<wbr/>NAME</td>
+<td>Change the title.</td>
+</tr>
+<tr class="row-even"><td>DataStoreConstants::<wbr/>MODIFICATION_<wbr/>FLAG_<wbr/>ACCESS_<wbr/>PERMISSION</td>
+<td>Change access permissions.</td>
+</tr>
+<tr class="row-odd"><td>DataStoreConstants::<wbr/>MODIFICATION_<wbr/>FLAG_<wbr/>UPDATE_<wbr/>PERMISSION</td>
+<td>Change update permissions.</td>
+</tr>
+<tr class="row-even"><td>DataStoreConstants::<wbr/>MODIFICATION_<wbr/>FLAG_<wbr/>PERIOD</td>
+<td>Change the number of valid days.</td>
+</tr>
+<tr class="row-odd"><td>DataStoreConstants::<wbr/>MODIFICATION_<wbr/>FLAG_<wbr/>METABINARY</td>
+<td>Change meta-binary data.</td>
+</tr>
+<tr class="row-even"><td>DataStoreConstants::<wbr/>MODIFICATION_<wbr/>FLAG_<wbr/>TAGS</td>
+<td>Change tags.</td>
+</tr>
+<tr class="row-odd"><td>DataStoreConstants::<wbr/>MODIFICATION_<wbr/>FLAG_<wbr/>UPDATED_<wbr/>TIME</td>
+<td>Update the updated time to the current time.</td>
+</tr>
+<tr class="row-even"><td>DataStoreConstants::<wbr/>MODIFICATION_<wbr/>FLAG_<wbr/>DATA_<wbr/>TYPE</td>
+<td>Change the data type.</td>
+</tr>
+<tr class="row-odd"><td>DataStoreConstants::<wbr/>MODIFICATION_<wbr/>FLAG_<wbr/>STATUS</td>
+<td>Change the status.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="datastore-update-meta-all">
+<span id="id26"></span><h3>7.12.1 Batch Processing</h3>
+<p>You can update metadata from uploaded data as a batch process. Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a1e2d8e4e6b340cc312a70ecd71cd3385">DataStoreClient::ChangeMeta</a>()</code> function in the same way as when you change individual metadata items.</p>
+</div>
+<div class="section" id="id27">
+<h3>7.12.2. Compare and Swap</h3>
+<p>To update metadata by comparing and swapping, set <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_change_meta_compare_param.html">DataStoreChangeMetaCompareParam</a></code> using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_change_meta_param.html#ab8b64e281ed8541817dfb37737ad4a9c">DataStoreChangeMetaParam::SetChangeMetaCompareParam</a>()</code> function. Flags and values for information being compared are set in <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_change_meta_compare_param.html">DataStoreChangeMetaCompareParam</a></code>.</p>
+<p>If the set value and the actual value are not the same, no change is made and the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#acb03838807a46d921f5517fcc887bdcf">CallContext::GetOutcome</a>()</code> function returns <code>QERROR(DataStore, ValueNotEqual)</code>.</p>
+<span id="datastore-table-comparisonflag"></span><table border="1" class="docutils" id="id57">
+<caption><span class="caption-text">Table 7.13. Metadata Comparison Flags</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Flag</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>DataStoreConstants::<wbr/>COMPARISON_<wbr/>FLAG_<wbr/>NONE</td>
+<td>Not set.</td>
+</tr>
+<tr class="row-odd"><td>DataStoreConstants::<wbr/>COMPARISON_<wbr/>FLAG_<wbr/>NAME</td>
+<td>Compares titles.</td>
+</tr>
+<tr class="row-even"><td>DataStoreConstants::<wbr/>COMPARISON_<wbr/>FLAG_<wbr/>ACCESS_<wbr/>PERMISSION</td>
+<td>Compares access permission.</td>
+</tr>
+<tr class="row-odd"><td>DataStoreConstants::<wbr/>COMPARISON_<wbr/>FLAG_<wbr/>UPDATE_<wbr/>PERMISSION</td>
+<td>Compares update permissions.</td>
+</tr>
+<tr class="row-even"><td>DataStoreConstants::<wbr/>COMPARISON_<wbr/>FLAG_<wbr/>PERIOD</td>
+<td>Compares the number of days in the valid period.</td>
+</tr>
+<tr class="row-odd"><td>DataStoreConstants::<wbr/>COMPARISON_<wbr/>FLAG_<wbr/>METABINARY</td>
+<td>Compares binary data.</td>
+</tr>
+<tr class="row-even"><td>DataStoreConstants::<wbr/>COMPARISON_<wbr/>FLAG_<wbr/>TAGS</td>
+<td>Compares tags.</td>
+</tr>
+<tr class="row-odd"><td>DataStoreConstants::<wbr/>COMPARISON_<wbr/>FLAG_<wbr/>DATA_<wbr/>TYPE</td>
+<td>Compares the data type.</td>
+</tr>
+<tr class="row-even"><td>DataStoreConstants::<wbr/>COMPARISON_<wbr/>FLAG_<wbr/>STATUS</td>
+<td>Compares status.</td>
+</tr>
+<tr class="row-odd"><td>DataStoreConstants::<wbr/>COMPARISON_<wbr/>FLAG_<wbr/>ALL</td>
+<td>Compares all.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="datastore-persistence">
+<span id="id28"></span><h2>7.13. Perpetuating Data</h2>
+<p>Normal uploaded data is deleted automatically after its period of validity has expired. Use the data-persistence feature to configure the data so it is perpetuated and not automatically deleted. Each user can perpetuate up to 16 sets of data. Persistent data can be browsed using the principal ID and the slot ID (persistent data slot IDs are from 0 through 15) where the information for the persistent data is saved. This feature has the following uses.</p>
+<ul class="simple">
+<li>All players can save their data ID storing their profile information to persistence slot ID 0. When people meet over the network, they can get each other's player information from persistence slot ID 0. Using this procedure eliminates the need to exchange another separate data ID, and the data is always guaranteed to be there.</li>
+<li>When uploading scores using the ranking library, score-related information can be uploaded to a separate data store and made persistent, and that persistence slot ID can be stored to a ranking parameter. Using this procedure, only data from the data store gets registered to the ranking, and you can avoid inconsistencies that can arise when data expires.</li>
+</ul>
+<div class="section" id="id29">
+<h3>7.13.1. Perpetuating Data</h3>
+<p>To perpetuate data that has been uploaded already, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#aea52b0757a45b08c1054df9362f47792">DataStoreClient::PerpetuateObject</a>()</code> function. The period of validity for the perpetuated data becomes <code>DataStoreConstants::PERMANENT_DATE_TIME</code>. If that same persistence slot ID was previously in use, its data is unperpetuated. The same data ID cannot be set to multiple persistent slot IDs.</p>
+<p>To make data persistent at the same time that it is uploaded, configure persistence for the <code>DataStorePostParam</code> class object you specify when you call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#a6572e177409bcd6eca95166339e1adf0">DataStoreClient::PostObject</a>()</code> function. Specifically, use the <code>DataStorePostParam::SetPersistenceInitParam()</code> function to set a persistence slot ID for the specified <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_persistence_init_param.html">DataStorePersistenceInitParam</a></code> class object. If the same persistence slot ID was used in the past, its data is unperpetuated. To delete the data at the same time that it is unperpetuated, specify <code>true</code> for the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_persistence_init_param.html#a531ff50ef57fa7a81d94ce23df3aca26">DataStorePersistenceInitParam::SetDeleteLastObject</a>()</code> function. To maintain consistency in this series of processes, the data ID set to the persistence slot is always a valid value around the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#a6572e177409bcd6eca95166339e1adf0">DataStoreClient::PostObject</a>()</code> function call. In other words, when you reference data using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#a695b74a002fc3f3b1c36e9026f806004">DataStoreClient::GetObject</a>()</code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#aa418a79890323ba3bbc0780d308b8475">DataStoreClient::GetMeta</a>()</code> functions, you can always get valid data if you specify the target data using a persistence slot ID with <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_persistence_target.html">DataStorePersistenceTarget</a></code> instead of using a data ID. This property is unrelated to the settings configured with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_persistence_init_param.html#a531ff50ef57fa7a81d94ce23df3aca26">DataStorePersistenceInitParam::SetDeleteLastObject</a>()</code> function.</p>
+</div>
+<div class="section" id="id30">
+<h3>7.13.2. Unperpetuating Data</h3>
+<p>To restore perpetuated data to its original state, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#af8d5a8f05fcf340b9ef5718f83df6663">DataStoreClient::UnperpetuateObject</a>()</code> function. When you unperpetuate the data, it is reconstituted as data that can be automatically deleted. The unperpetuated data expires after the current time plus the number of valid days. When you delete data with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a7c5c3182ac60bee7831bf62374d53316">DataStoreClient::DeleteObject</a>()</code> function, the data is automatically removed from its persistence slot and unperpetuated. When the option to delete past data with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#af8d5a8f05fcf340b9ef5718f83df6663">DataStoreClient::UnperpetuateObject</a>()</code> function is enabled, it works like the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a7c5c3182ac60bee7831bf62374d53316">DataStoreClient::DeleteObject</a>()</code> function works to delete data.</p>
+</div>
+<div class="section" id="id31">
+<h3>7.13.3. Getting Persistence Information</h3>
+<p>To get data ID from the principal ID and persistence slot ID, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a6b93e3204cc4cdb266c402186e8a6dfc">DataStoreClient::GetPersistenceInfo</a>()</code> function. There is an API to get one set of information by specifying a single persistence slot ID, and an API to get information as a batch process by specifying multiple persistence slot IDs.</p>
+</div>
+</div>
+<div class="section" id="datastore-password">
+<span id="id32"></span><h2>7.14. Getting Passwords</h2>
+<p>An access password and update password is set for all data when it is uploaded. Giving these passwords to users grants them access and update rights for the data if they did not already have them previously. For more information about passwords, see <a class="reference internal" href="#datastore-permission"><span class="std std-ref">7.4.2</span></a>. Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#aa704bc05e78982dc39481759170b3396">DataStoreClient::GetPasswordInfo</a>()</code> function to get passwords.</p>
+</div>
+<div class="section" id="datastore-detail-specification">
+<span id="id33"></span><h2>7.15. Common Data Store Specifications</h2>
+<div class="section" id="datastore-data-status">
+<span id="id34"></span><h3>7.15.1. Data Status</h3>
+<p>Each piece of data that is uploaded has a status, and operations change according to the status. The status can be obtained with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#aa418a79890323ba3bbc0780d308b8475">DataStoreClient::GetMeta</a>()</code> function.</p>
+<table border="1" class="docutils" id="id58">
+<caption><span class="caption-text">Table 7.14. Data Status</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data Status</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>NONE</td>
+<td>Normal state. Data for which upload completes automatically transitions to this status. Access and modification are possible according to the set privileges and passwords.</td>
+</tr>
+<tr class="row-odd"><td>CREATING</td>
+<td>Data is being uploaded. No one, including the owner, can access or modify.</td>
+</tr>
+<tr class="row-even"><td>PENDING</td>
+<td>The data is being tested. Uploaded data flagged with <code>DataStoreConstants::<wbr/>DATA_<wbr/>FLAG_<wbr/>NEED_<wbr/>REVIEW</code> transition to this status instead of <code>NONE</code>. Access is not allowed with the set privileges and passwords. Only the owner can access and modify.</td>
+</tr>
+<tr class="row-odd"><td>DELETING</td>
+<td>Data for which a delete request has been received. No one, including the owner, can access or modify. Data transitions to this status when it is deleted by the <code>DataStoreClient::<wbr/>DeleteObject()</code> function or on NMAS. Subsequently, when the validity period expires, the data automatically transitions to <code>DELETED</code>.</td>
+</tr>
+<tr class="row-even"><td>DELETED</td>
+<td>Data that has been physically deleted on the storage server. No one, including the owner, can access or modify. Expired data transitions to this status. Around 7 days after that, the game server's record of the data (including the meta binary) will be deleted automatically.</td>
+</tr>
+<tr class="row-odd"><td>REJECTED</td>
+<td>Data that was rejected during testing. The system does not automatically transition data to this status. As with <code>PENDING</code>, access is not allowed with set privileges and passwords, and only the owner can access and modify.</td>
+</tr>
+</tbody>
+</table>
+<p>A client cannot access the data with the status of <code>CREATING</code>, <code>DELETING</code>, or <code>DELETED</code>, and can only check whether the data exists from NMAS.</p>
+<p>When data is manipulated on NMAS, the status can transition in the following ways.</p>
+<ul class="simple">
+<li><code>NONE</code> -&gt; <code>DELETING</code></li>
+<li><code>PENDING</code> -&gt; <code>NONE</code> or <code>REJECTED</code></li>
+<li><code>DELETING</code> -&gt; <code>NONE</code></li>
+<li><code>REJECTED</code> -&gt; <code>NONE</code></li>
+</ul>
+</div>
+<div class="section" id="datastore-timestamp-change">
+<span id="id35"></span><h3>7.15.2. Changing Timestamp Values</h3>
+<p><a class="reference internal" href="#datastore-fig-timestamp"><span class="std std-ref">Figure 7.2</span></a> shows how timestamp values are changed when using the different Data Store functions.</p>
+<div class="figure" id="id59">
+<span id="datastore-fig-timestamp"></span><img alt="../_images/Fig_Datastore_Timestamp.png" src="../_images/Fig_Datastore_Timestamp.png"/>
+<p class="caption"><span class="caption-text">Figure 7.2. Changing Timestamp Values When Using the API</span></p>
+</div>
+<p>The <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a588d24e70f240de628b9dd01bf1e3b64">DataStoreClient::TouchObject()</a> function is a way to update the validity period of a set of data. For data that is only meta-binary and does not use the storage server, and other metadata like ratings information, use the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#a588d24e70f240de628b9dd01bf1e3b64">DataStoreClient::TouchObject()</a> function if you want to update the validity period when you access the data, similar to events that occur when you download data. (For more information, see <a class="reference internal" href="#datastore-download"><span class="std std-ref">7.5</span></a>.) Note that when you upload this data you must specify <code>DataStoreConstants::DATA_FLAG_PERIOD_FROM_LAST_REFERRED</code>.</p>
+</div>
+<div class="section" id="datastore-batch-processing">
+<span id="id36"></span><h3>7.15.3. Notes About Batch Processing</h3>
+<p>Multiple APIs have overloaded member functions that can process multiple data sets as a batch process at the same time. You can batch-process up to 100 items at a time. If you need to process more than 100 items, break them up into groups of 100 or less, and call the function multiple times.</p>
+<p>If an asynchronous process fails, the result for each data set is not stored in the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_vector.html">qVector</a>&lt;<a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html">qResult</a>&gt;</code> object. After confirming that asynchronous processing was successful with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a77cd37e3a72c1fe5d901d02335b4b1f4">CallContext::GetState</a>()</code> function, check the content of <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_vector.html">qVector</a>&lt;<a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html">qResult</a>&gt;</code> as needed. For functions that have a flag that determines whether to continue only when all asynchronous processes were successful, you can get the first error that occurs during the process with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#acb03838807a46d921f5517fcc887bdcf">CallContext::GetOutcome</a>()</code> function by setting this flag to <code>true</code>. In this case, the data on the server is not affected. Use the <code>QSUCCEEDED</code> macro or cast to a boolean to determine whether the result stored in <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html">qResult</a></code> indicates that the process was successful.</p>
+</div>
+<div class="section" id="http">
+<h3>7.15.4. Cautions During HTTP Communications</h3>
+<p>HTTP processes are not guaranteed to be completed when they are canceled using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a134fcf01f0478baee44c72fc735183c3">ProtocolCallContext::Cancel</a>()</code> function or when the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html">DataStoreClient</a></code> object is destroyed. HTTP processes are guaranteed to be completed when the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html">NgsFacade</a></code> object has been destroyed, so make sure that the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html">NgsFacade</a></code> object is destroyed before calling the <code>curl_global_cleanup()</code> function.</p>
+</div>
+<div class="section" id="id37">
+<h3>7.15.5. Assumed Number of Objects</h3>
+<p>The data store feature was designed based on the assumption that the number of objects would not exceed 10,000,000 objects. For more information, see NEX Guide &gt; Important Considerations During Application Development &gt; NEX General Considerations &gt; Number of Data Instances That NEX Can Handle.</p>
+</div>
+</div>
+<div class="section" id="datastore-error-handling">
+<span id="id38"></span><h2>7.16. Error Handling</h2>
+<p>Error handling is the same as for matchmaking. For more information, see <a class="reference internal" href="matchmake.html#matchmake-error-handling"><span class="std std-ref">4.24</span></a>. <a class="reference internal" href="#datastore-table-error"><span class="std std-ref">Table 7.15</span></a> lists the errors that can occur when using Data Store. This table excludes shared errors that occur during NEX communication, and so on.</p>
+<span id="datastore-table-error"></span><table border="1" class="docutils" id="id60">
+<caption><span class="caption-text">Table 7.15. Data Store Errors</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">ReturnCode Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>QERROR(DataStore, Unknown)</td>
+<td>Unknown error. This error could be caused by an unexpected server error.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(DataStore, InvalidArgument)</td>
+<td>Invalid argument. This error is caused by an implementation error.</td>
+</tr>
+<tr class="row-even"><td>QERROR(DataStore, PermissionDenied)</td>
+<td>This error occurs when you attempt to perform an operation on data for which you do not have access, or update privileges without entering a password. This error should generally never occur, because the system without access privileges should not know the data ID. One example of when this error may occur is if the system obtained the data ID by another method. Errors that must be handled by the application.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(DataStore, NotFound)</td>
+<td>The data corresponding to the specified data ID or persistence slot was not found. Errors that must be handled by the application.</td>
+</tr>
+<tr class="row-even"><td>QERROR(DataStore, AlreadyLocked)</td>
+<td>Not used. This error currently never occurs.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(DataStore, UnderReviewing)</td>
+<td>Access denied because data is under review. Generated when someone other than the owner tries referencing or updating data with a data status of <code>PENDING</code> or <code>REJECTED</code>. Basically, <code>PENDING</code> or <code>REJECTED</code> data cannot be found by anyone other than the owner, so this error is not normally generated. One example of when this error may occur is if the system obtained the data ID by another method. Errors that must be handled by the application.</td>
+</tr>
+<tr class="row-even"><td>QERROR(DataStore, Expired)</td>
+<td>Not used. This error currently never occurs.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(DataStore, InvalidCheckToken)</td>
+<td>Not used. This error currently never occurs.</td>
+</tr>
+<tr class="row-even"><td>QERROR(DataStore, SystemFileError)</td>
+<td>Failed to read system file. This error generally never occurs.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(DataStore, OverCapacity)</td>
+<td>The maximum number of items for a batch process has been exceeded. This error is caused by an implementation error.</td>
+</tr>
+<tr class="row-even"><td>QERROR(DataStore, OperationNotAllowed)</td>
+<td>The requested operation is not authorized. This error is caused by an implementation error.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(DataStore, InvalidPassword)</td>
+<td>This error occurs when you enter an incorrect password and attempt to perform an operation on data for which you do not have access or update privileges. Errors that must be handled by the application.</td>
+</tr>
+<tr class="row-even"><td>QERROR(Transport, DnsError)</td>
+<td>This error occurs when a DNS-related error has occurred during HTTP communication with the storage server.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(Transport, ProxyError)</td>
+<td>This error occurs when a proxy-related error has occurred during HTTP communication with the storage server.</td>
+</tr>
+<tr class="row-even"><td>QERROR(Transport, ConnectionReset)</td>
+<td>This error occurs when the connection was lost during HTTP communication with the storage server.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(Transport, Unknown)</td>
+<td>This error occurs when another communication error happens during HTTP communication with the storage server.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="nex-nmas">
+<span id="datastore-nmas"></span><h2>7.17. NEX Server Management System (NMAS)</h2>
+<p>You can use the data store management features of the NEX Server Management System (NMAS) to view and download the data uploaded to the data store. The tool supports both the development environment and the actual production environment.</p>
+<div class="section" id="nmas">
+<span id="datastore-nmas-access"></span><h3>7.17.1. NMAS Access Method</h3>
+<p>Use the following URL to access NMAS.</p>
+<p><a class="reference external" href="https://nmas.tool.n.mng.nintendo.net/">https://nmas.tool.n.mng.nintendo.net/</a></p>
+<p>Use the same login ID and password that you use for OMAS.</p>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

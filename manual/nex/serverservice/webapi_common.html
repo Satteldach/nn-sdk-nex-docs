@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>11.1. Using WebAPI — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="webapi">
+<span id="webapi-common-top"></span><h1>11.1. Using WebAPI</h1>
+<p>This section describes how to use WebAPI and things to note when using it.</p>
+<div class="section" id="id1">
+<h2>11.1.1. Purpose of WebAPI</h2>
+<p>WebAPI in NEX can be used for data management on the game server. WebAPI can be used for operations such as tabulating data and periodically posting and deleting data. WebAPI cannot be used for purposes such as executing client requests and frequent updating, because it is made available for management purposes instead.</p>
+<p>See the NEX Guide for other important information.</p>
+</div>
+<div class="section" id="id2">
+<h2>11.1.2. Accessing WebAPI</h2>
+<p>To use WebAPI, you must apply to use a web service on OMAS. After your application is approved, you will be able to generate the OAuth 2.0 access token required to use WebAPI. For detailed procedures, see the OMAS Manual and the NDID Auth Server Manual.</p>
+</div>
+<div class="section" id="url">
+<span id="resource-url-path"></span><h2>11.1.3. Resource URL Path</h2>
+<p>The resource URL path of the API is generally structured as follows.</p>
+<blockquote>
+<div><div class="highlight-rest"><div class="highlight"><pre><span></span>/nex/{moduleName}/v{version}/{apiPath}
+</pre></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%"/>
+<col width="73%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>moduleName</td>
+<td>Module name</td>
+</tr>
+<tr class="row-odd"><td>version</td>
+<td>API version</td>
+</tr>
+<tr class="row-even"><td>apiPath</td>
+<td>Path of function</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>For example, to search using version 2 of the data store API, you would use the following path.</p>
+<blockquote>
+<div><div class="highlight-rest"><div class="highlight"><pre><span></span>/nex/datastore/v2/search
+</pre></div>
+</div>
+</div></blockquote>
+<p>However, you do not specify the version in certain functions, such as those used for getting the version.</p>
+<blockquote>
+<div><div class="highlight-rest"><div class="highlight"><pre><span></span>/nex/datastore/version
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="id3">
+<h2>11.1.4. Request</h2>
+<div class="section" id="id4">
+<h3>11.1.4.1. Request Method</h3>
+<p>The request method is either GET, POST, PUT, or DELETE. The method to use depends on the function, as do the ways request parameters are passed and formatted.</p>
+</div>
+<div class="section" id="id5">
+<h3>11.1.4.2. Parameters and Request Body</h3>
+<p>To pass the parameters, in general, use the query string with the <code>GET</code> method and use the request body in an XML format with the <code>POST</code> and <code>PUT</code> methods. When making a request using the XML format, set the header to Content-type: text/xml. Parameters are not used with <code>DELETE</code>.</p>
+<p><strong>Request Example:</strong></p>
+<ul>
+<li><p class="first">Get the metadata, including tags, for data ID 10 in the data store (<code>GET</code>).</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/datastore/v2/metainfo/10?response=tag</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Change the name of data ID 10 to "new name" in the data store (<code>PUT</code>).</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/datastore/v2/metainfo/10</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;name&gt;new name&lt;/name&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="section" id="id6">
+<h4>11.1.4.2.1. Multiple Values</h4>
+<p>Some of the functions accept multiple values. You generally use commas to delimit multiple values when using <code>GET</code>, and use multiple XML elements when using <code>POST</code> and <code>PUT</code>.</p>
+<p><strong>Request Example:</strong></p>
+<ul>
+<li><p class="first">Get the metadata for data IDs 10, 20, and 30 in the data store.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/datastore/v2/metainfo?data_ids=10,20,30</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Change the tags of data ID 10 to "tag1" and "tag2" in the data store (<code>PUT</code>).</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/datastore/v2/metainfo/10</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;tags&gt;
+    &lt;tag&gt;dGFnMQ==&lt;/tag&gt;
+    &lt;tag&gt;dGFnMg==&lt;/tag&gt;
+  &lt;/tags&gt;
+  &lt;param&gt;
+    &lt;data_id&gt;10&lt;/data_id&gt;
+  &lt;/param&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="id7">
+<h2>11.1.5. Response</h2>
+<div class="section" id="id8">
+<h3>11.1.5.1. Status Code</h3>
+<p>The execution result of a request generally uses one of the following status codes.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%"/>
+<col width="79%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Status Code</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>200</td>
+<td>Function completed successfully.</td>
+</tr>
+<tr class="row-odd"><td>400</td>
+<td>Invalid request parameter.</td>
+</tr>
+<tr class="row-even"><td>404</td>
+<td>Path does not exist.</td>
+</tr>
+<tr class="row-odd"><td>500</td>
+<td>An internal error or the access token contains invalid characters.</td>
+</tr>
+<tr class="row-even"><td>502</td>
+<td>Access token is invalid.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id9">
+<h3>11.1.5.2. Content</h3>
+<p>Detailed execution results and content are returned in XML format. When the function succeeds, the content is as follows.</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;module&gt;</span>
+    <span class="c">&lt;! &lt;!-- Response content --&gt;</span>
+  <span class="nt">&lt;/module&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p>The &lt;module&gt; element above represents the module name. For example, the data store module would appear as follows.</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="c">&lt;! &lt;!-- Response content --&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p>If an error occurs, the following content is returned.</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;errors&gt;</span>
+    <span class="nt">&lt;error&gt;</span>
+      <span class="nt">&lt;errorcode&gt;</span><span class="c">&lt;!-- Error code --&gt;</span><span class="nt">&lt;/errorcode&gt;</span>
+      <span class="nt">&lt;message&gt;</span><span class="c">&lt;!-- Error message --&gt;</span><span class="nt">&lt;/message&gt;</span>
+    <span class="nt">&lt;/error&gt;</span>
+  <span class="nt">&lt;/errors&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id10">
+<h2>11.1.6. Handling Special Request and Response Data</h2>
+<p>Some functions require the data to be processed before it is passed as an argument. The resulting data is also returned in the processed format.</p>
+<div class="section" id="base64">
+<h3>11.1.6.1. Base64 Encoding</h3>
+<p>When using Base64 encoding, use RFC 3548-based encoding. The encoded data must also be in a URL-safe format.</p>
+<p>Note the following points when encoding in Base64.</p>
+<ul class="simple">
+<li>Use "=" for padding (when required).</li>
+<li>Do not use newline characters.</li>
+</ul>
+<p>The rules for making data URL-safe are as follows.</p>
+<ul class="simple">
+<li>Use "-" instead of "+"</li>
+<li>Use "_" instead of "/"</li>
+</ul>
+<p><strong>Conversion Examples</strong>:</p>
+<ul class="simple">
+<li>Encode "NEX WebAPI"<ul>
+<li>NG: TkVYIFdlYkFQSQ (No padding)</li>
+<li>OK: TkVYIFdlYkFQSQ==</li>
+</ul>
+</li>
+<li>Encode a byte array containing <code>0x3c</code>, <code>0x3d</code>, <code>0x3e</code>, and <code>0x3f</code>.<ul>
+<li>NG: PD0+Pw (Not URL safe and no padding)</li>
+<li>NG: PD0+Pw== (Not URL safe)</li>
+<li>NG: PD0-Pw (No padding)</li>
+<li>OK: PD0-Pw==</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id11">
+<h2>11.1.7. Requests via WebAPI Gateway</h2>
+<p>To use WebAPI, you must access the game server through WebAPI gateway. Use the following URL to send a request to the game server through WebAPI gateway.</p>
+<blockquote>
+<div><div class="highlight-rest"><div class="highlight"><pre><span></span>https://{Environment}api.nex.mng.nintendo.net/v4_0/{GameServerId}/{ResourceURLPath}
+</pre></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%"/>
+<col width="87%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Environment</td>
+<td>Specifies the development environment or the production environment. Specify <code>dd1</code> for the development environment and <code>lp1</code> for the production environment.</td>
+</tr>
+<tr class="row-odd"><td>GameServerID</td>
+<td>Specifies the game server ID to be displayed in OMAS. The leading "<code>0x</code>" is not needed.</td>
+</tr>
+<tr class="row-even"><td>ResourceURLPath</td>
+<td>See <a class="reference internal" href="#resource-url-path"><span class="std std-ref">11.1.3. Resource URL Path</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>An access token is required to issue a request. For more information about getting and updating access tokens, see the NDID Auth Server Manual.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">When using access tokens, do not use the access tokens obtained by users who are developers. Instead create an account for that specific game title, and use the access tokens obtained for that account. Access tokens inherit the privileges of the user that issues them. If the user who issued the token loses those privileges due to retirement, transfer, or another reason, the access token becomes invalid.</p>
+</div>
+<div class="section" id="id12">
+<h3>11.1.7.1. Sample Request via WebAPI Gateway</h3>
+<p>This is a sample of a request for WebAPI through WebAPI gateway under the following conditions.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%"/>
+<col width="70%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GameServerID</td>
+<td>0x1234abcd</td>
+</tr>
+<tr class="row-odd"><td>Environment</td>
+<td>dd1</td>
+</tr>
+<tr class="row-even"><td>Access Token</td>
+<td>abcd123456</td>
+</tr>
+<tr class="row-odd"><td>Function</td>
+<td>Get metadata for data ID <code>123456</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>To make a request with these conditions, execute the following request.</p>
+<div class="highlight-rest"><div class="highlight"><pre><span></span>GET https://dd1api.nex.mng.nintendo.net/v4_0/1234abcd/nex/datastore/v2/metainfo/123456
+Authorization: OAuth abcd123456
+</pre></div>
+</div>
+<p>To do this with cURL, use the following command.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl -H <span class="s2">"Authorization: OAuth abcd123456"</span> --proxy http://&lt;proxy_address&gt;:&lt;proxy_port&gt; https://dd1api.nex.mng.nintendo.net/v4_0/1234abcd/nex/datastore/v2/metainfo/123456
+</pre></div>
+</div>
+<p>If the <code>GET</code> request succeeds, the following response is returned.</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;metainfos</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;metainfo&gt;</span>
+        <span class="nt">&lt;status&gt;</span>0<span class="nt">&lt;/status&gt;</span>
+        <span class="nt">&lt;referred_time&gt;</span>2013-01-01T00:00:00Z<span class="nt">&lt;/referred_time&gt;</span>
+        <span class="nt">&lt;referred_cnt&gt;</span>0<span class="nt">&lt;/referred_cnt&gt;</span>
+        <span class="nt">&lt;prev_version&gt;</span>0<span class="nt">&lt;/prev_version&gt;</span>
+        <span class="nt">&lt;data_type&gt;</span>0<span class="nt">&lt;/data_type&gt;</span>
+        <span class="nt">&lt;refer_data_id&gt;</span>0<span class="nt">&lt;/refer_data_id&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>xxxxxxx<span class="nt">&lt;/data_id&gt;</span>
+        <span class="nt">&lt;cur_version&gt;</span>x<span class="nt">&lt;/cur_version&gt;</span>
+        <span class="nt">&lt;access_permission&gt;</span>
+          <span class="nt">&lt;type&gt;</span>0<span class="nt">&lt;/type&gt;</span>
+          <span class="nt">&lt;principal_ids</span> <span class="na">length=</span><span class="s">"0"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/access_permission&gt;</span>
+        <span class="nt">&lt;period&gt;</span>365<span class="nt">&lt;/period&gt;</span>
+        <span class="nt">&lt;update_permission&gt;</span>
+          <span class="nt">&lt;type&gt;</span>3<span class="nt">&lt;/type&gt;</span>
+          <span class="nt">&lt;principal_ids</span> <span class="na">length=</span><span class="s">"0"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/update_permission&gt;</span>
+        <span class="nt">&lt;name&gt;</span>TDSS<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;expire_time&gt;</span>2013-02-01T00:00:00Z<span class="nt">&lt;/expire_time&gt;</span>
+        <span class="nt">&lt;flag&gt;</span>34<span class="nt">&lt;/flag&gt;</span>
+        <span class="nt">&lt;read_lock_id&gt;</span>0<span class="nt">&lt;/read_lock_id&gt;</span>
+        <span class="nt">&lt;created_time&gt;</span>2013-01-01T00:00:00Z<span class="nt">&lt;/created_time&gt;</span>
+        <span class="nt">&lt;owner_id&gt;</span>xxxxxxxxxx<span class="nt">&lt;/owner_id&gt;</span>
+        <span class="nt">&lt;updated_time&gt;</span>2013-01-01T00:00:00Z<span class="nt">&lt;/updated_time&gt;</span>
+        <span class="nt">&lt;size&gt;</span>0<span class="nt">&lt;/size&gt;</span>
+      <span class="nt">&lt;/metainfo&gt;</span>
+    <span class="nt">&lt;/metainfos&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p>If an error occurs, the following response is returned.</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;errors&gt;</span>
+    <span class="nt">&lt;error&gt;</span>
+      <span class="nt">&lt;errorcode&gt;</span>-1<span class="nt">&lt;/errorcode&gt;</span>
+      <span class="nt">&lt;message&gt;</span>qResult(0x80690004) Not found. Data IDs are [xxxxL]<span class="nt">&lt;/message&gt;</span>
+    <span class="nt">&lt;/error&gt;</span>
+  <span class="nt">&lt;/errors&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p>If authentication fails due to an invalid access token or other reason, the following response is returned.</p>
+<div class="highlight-xml"><div class="highlight"><pre><span></span><span class="cp">&lt;? xml version="1.0"? &gt;</span>
+<span class="nt">&lt;methodResponse&gt;</span>
+  <span class="nt">&lt;fault&gt;</span>
+    <span class="nt">&lt;value&gt;</span>
+      <span class="nt">&lt;struct&gt;</span>
+        <span class="nt">&lt;member&gt;</span>
+          <span class="nt">&lt;name&gt;</span>faultCode<span class="nt">&lt;/name&gt;</span>
+          <span class="nt">&lt;value&gt;&lt;int&gt;</span>403<span class="nt">&lt;/int&gt;&lt;/value&gt;</span>
+        <span class="nt">&lt;/member&gt;</span>
+        <span class="nt">&lt;member&gt;</span>
+          <span class="nt">&lt;name&gt;</span>faultString<span class="nt">&lt;/name&gt;</span>
+          <span class="nt">&lt;value&gt;&lt;string&gt;</span>Forbidden (Proxy)<span class="nt">&lt;/string&gt;&lt;/value&gt;</span>
+        <span class="nt">&lt;/member&gt;</span>
+      <span class="nt">&lt;/struct&gt;</span>
+    <span class="nt">&lt;/value&gt;</span>
+  <span class="nt">&lt;/fault&gt;</span>
+<span class="nt">&lt;/methodResponse&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>12. Glossary — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="word-top">
+<span id="id1"></span><h1>12. Glossary</h1>
+<span id="common-words"></span><table border="1" class="docutils" id="id2">
+<caption><span class="caption-text">Table 12.1. Terms Used for Server Services</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>NGS</td>
+<td>The server accessed when using NEX features such as matchmaking, ranking, and data stores. Nintendo Game Server (NGS).</td>
+</tr>
+<tr class="row-odd"><td>Returns the principal ID</td>
+<td>Unique ID for identifying a client. Same as the network service account ID.</td>
+</tr>
+</tbody>
+</table>
+<span id="matchmake-words"></span><table border="1" class="docutils" id="id3">
+<caption><span class="caption-text">Table 12.2. Matchmaking Terms</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Gathering</td>
+<td>A concept representing a session that zero or more clients join. The idea of a gathering has a broader meaning than a "matchmaking room." With the NEX library's matchmaking feature, you can use the <code>nn::<wbr/>nex::<wbr/>MatchmakeSession</code> class and the <code>nn::<wbr/>nex::<wbr/>PersistentGathering</code> class that inherit the <code>nn::<wbr/>nex::<wbr/>Gathering</code> class.</td>
+</tr>
+<tr class="row-odd"><td>Matchmaking session</td>
+<td>A gathering specialized for matchmaking.</td>
+</tr>
+<tr class="row-even"><td>Persistent gathering</td>
+<td>A persistent gathering enabling matchmaking between a specific group of users. A matchmaking session is required for actual matchmaking.</td>
+</tr>
+<tr class="row-odd"><td>Owner</td>
+<td>The owner of a gathering. The state of a gathering can only be changed by its owner.</td>
+</tr>
+<tr class="row-even"><td>Host</td>
+<td>The individual in charge of a peer-to-peer (P2P) session. This role does not imply special privileges, such as the ability to change a gathering. It exists to link matchmaking processes with P2P communication. The owner and the host are not necessarily the same.</td>
+</tr>
+<tr class="row-odd"><td>Game server</td>
+<td>A server used to implement features such as matchmaking and rankings. Although there is a separate game server for each game, it does not need to manage accounts and friend information because those are managed by the friend server.</td>
+</tr>
+<tr class="row-even"><td>Service client</td>
+<td>A collection of NEX server-client communication processes for a service or feature. The following service clients are used for matchmaking: <code>MatchmakeExtensionClient</code> (for matchmaking), <code>NATTraversalClient</code> (for NAT traversal), and <code>MessagingClient</code> (for optional messaging).</td>
+</tr>
+</tbody>
+</table>
+<span id="ranking-words"></span><table border="1" class="docutils" id="id4">
+<caption><span class="caption-text">Table 12.3. Ranking Terms</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Category</td>
+<td>A ranking classification. This term corresponds to game stages and courses.</td>
+</tr>
+<tr class="row-odd"><td>Shared ranking data</td>
+<td>User names, icons, and other common data used by multiple categories. One instance is assigned to a single storage account.</td>
+</tr>
+<tr class="row-even"><td>Group</td>
+<td>An identifier for prefectures, countries, and so on. The group can be used for any purpose. It is the result of taking regions from the existing DWC library and making them more flexible to use.</td>
+</tr>
+</tbody>
+</table>
+<span id="datastore-words"></span><table border="1" class="docutils" id="id5">
+<caption><span class="caption-text">Table 12.4. Data Store Terms</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Storage server</td>
+<td>A dedicated server for data uploaded through a data store.</td>
+</tr>
+<tr class="row-odd"><td>Data ID</td>
+<td>A unique ID assigned to data saved through a data store.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>2. Matchmaking Voice Chat — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="smartdevicevoicechat-matchmakevoicechat-top">
+<span id="id1"></span><h1>2. Matchmaking Voice Chat</h1>
+<div class="section" id="smartdevicevoicechat-first-of-all">
+<span id="id2"></span><h2>2.1. Introduction</h2>
+<div class="section" id="id3">
+<h3>2.1.1. About Matchmaking Voice Chat</h3>
+<p>Matchmaking Voice Chat is a feature for using a Nintendo Switch Online app that runs on smart devices to link up with Nintendo Switch applications and provide voice chat with other players participating in a matchmaking session.</p>
+<p>Matchmaking Voice Chat uses a voice chat server that is independent from the game server. A room is created on the voice chat server as a gathering point for users who participate in the voice chat. After joining a matchmaking session in a Nintendo Switch application, join the room corresponding to the matchmaking session to enable voice chat in the Nintendo Switch Online application.</p>
+<p>A group that participates in voice chat in the same room is called a <em>channel</em>. If users are divided into teams within the matchmaking session, you can join voice chat for each team by changing the channel. Channels can be changed from the Nintendo Switch application.</p>
+<p>Matchmaking Voice Chat can also be used by the independent servers matchmaking feature instead of the NEX matchmaking feature.</p>
+<p>Matchmaking Voice Chat is a service that requires Nintendo Switch Online membership. For an overview of Nintendo Switch Online, see the <em>Nintendo Switch Overview</em>. For more information about supporting Nintendo Switch Online when developing Nintendo Switch applications, see the <em>Nintendo Switch Online Play Guide</em> in addition to this document.</p>
+</div>
+<div class="section" id="id4">
+<h3>2.1.2. Matchmaking Voice Chat Process Flow</h3>
+<p>Matchmaking Voice Chat has the following process flow.</p>
+<ol class="arabic simple">
+<li>Initialize NEX. (<a class="reference internal" href="../common/init_final.html#nex-init-final"><span class="std std-ref">2. NEX Initialization and Finalization</span></a>)</li>
+<li>Log in to the game server.</li>
+<li>Initialize the service client. (<a class="reference internal" href="#matchmakevoicechat-initialize"><span class="std std-ref">2.2.</span></a>)</li>
+<li>Join the a matchmaking session on the Nintendo Switch. (<a class="reference internal" href="#matchmakevoicechat-joinsession"><span class="std std-ref">2.3.</span></a>)</li>
+<li>Join a room on the Nintendo Switch. Voice chat becomes available on smart devices. (<a class="reference internal" href="#matchmakevoicechat-joinroom"><span class="std std-ref">2.4.</span></a>)</li>
+<li>Play together online. If players are divided into teams for voice chat during online play, change the voice chat channel as required. (<a class="reference internal" href="#matchmakevoicechat-channel"><span class="std std-ref">2.6.</span></a>)</li>
+<li>Leave the room on the Nintendo Switch. End voice chat on the smart device. (<a class="reference internal" href="#matchmakevoicechat-leaveroom"><span class="std std-ref">2.5.</span></a>)</li>
+<li>Leave the matchmaking session on the Nintendo Switch.</li>
+<li>Finalize the service client. Alternatively, return to step 4.</li>
+</ol>
+<p><a class="reference internal" href="#matchmakevoicechat-fig-overview"><span class="std std-ref">Figure 2.1</span></a> shows the relationship between the voice chat server's rooms, channels, and the game server's matchmaking session.</p>
+<div class="figure" id="id16">
+<span id="matchmakevoicechat-fig-overview"></span><img alt="../_images/Fig_MatchmakeVoicechat_Overview.png" src="../_images/Fig_MatchmakeVoicechat_Overview.png"/>
+<p class="caption"><span class="caption-text">Figure 2.1. Relationship Between Rooms, Channels, and Matchmaking Sessions</span></p>
+</div>
+<p>Matchmaking sessions are managed on the game server. A room is generated on the voice chat server that corresponds to the matchmaking session. One room is created for one matchmaking session.</p>
+<p>One or more channels exist in one room. The smart device connects to one of these channels. On the smart device, you can only converse with users who are connected to the same channel. In the preceding figure, users A and B can converse with each other, and users C and D can converse with each other. However, users A and C, for example, cannot converse with each other. By changing the connected channel, you can divide members in the same room into groups for voice chat.</p>
+</div>
+<div class="section" id="nintendo-switch-online">
+<h3>2.1.3. Determining Nintendo Switch Online Membership</h3>
+<p>When the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a> asynchronous function is called, the voice chat server determines whether the user has a Nintendo Switch Online membership. If it determines that the user is not a member of Nintendo Switch Online and the service is unavailable, <code>QERROR(SmartDeviceVoiceChat, NetworkServiceLicenseRequired)</code> is returned as the result of the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a> asynchronous function.</p>
+<p>For more information about handling this error, see <a class="reference internal" href="#matchmakevoicechat-errorhandle-networkservicelicenserequired"><span class="std std-ref">2.9.2.1. QERROR(SmartDeviceVoiceChat, NetworkServiceLicenseRequired)</span></a>.</p>
+</div>
+<div class="section" id="id5">
+<h3>2.1.4 Timeout Settings for Asynchronous Function Calls</h3>
+<p>The relevant asynchronous processing does not return a response for a long time when the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a> asynchronous function is called when communication with the voice chat server is not possible. Nintendo recommends setting a timeout on the order of ten seconds for the call context using <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#ac86582d6f0674b31c2319ab00b71168e">CallContext::SetTimeout</a>() when calling the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a> asynchronous function because there is normally a response within ten seconds from the voice chat server.</p>
+</div>
+</div>
+<div class="section" id="matchmakevoicechat-initialize">
+<span id="id6"></span><h2>2.2. Initializing and Finalizing a Service Client</h2>
+<p>The service client used for Matchmaking Voice Chat is <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a>.</p>
+<p>To initialize the service client, use the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a6d0eede07c1faceb0af9644bcf5c5f93">SmartDeviceVoiceChatClient::SetUserHandle()</a> function to set the user handle for the user in an open state using the voice chat, after the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a> instance is generated. For more information about getting user handles, see account Library in NintendoSDK Documents. User handles must be set before calling any of the asynchronous functions for the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a> class. In addition, this user handle must be valid while the  <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a> class instance exists.</p>
+<p>Destroy the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a> instance to finalize the service client.</p>
+<div class="literal-block-wrapper docutils container" id="id17">
+<span id="matchmakevoicechat-code-initialize"></span><div class="code-block-caption"><span class="caption-text">Code 2.1. Initializing and Finalizing a Service Client for Matchmaking Voice Chat</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// Log in to the game server.</span>
+<span class="n">LoginGameServer</span><span class="p">(</span><span class="n">pNgsFacade</span><span class="p">);</span>
+
+<span class="c1">// Create a ServiceClient instance for each login attempt.</span>
+<span class="n">SmartDeviceVoiceChatClient</span><span class="o">*</span> <span class="n">pClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SmartDeviceVoiceChat</span><span class="p">();</span>
+
+<span class="c1">// Gets and sets the user handle.</span>
+<span class="c1">// For more information about the specific method for getting user handles, see account Library in NintendoSDK Documents.</span>
+<span class="n">nn</span><span class="o">::</span><span class="n">account</span><span class="o">::</span><span class="n">UserHandle</span><span class="o">*</span> <span class="n">pUserHandle</span> <span class="o">=</span> <span class="n">GetUserHanedle</span><span class="p">();</span>
+<span class="n">pClient</span><span class="o">-&gt;</span><span class="n">SetUserHandle</span><span class="p">(</span><span class="n">pUserHandle</span><span class="p">);</span>
+
+<span class="c1">// Do the processing.</span>
+<span class="n">pClient</span><span class="o">-&gt;</span><span class="n">DoSomething</span><span class="p">();</span>
+
+<span class="c1">// Destroy the object before logout.</span>
+<span class="k">delete</span> <span class="n">pClient</span><span class="p">;</span>
+
+<span class="c1">// Log out.</span>
+<span class="n">LogoutGameServer</span><span class="p">(</span><span class="n">pNgsFacade</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="matchmakevoicechat-joinsession">
+<span id="id7"></span><h2>2.3. Joining a Matchmaking Session</h2>
+<p>To join Matchmaking Voice Chat, a user must first join a session for user gatherings on the server before starting voice chat. When using the NEX matchmaking feature, joining a matchmaking session is equivalent to this requirement. In addition, the independent server matchmaking feature can be used in place of the NEX matchmaking feature by satisfying the following session specifications.</p>
+<div class="section" id="nex">
+<h3>2.3.1. Using the NEX Matchmaking Feature</h3>
+<p>When using the NEX matchmaking feature, see <a class="reference internal" href="../serverservice/matchmake.html#matchmake-top"><span class="std std-ref">4. Matchmaking</span></a> for more information about joining a matchmaking session.</p>
+<p>When using Matchmaking Voice Chat, there are no restrictions on the method for joining matchmaking sessions. Any of the methods described in the matchmaking documentation may be used.</p>
+</div>
+<div class="section" id="id8">
+<h3>2.3.2. Using the Independent Server Matchmaking Feature</h3>
+<p>Matchmaking Voice Chat can be used with the matchmaking feature implemented on an independent server in place of the NEX matchmaking feature.</p>
+<p>To join a Matchmaking Voice Chat room, the matchmaking features on the independent server must satisfy the following specifications.</p>
+<ul class="simple">
+<li>It is possible to use an unsigned 32-bit integer ID to identify a session created by the matchmaking feature.</li>
+<li>The Nintendo Switch application can get the ID for the session it is currently participating in.</li>
+</ul>
+<p>For more information about session IDs, see <a class="reference internal" href="#matchmakevoicechat-joinroom"><span class="std std-ref">2.4. Joining Rooms</span></a>.</p>
+</div>
+</div>
+<div class="section" id="matchmakevoicechat-joinroom">
+<span id="id9"></span><h2>2.4. Joining Rooms</h2>
+<p>Use the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#ae1cb41b624a99ef2b177b19f99bf3a8d">SmartDeviceVoiceChatClient::JoinRoom()</a> function to join a room. This function passes detailed information for the participating matchmaking session, such as the ID or game mode.</p>
+<p>Use <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_join_room_param.html">SmartDeviceVoiceChatJoinRoomParam</a> to specify the parameters for joining rooms. <a class="reference internal" href="#matchmakevoicechat-table-joinroomparam"><span class="std std-ref">Table 2.1</span></a> describes the available parameters.</p>
+<span id="matchmakevoicechat-table-joinroomparam"></span><table border="1" class="docutils" id="id18">
+<caption><span class="caption-text">Table 2.1. SmartDeviceVoiceChatJoinRoomParam Parameters List</span></caption>
+<colgroup>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Overview</th>
+<th class="head">Initial Value</th>
+<th class="head">Function Used</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Session ID</td>
+<td><p class="first">ID for the session the local host is participating in.</p>
+<p>To use the NEX matchmaking feature, set the gathering ID.</p>
+<p class="last">When using the matchmaking feature on an independent server, set an ID value as an unsigned 32-bit integer to uniquely identify the session the local host is participating in.</p>
+</td>
+<td>0</td>
+<td><code>SetSessionId()</code></td>
+</tr>
+<tr class="row-odd"><td>Game mode.</td>
+<td><p class="first">The value representing the matchmaking mode. Sets the game mode value for the session the local host is participating in.</p>
+<p class="last">This value does not need to be explicitly set when using the matchmaking feature on an independent server, if there is no game mode like the mode in the NEX matchmaking feature.</p>
+</td>
+<td>0</td>
+<td><code>SetGameMode()</code></td>
+</tr>
+<tr class="row-even"><td>Channel</td>
+<td>Specifies the channel to connect to when starting voice chat.</td>
+<td>SmartDeviceVoiceChatConstants::<wbr/>DEFAULT_<wbr/>CHANNELID</td>
+<td><code>SetChannelID()</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">Nintendo Switch consoles that specify the same session ID with <code>SmartDeviceVoiceChatClient::JoinRoom()</code> join the same room. Make sure that the maximum number of users that can join one room does not exceed the value requested and approved in OMAS. Also note that the session ID value is unique regardless of the game mode when using the matchmaking feature on an independent server.</p>
+</div>
+<p>When asynchronous processing succeeds, the room ID of the room that was joined is set to the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_join_room_result.html">SmartDeviceVoiceChatJoinRoomResult</a> object. The room that is joined is determined by the voice chat server based on the session ID set to <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_join_room_param.html">SmartDeviceVoiceChatJoinRoomParam</a>. The Nintendo Switch does not need to handle creating or selecting rooms.</p>
+<p>After the user joins a room, the voice chat features on the smart device become available, and voice chat begins when the user performs the operation for starting voice chat. The Nintendo Switch application cannot determine whether the user has started voice chat on the smart device application.</p>
+<p>After joining the room, periodic communication with the voice chat server occurs internally within <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a>. This periodic communication is called the <em>heartbeat</em>. The heartbeat is for the voice chat server to detect when communication with the Nintendo Switch is disconnected, and stops if you either call the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a67c7d5a1b0c661085b9f8fed57952553">SmartDeviceVoiceChatClient::LeaveRoom()</a> function or destroy the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a> class instance. Either call the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a67c7d5a1b0c661085b9f8fed57952553">SmartDeviceVoiceChatClient::LeaveRoom()</a> function or destroy the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a> class instance to stop the heartbeat when terminating online play because Nintendo Switch application communication has been interrupted, or when logging out from the game server.</p>
+</div>
+<div class="section" id="matchmakevoicechat-leaveroom">
+<span id="id10"></span><h2>2.5. Leaving a Room</h2>
+<p>Use <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a67c7d5a1b0c661085b9f8fed57952553">SmartDeviceVoiceChatClient::LeaveRoom()</a> to leave a room.</p>
+<p>Pass <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_leave_room_param.html">SmartDeviceVoiceChatLeaveRoomParam</a> as the argument for this function. <a class="reference internal" href="#matchmakevoicechat-table-leaveroomparam"><span class="std std-ref">Table 2.2</span></a> describes the parameters to set.</p>
+<span id="matchmakevoicechat-table-leaveroomparam"></span><table border="1" class="docutils" id="id19">
+<caption><span class="caption-text">Table 2.2. SmartDeviceVoiceChatLeaveRoomParam Parameters List</span></caption>
+<colgroup>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Overview</th>
+<th class="head">Initial Value</th>
+<th class="head">Function Used</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Room ID</td>
+<td>Specifies the ID of the room that the local host is participating in.</td>
+<td>0</td>
+<td><code>SetRoomId()</code></td>
+</tr>
+</tbody>
+</table>
+<p>Call this function to execute the processing on the voice chat server for leaving the room. After leaving is complete, the smart device is in a state where it is waiting for voice chat to terminate. In this state, the user can continue to use voice chat for a period of time. Voice chat ends when either that period has passed, or when the user performs the operation for ending voice chat on the smart device.</p>
+<p>In addition, calling <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a67c7d5a1b0c661085b9f8fed57952553">SmartDeviceVoiceChatClient::LeaveRoom()</a> stops the heartbeat regardless of whether the function is successful. The voice chat server also performs leaving processing if it detects a timeout for the heartbeat, not only when there is an explicit request from the Nintendo Switch. The process for leaving the room is executed regardless of whether asynchronous processing succeeds, so the application does not need to perform handling for the asynchronous processing results of this function. For this reason, we recommend using an overload function that does not take a pointer to the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a> object as its argument when leaving a room.</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p>If you destroy the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a> instance immediately after calling <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a67c7d5a1b0c661085b9f8fed57952553">SmartDeviceVoiceChatClient::LeaveRoom()</a>, the asynchronous processing is canceled while in progress. The heartbeat will also stop in this instance, so ultimately any leaving will occur on the voice chat server.</p>
+<p>However, there is a time lag until the heartbeat timeout is detected, so this method takes more time to terminate voice chat than the standard leaving process.</p>
+<p class="last">If you wait for the asynchronous processing to complete to avoid this issue, use an overload function that takes a pointer to the <code>CallContext</code> object as its argument.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Notes</p>
+<p>The heartbeat stops and processing to leave the room occurs when the voice chat server detects the heartbeat timeout. This happens in cases when an application stops or ends while participating in a room.</p>
+<p class="last">It is still possible for voice chat to occur on a smart device because leaving does not occur in the interval between the application's stopping and the detection of the heartbeat timeout.</p>
+</div>
+</div>
+<div class="section" id="matchmakevoicechat-channel">
+<span id="id11"></span><h2>2.6. Changing Voice Chat Channels</h2>
+<p>If you want to set up voice chat for only some of the participants in a room, such as dividing users into teams in a matchmaking session for online play, use the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a0d5b1a6fef343a05a0d65ab2227b213e">SmartDeviceVoiceChatClient::ChangeVoiceChatChannel()</a> function to change the channel. The <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_change_voice_chat_channel_param.html">SmartDeviceVoiceChatChangeVoiceChatChannelParam</a> object is passed to this function. <a class="reference internal" href="#matchmakevoicechat-table-changechannel"><span class="std std-ref">Table 2.3</span></a> describes the parameters specified by <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_change_voice_chat_channel_param.html">SmartDeviceVoiceChatChangeVoiceChatChannelParam</a>.</p>
+<span id="matchmakevoicechat-table-changechannel"></span><table border="1" class="docutils" id="id20">
+<caption><span class="caption-text">Table 2.3. SmartDeviceVoiceChatChangeVoiceChatChannelParam Parameters List</span></caption>
+<colgroup>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Overview</th>
+<th class="head">Initial Value</th>
+<th class="head">Function Used</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Room ID</td>
+<td>Specifies the room ID of the room that the local host is participating in.</td>
+<td>0</td>
+<td><code>SetRoomId()</code></td>
+</tr>
+<tr class="row-odd"><td>Channel ID</td>
+<td>Specifies the channel to change.</td>
+<td>SmartDeviceVoiceChatConstants::<wbr/>DEFAULT_<wbr/>CHANNELID</td>
+<td><code>SetChannelId()</code></td>
+</tr>
+</tbody>
+</table>
+<p>If you are dividing users into teams, specify a value other than <code>SmartDeviceVoiceChatConstants::DEFAULT_CHANNELID</code> as the channel ID. If you specify a value other than <code>SmartDeviceVoiceChatConstants::DEFAULT_CHANNELID</code> as the channel ID, the information that voice chat teams are being divided is displayed on the smart device.</p>
+<p>If the asynchronous processing succeeds, the voice chat channel on the smart device changes. When changing the voice chat channel, it may take some time after the voice chat server accepts the request until it is actually available from the smart device.</p>
+</div>
+<div class="section" id="matchmakevoicechat-availability">
+<span id="id12"></span><h2>2.7. Checking Whether Voice Chat Is Available</h2>
+<p>If a user that has not previously logged in to the Nintendo Switch Online application calls the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#ae1cb41b624a99ef2b177b19f99bf3a8d">SmartDeviceVoiceChatClient::JoinRoom()</a> function, <code>QERROR(SmartDeviceVoiceChat, UserNotFound)</code> is returned as the asynchronous processing result, and the user cannot start voice chat.</p>
+<p>Before calling <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#ae1cb41b624a99ef2b177b19f99bf3a8d">SmartDeviceVoiceChatClient::JoinRoom()</a>, use the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a5b5dd46411fbce52998d4c578246fd4f">SmartDeviceVoiceChatClient::GetAvailability()</a> function to check that <code>QERROR(SmartDeviceVoiceChat, UserNotFound)</code> does not occur with the applicable user. This function passes a pointer to the Boolean variable that receives the result for determining whether voice chat is available.</p>
+<p>If the asynchronous processing succeeds and the applicable user is eligible for voice chat, <code>true</code> is returned for the Boolean variable that determines whether voice chat is available. If the user has not logged in to the Nintendo Switch Online application, the function returns <code>false</code>.</p>
+</div>
+<div class="section" id="matchmakevoicechat-guidance-nsoapp">
+<span id="id13"></span><h2>2.8. Nintendo Switch Online Application Guide</h2>
+<p>To describe voice chat to users, you can use the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a3ad78b085cdc66806a6234109d56e94c">SmartDeviceVoiceChatClient::ShowAppPage()</a> function to display the Nintendo Switch Online application guide page in the web applet.</p>
+<p>Use <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_show_app_page_param.html">SmartDeviceVoiceChatShowAppPageParam</a> to pass parameters for this function. The parameter required for configuration is the user handle for the user using Matchmaking Voice Chat.</p>
+<p>The user operation results from the web applet are set to <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_show_app_page_result.html">SmartDeviceVoiceChatShowAppPageResult</a>.</p>
+<p>The <code>SmartDeviceVoicechatClient::ShowAppPage()</code> function is available in synchronous and asynchronous versions.</p>
+<p>When the synchronous function is called, processing for the thread is blocked while the web applet is displayed. The user operation results are returned as the return value of the function. Depending on the NEX thread mode, the user may be logged out from the game server unless dispatch processing is executed periodically in a different thread, even when this function is running ( <a class="reference internal" href="../common/overall.html#overall-job-dispatch"><span class="std std-ref">5.2. Overview of Dispatch Processing</span></a>). Also note that when using the NEX function from multiple threads, you must use a thread-safe memory allocator (<a class="reference internal" href="../common/memory.html#memory-top"><span class="std std-ref">3. Memory Management</span></a>).</p>
+<p>When using an asynchronous function, a pointer to the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_show_app_page_result.html">SmartDeviceVoiceChatShowAppPageResult</a> object that receives the operation results is specified in addition to the parameters. Call this function to signal <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a> when the user closes the web applet. Because the time until this event is signaled depends on user operations, it is not possible to set a timeout for <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a> or cancel the process.</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">If the Nintendo Switch Online voice chat service is terminated, information indicating that it was terminated is displayed in the web applet that appears, using the <code>SmartDeviceVoiceChatClient::ShowAppPage()</code> function.</p>
+</div>
+</div>
+<div class="section" id="matchmakevoicechat-errorhandle">
+<span id="id14"></span><h2>2.9. Error Handling</h2>
+<p>If an error occurred due to calling a <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a> function, voice chat is not available but online play can be continued because the voice chat server is independent from the game server. In this case, the application may either continue online play without voice chat, or end online play. Implement the application to allow online play even when voice chat is unavailable, such as by disabling voice chat in advance.</p>
+<div class="section" id="api">
+<h3>2.9.1. Errors During Function Calls</h3>
+<p>If you call a function and it returns an error without starting asynchronous processing, there may have been a programming error. Verify whether initialization was performed correctly.</p>
+</div>
+<div class="section" id="matchmakevoicechat-errorhandle-async">
+<span id="id15"></span><h3>2.9.2. Asynchronous Processing Errors</h3>
+<p>You can get asynchronous processing results with the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#acb03838807a46d921f5517fcc887bdcf">CallContext::GetOutcome()</a> function. The API Reference describes errors that the application must handle for each function.</p>
+<p>When an unlisted error occurs, use the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html#ad88a83b6db9d69fd1d1a061c97c5ede9">qResult::GetNnResult()</a> function to get <code>nn::Result</code>, or <a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html#a01cb4ff331eda28fc8abbb1bcf2c205e">qResult::GetErrorCodeStruct()</a> to get the error code and pass it to the error viewer applet. You can also indicate to the user in the application UI that voice chat is unavailable, instead of passing the error viewer applet results.</p>
+<div class="literal-block-wrapper docutils container" id="id21">
+<span id="matchmakevoicechat-code-error-handling"></span><div class="code-block-caption"><span class="caption-text">Code 2.2. SmartDeviceVoiceChatClient Error Handling</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">SmartDeviceVoiceChatClient</span> <span class="n">client</span><span class="p">;</span>
+<span class="n">CallContext</span> <span class="n">context</span><span class="p">;</span>
+<span class="n">client</span><span class="p">.</span><span class="n">SetUserHandle</span><span class="p">(</span><span class="n">pUserHandle</span><span class="p">);</span>  <span class="c1">// pUserHandle is a pointer to the opened user handle.</span>
+
+<span class="c1">// Call asynchronous processing. Arguments other than context are omitted.</span>
+<span class="c1">// In cases where the asynchronous processing returns false, either context is being used by another asynchronous process, </span>
+<span class="c1">// or the user handle has not been configured. Both situations are the result of a programming error.</span>
+<span class="c1">// As long as the user handle is already generated and a newly created CallContext is passed, error handling is not required.</span>
+<span class="n">client</span><span class="p">.</span><span class="n">JoinRoom</span><span class="p">(</span><span class="o">&amp;</span><span class="n">context</span><span class="p">,</span> <span class="p">...);</span>
+
+<span class="n">context</span><span class="p">.</span><span class="n">Wait</span><span class="p">();</span> <span class="c1">// Blocks here, and waits for the asynchronous processing to complete.</span>
+
+<span class="k">if</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">GetState</span><span class="p">()</span> <span class="o">!=</span> <span class="n">CallContext</span><span class="o">::</span><span class="n">CallSuccess</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">GetOutcome</span><span class="p">().</span><span class="n">GetReturnCode</span><span class="p">())</span>
+    <span class="p">{</span>
+        <span class="c1">// If an error occurs that the application needs to handle, perform the required processing in the application.</span>
+        <span class="k">case</span> <span class="n">QERROR</span><span class="p">(</span><span class="n">SmartDeviceVoiceChat</span><span class="p">,</span> <span class="n">UserNotFound</span><span class="p">)</span><span class="o">:</span>
+            <span class="c1">// User that has not previously logged in to the Nintendo Switch Online application.</span>
+            <span class="c1">// Informs the user that the Nintendo Switch Online application is required for using voice chat.</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nf">QERROR</span><span class="p">(</span><span class="n">SmartDeviceVoiceChat</span><span class="p">,</span> <span class="n">AccountLibraryError</span><span class="p">)</span><span class="o">:</span>
+            <span class="c1">// Error that occurred in the account library API.</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nf">QERROR</span><span class="p">(</span><span class="n">SmartDeviceVoiceChat</span><span class="p">,</span> <span class="n">NetworkServiceLicenseRequired</span><span class="p">)</span><span class="o">:</span>
+            <span class="c1">// No Nintendo Switch Online membership.</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">default</span><span class="o">:</span>
+        <span class="p">{</span>
+            <span class="c1">// Cases where there is an unintended error in the application.</span>
+            <span class="n">u32</span> <span class="n">code</span> <span class="o">=</span> <span class="n">ErrorCodeConverter</span><span class="o">::</span><span class="n">ConvertToNetworkErrorCode</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+            <span class="n">nn</span><span class="o">::</span><span class="n">err</span><span class="o">::</span><span class="n">ErrorCode</span> <span class="n">errorCode</span> <span class="o">=</span> <span class="n">result</span><span class="p">.</span><span class="n">GetErrorCodeStruct</span><span class="p">();</span>
+            <span class="c1">// Start the error viewer applet.</span>
+            <span class="n">nn</span><span class="o">::</span><span class="n">err</span><span class="o">::</span><span class="n">ShowError</span><span class="p">(</span><span class="n">errorCode</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p><a class="reference internal" href="#matchmakevoicechat-table-errors"><span class="std std-ref">Table 2.4</span></a> describes errorErrors that may occur during Matchmaking Voice Chat. This table excludes shared errors that occur during NEX communication, and so on.</p>
+<span id="matchmakevoicechat-table-errors"></span><table border="1" class="colwidths-given docutils" id="id22">
+<caption><span class="caption-text">Table 2.4. Matchmaking Voice Chat Errors List</span></caption>
+<colgroup>
+<col width="25%"/>
+<col width="75%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">ReturnCode Value</th>
+<th class="head">Overview</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>QERROR(SmartDeviceVoiceChat, Unknown)</td>
+<td>Unknown error. This return code may occur when an unexpected error occurs.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(SmartDeviceVoiceChat, InvalidArgument)</td>
+<td>The argument is invalid.</td>
+</tr>
+<tr class="row-even"><td>QERROR(SmartDeviceVoiceChat, InvalidResponse)</td>
+<td>Failed to parse the response from the voice chat server.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(SmartDeviceVoiceChat, InvalidAccessToken)</td>
+<td>An access token error for the voice chat server occurred twice in a row. For example, if an error indicating that the token has expired occurs, the library tries to get the token again once. If a token is obtained normally with this second attempt, this error does not occur.</td>
+</tr>
+<tr class="row-even"><td>QERROR(SmartDeviceVoiceChat, Unauthorized)</td>
+<td>Authentication error.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(SmartDeviceVoiceChat, AccessError)</td>
+<td>Access error.</td>
+</tr>
+<tr class="row-even"><td>QERROR(SmartDeviceVoiceChat, UserNotFound)</td>
+<td>A user who has not logged in to Nintendo Switch Online attempted to use Matchmaking Voice Chat. The application must handle this error.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(SmartDeviceVoiceChat, RoomNotFound)</td>
+<td>The specified room does not exist.</td>
+</tr>
+<tr class="row-even"><td>QERROR(SmartDeviceVoiceChat, RoomNotActivated)</td>
+<td>The specified room is invalid.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(SmartDeviceVoiceChat, ApplicationNotSupported)</td>
+<td>This application is not supported. This error occurs when request to use this feature has not been made in OMAS.</td>
+</tr>
+<tr class="row-even"><td>QERROR(SmartDeviceVoiceChat, InternalServerError)</td>
+<td>Internal error in the voice chat server.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(SmartDeviceVoiceChat, ServiceUnavailable)</td>
+<td>The service is unavailable.</td>
+</tr>
+<tr class="row-even"><td>QERROR(SmartDeviceVoiceChat, UnexpectedError)</td>
+<td>An unexpected error occurred.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(SmartDeviceVoiceChat, UnderMaintenance)</td>
+<td>The voice chat server is undergoing maintenance.</td>
+</tr>
+<tr class="row-even"><td>QERROR(SmartDeviceVoiceChat, ServiceNoLongerAvailable)</td>
+<td>The Nintendo Switch Online voice chat service has ended.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(SmartDeviceVoiceChat, AccountTemporarilyDisabled)</td>
+<td>The Nintendo Switch Online voice chat service has been temporarily disabled for this account. (Penalty from reporting.)</td>
+</tr>
+<tr class="row-even"><td>QERROR(SmartDeviceVoiceChat, PermissionDenied)</td>
+<td>Access from an account that does not have a license for the specified Application ID. This error only occurs in the development environment.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(SmartDeviceVoiceChat, NetworkServiceLicenseRequired)</td>
+<td>No permissions to use the network service. The application must handle this error.</td>
+</tr>
+<tr class="row-even"><td>QERROR(SmartDeviceVoiceChat, AccountLibraryError)</td>
+<td>Although an error occurred in the account library, processing continued without handling the error appropriately. The application must handle this error.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(SmartDeviceVoiceChat, GameModeNotFound)</td>
+<td>The specified game mode is not registered in the voice chat server. This error is caused by an implementation error.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="qerror-smartdevicevoicechat-networkservicelicenserequired">
+<span id="matchmakevoicechat-errorhandle-networkservicelicenserequired"></span><h4>2.9.2.1. QERROR(SmartDeviceVoiceChat, NetworkServiceLicenseRequired)</h4>
+<p>If the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html">SmartDeviceVoiceChatClient</a> API is called and determines that the user is not subscribed to Nintendo Switch Online, <code>QERROR(SmartDeviceVoiceChat, NetworkServiceLicenseRequired)</code> is returned.</p>
+<p>In this case, have the application call the <code>nn::account::ShowLicenseRequirementsForNetworkService()</code> function and notify the user that Nintendo Switch Online membership is required. This API is available in NintendoSDK NX Add-On 4.4.0 and later.</p>
+<p>For more information about verifying operation in the development environment, see the <em>Nintendo Switch Online Play Guide</em>.</p>
+</div>
+<div class="section" id="qerror-smartdevicevoicechat-accountlibraryerror">
+<span id="matchmakevoicechat-errorhandle-accountlibraryerror"></span><h4>2.9.2.2. QERROR(SmartDeviceVoiceChat, AccountLibraryError)</h4>
+<p>If <code>QERROR(SmartDeviceVoiceChat, AccountLibraryError)</code> is returned, have the application use <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#aa07cb167e6dfd1c6df1d7ff1f3c5a1cc">SmartDeviceVoiceChatClient::GetLastAccountNnResult()</a> to get <code>nn::Result</code>, and then perform error handling according to the Error Handling section for the <code>account</code> library in NintendoSDK Documents.</p>
+<p><code>nn::account::ResultTokenCacheUnavailable</code> is handled during asynchronous processing. As a result, the application does not need to handle <code>nn::accountResultTokenCacheUnavailable</code>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,2335 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>11.4. Data Stores — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="webapi-datastore-top">
+<span id="id1"></span><h1>11.4. DataStore</h1>
+<div class="section" id="id2">
+<h2>11.4.1. General Information</h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%"/>
+<col width="61%"/>
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Module name</td>
+<td>datastore</td>
+</tr>
+<tr class="row-even"><td>API version</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>The following values must be encoded in Base64 in the request. The response also uses Base64 encoding.</p>
+<ul class="simple">
+<li>Meta-binary data</li>
+<li>Tags</li>
+</ul>
+</div>
+<div class="section" id="api">
+<h2>11.4.2. Standard API</h2>
+<div class="section" id="id3">
+<h3>11.4.2.1. Getting Metadata</h3>
+<p>Gets the metadata of data.</p>
+<dl class="get">
+<dt id="get--nex-datastore-v2-metainfo-(data_id)">
+<code class="descname">GET </code><code class="descname">/nex/datastore/v2/metainfo/</code><span class="sig-paren">(</span><em>data_id</em><span class="sig-paren">)</span></dt>
+<dd><p>Gets the metadata for one piece of data, <code><var>data_id</var></code>.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%"/>
+<col width="75%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>data_<wbr/>id</strong></td>
+<td>The data ID to get the metadata for. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>response</td>
+<td>Additional information to retrieve. For more information, see the following table. You can specify multiple values, delimited by commas.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Get metadata for data ID <code>10</code>.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/datastore/v2/metainfo/10?response=meta_binary,tags,ratings</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;metainfos</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;metainfo&gt;</span>
+        <span class="nt">&lt;referred_count&gt;</span>0<span class="nt">&lt;/referred_count&gt;</span>
+        <span class="nt">&lt;meta_binary&gt;</span>bWV0YWJpbmFyeQ==<span class="nt">&lt;/meta_binary&gt;</span>
+        <span class="nt">&lt;cur_version&gt;</span>1<span class="nt">&lt;/cur_version&gt;</span>
+        <span class="nt">&lt;period&gt;</span>30<span class="nt">&lt;/period&gt;</span>
+        <span class="nt">&lt;created_time&gt;</span>2016-01-01T00:00:00Z<span class="nt">&lt;/created_time&gt;</span>
+        <span class="nt">&lt;size&gt;</span>10<span class="nt">&lt;/size&gt;</span>
+        <span class="nt">&lt;ratings</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;rating&gt;</span>
+            <span class="nt">&lt;slot&gt;</span>0<span class="nt">&lt;/slot&gt;</span>
+            <span class="nt">&lt;count&gt;</span>1<span class="nt">&lt;/count&gt;</span>
+            <span class="nt">&lt;total_value&gt;</span>100<span class="nt">&lt;/total_value&gt;</span>
+            <span class="nt">&lt;initial_value&gt;</span>0<span class="nt">&lt;/initial_value&gt;</span>
+          <span class="nt">&lt;/rating&gt;</span>
+        <span class="nt">&lt;/ratings&gt;</span>
+        <span class="nt">&lt;update_permission&gt;</span>
+          <span class="nt">&lt;recipient_ids</span> <span class="na">length=</span><span class="s">"0"</span><span class="nt">/&gt;</span>
+          <span class="nt">&lt;type&gt;</span>public<span class="nt">&lt;/type&gt;</span>
+        <span class="nt">&lt;/update_permission&gt;</span>
+        <span class="nt">&lt;type&gt;</span>0<span class="nt">&lt;/type&gt;</span>
+        <span class="nt">&lt;owner_id&gt;</span>100<span class="nt">&lt;/owner_id&gt;</span>
+        <span class="nt">&lt;status&gt;</span>none<span class="nt">&lt;/status&gt;</span>
+        <span class="nt">&lt;refer_data_id&gt;</span>0<span class="nt">&lt;/refer_data_id&gt;</span>
+        <span class="nt">&lt;tags</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;tag&gt;</span>dGFnMQ==<span class="nt">&lt;/tag&gt;</span>
+          <span class="nt">&lt;tag&gt;</span>dGFnMg==<span class="nt">&lt;/tag&gt;</span>
+        <span class="nt">&lt;/tags&gt;</span>
+        <span class="nt">&lt;access_permission&gt;</span>
+          <span class="nt">&lt;recipient_ids</span> <span class="na">length=</span><span class="s">"0"</span><span class="nt">/&gt;</span>
+          <span class="nt">&lt;type&gt;</span>public<span class="nt">&lt;/type&gt;</span>
+        <span class="nt">&lt;/access_permission&gt;</span>
+        <span class="nt">&lt;prev_version&gt;</span>0<span class="nt">&lt;/prev_version&gt;</span>
+        <span class="nt">&lt;read_lock_id&gt;</span>0<span class="nt">&lt;/read_lock_id&gt;</span>
+        <span class="nt">&lt;expire_time&gt;</span>2016-01-01T00:00:00Z<span class="nt">&lt;/expire_time&gt;</span>
+        <span class="nt">&lt;referred_time&gt;</span>2016-01-01T00:00:00Z<span class="nt">&lt;/referred_time&gt;</span>
+        <span class="nt">&lt;name&gt;</span>name<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>10<span class="nt">&lt;/data_id&gt;</span>
+        <span class="nt">&lt;updated_time&gt;</span>2016-01-01T00:00:00Z<span class="nt">&lt;/updated_time&gt;</span>
+        <span class="nt">&lt;flags</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;flag&gt;</span>none<span class="nt">&lt;/flag&gt;</span>
+        <span class="nt">&lt;/flags&gt;</span>
+      <span class="nt">&lt;/metainfo&gt;</span>
+    <span class="nt">&lt;/metainfos&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code>meta_binary</code> and <code>tag</code> are in URL-safe Base64 encoded format.</p>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-datastore-v2-metainfo">
+<code class="descname">GET </code><code class="descname">/nex/datastore/v2/metainfo</code></dt>
+<dd><p>Gets the metadata of multiple pieces of data.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%"/>
+<col width="80%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>data_<wbr/>ids</strong></td>
+<td>The data ID to get the metadata for. You can specify up to 100, delimited by commas. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>response</td>
+<td>Additional information to retrieve. For more information, see the following table. You can specify multiple values, delimited by commas.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>response</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%"/>
+<col width="73%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>meta_<wbr/>binary</td>
+<td>Meta-binary data</td>
+</tr>
+<tr class="row-odd"><td>tags</td>
+<td>Tags</td>
+</tr>
+<tr class="row-even"><td>ratings</td>
+<td>Ratings</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Get metadata for data IDs <code>10</code>, <code>20</code>, and <code>30</code>.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/datastore/v2/metainfo?data_ids=10,20,30</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;metainfos</span> <span class="na">length=</span><span class="s">"3"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;metainfo&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>10<span class="nt">&lt;/data_id&gt;</span>
+
+        ...
+
+      <span class="nt">&lt;/metainfo&gt;</span>
+      <span class="nt">&lt;metainfo&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>20<span class="nt">&lt;/data_id&gt;</span>
+
+        ...
+
+      <span class="nt">&lt;/metainfo&gt;</span>
+      <span class="nt">&lt;metainfo&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>30<span class="nt">&lt;/data_id&gt;</span>
+
+        ...
+
+      <span class="nt">&lt;/metainfo&gt;</span>
+    <span class="nt">&lt;/metainfos&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="webapi-datastore-metainfo-put">
+<span id="id4"></span><h3>11.4.2.2. Changing Metadata</h3>
+<p>Changes the metadata of data.</p>
+<p>Although generally only the specified information is changed, the expiration is also updated if the number of days valid or date modified is changed.</p>
+<dl class="put">
+<dt id="put--nex-datastore-v2-metainfo-(data_id)">
+<code class="descname">PUT </code><code class="descname">/nex/datastore/v2/metainfo/</code><span class="sig-paren">(</span><em>data_id</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-datastore-v2-metainfo-(data_id)-put">
+<code class="descname">POST </code><code class="descname">/nex/datastore/v2/metainfo/</code><span class="sig-paren">(</span><em>data_id</em><span class="sig-paren">)</span><code class="descname">/put</code></dt>
+<dd><p>Changes the metadata for one piece of data, <code><var>data_id</var></code>.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>data_<wbr/>id</strong></td>
+<td>The data ID to change. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%"/>
+<col width="23%"/>
+<col width="65%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>change</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>name</td>
+<td>change</td>
+<td>Name.</td>
+</tr>
+<tr class="row-even"><td>type</td>
+<td>change</td>
+<td>Data type</td>
+</tr>
+<tr class="row-odd"><td>period</td>
+<td>change</td>
+<td>The number of valid days.</td>
+</tr>
+<tr class="row-even"><td>status</td>
+<td>change</td>
+<td>The status. For more information, see the following table.</td>
+</tr>
+<tr class="row-odd"><td>access_<wbr/>permission</td>
+<td>change</td>
+<td>Access permission. Configured in the child element.</td>
+</tr>
+<tr class="row-even"><td>update_<wbr/>permission</td>
+<td>change</td>
+<td>Update permissions. Configured in the child element.</td>
+</tr>
+<tr class="row-odd"><td>type</td>
+<td>access_<wbr/>permission, update_<wbr/>permission</td>
+<td>Permission type. For more information, see the following table.</td>
+</tr>
+<tr class="row-even"><td>recipient_<wbr/>ids</td>
+<td>access_<wbr/>permission, update_<wbr/>permission</td>
+<td>User with permission. If <cite>type</cite> is <code class="docutils literal"><span class="pre">specified</span></code> or <code class="docutils literal"><span class="pre">specified_<wbr/>friend</span></code>, specify in the <code>recipient_id</code> child element.</td>
+</tr>
+<tr class="row-odd"><td>recipient_<wbr/>id</td>
+<td>recipient_<wbr/>ids</td>
+<td>User with permission. More than one can be specified.</td>
+</tr>
+<tr class="row-even"><td>tags</td>
+<td>change</td>
+<td>Returns tags. Specify in the <code><var>tag</var></code> child element.</td>
+</tr>
+<tr class="row-odd"><td>tag</td>
+<td>tags</td>
+<td>Tags. Specify the value as a URL-safe Base64-encoded string. Multiple values can be specified (up to 16).</td>
+</tr>
+<tr class="row-even"><td>meta_<wbr/>binary</td>
+<td>change</td>
+<td>Meta-binary data. Specify the value as a URL-safe Base64-encoded string.</td>
+</tr>
+<tr class="row-odd"><td>modify_<wbr/>updated_<wbr/>time</td>
+<td>change</td>
+<td>To update the modified date to the current date, specify <code class="docutils literal"><span class="pre">1</span></code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>status</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%"/>
+<col width="73%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>none</td>
+<td>Normal state.</td>
+</tr>
+<tr class="row-odd"><td>pending</td>
+<td>Rating Pending</td>
+</tr>
+<tr class="row-even"><td>rejected</td>
+<td>Rejected.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>access_permission/type, update_permission/type</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%"/>
+<col width="77%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>public</td>
+<td>Overall.</td>
+</tr>
+<tr class="row-odd"><td>friend</td>
+<td>Friends only.</td>
+</tr>
+<tr class="row-even"><td>specified</td>
+<td>Only the specified recipients. Must be specified in the <cite>recipient_<wbr/>ids</cite> element.</td>
+</tr>
+<tr class="row-odd"><td>private</td>
+<td>Oneself only.</td>
+</tr>
+<tr class="row-even"><td>specified_<wbr/>friend</td>
+<td>Only the specified friends. Must be specified in the <cite>recipient_<wbr/>ids</cite> element.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Change the metadata for data ID <code>10</code> as follows.</p>
+<ul class="simple">
+<li>Change the name to "new name."</li>
+<li>Set the access permission to everyone (public).</li>
+<li>Set the tag to "tag."</li>
+</ul>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/datastore/v2/metainfo/10</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;name&gt;new name&lt;/name&gt;
+  &lt;access_permission&gt;
+    &lt;type&gt;public&lt;/type&gt;
+  &lt;/access_permission&gt;
+  &lt;tags&gt;
+    &lt;tag&gt;dGFn&lt;/tag&gt;
+  &lt;/tags&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;metainfo&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/metainfo&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="put">
+<dt id="put--nex-datastore-v2-metainfo">
+<code class="descname">PUT </code><code class="descname">/nex/datastore/v2/metainfo</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-datastore-v2-metainfo-put">
+<code class="descname">POST </code><code class="descname">/nex/datastore/v2/metainfo/put</code></dt>
+<dd><p>Changes the metadata of multiple pieces of data.</p>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%"/>
+<col width="23%"/>
+<col width="65%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>change</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>name</td>
+<td>change</td>
+<td>Name.</td>
+</tr>
+<tr class="row-even"><td>type</td>
+<td>change</td>
+<td>Data type</td>
+</tr>
+<tr class="row-odd"><td>period</td>
+<td>change</td>
+<td>The number of valid days.</td>
+</tr>
+<tr class="row-even"><td>status</td>
+<td>change</td>
+<td>The status. See the previous table.</td>
+</tr>
+<tr class="row-odd"><td>access_<wbr/>permission</td>
+<td>change</td>
+<td>Access permission. Configured in the child element.</td>
+</tr>
+<tr class="row-even"><td>update_<wbr/>permission</td>
+<td>change</td>
+<td>Update permissions. Configured in the child element.</td>
+</tr>
+<tr class="row-odd"><td>type</td>
+<td>access_<wbr/>permission, update_<wbr/>permission</td>
+<td>Permission type. See the previous table.</td>
+</tr>
+<tr class="row-even"><td>recipient_<wbr/>ids</td>
+<td>access_<wbr/>permission, update_<wbr/>permission</td>
+<td>User with permission. If <cite>type</cite> is <code class="docutils literal"><span class="pre">specified</span></code> or <code class="docutils literal"><span class="pre">specified_<wbr/>friend</span></code>, specify in the <code>recipient_id</code> child element.</td>
+</tr>
+<tr class="row-odd"><td>recipient_<wbr/>id</td>
+<td>recipient_<wbr/>ids</td>
+<td>User with permission. More than one can be specified.</td>
+</tr>
+<tr class="row-even"><td>tags</td>
+<td>change</td>
+<td>Returns tags. Specify in the <code><var>tag</var></code> child element.</td>
+</tr>
+<tr class="row-odd"><td>tag</td>
+<td>tags</td>
+<td>Tags. Specify the value as a URL-safe Base64-encoded string. Multiple values can be specified (up to 16).</td>
+</tr>
+<tr class="row-even"><td>meta_<wbr/>binary</td>
+<td>change</td>
+<td>Meta-binary data. Specify the value as a URL-safe Base64-encoded string.</td>
+</tr>
+<tr class="row-odd"><td>modify_<wbr/>updated_<wbr/>time</td>
+<td>change</td>
+<td>To update the modified date to the current date, specify <code class="docutils literal"><span class="pre">1</span></code>.</td>
+</tr>
+<tr class="row-even"><td>param</td>
+<td>change</td>
+<td>The data to change. Multiple values can be specified (up to 100). <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>data_<wbr/>id</strong></td>
+<td>param</td>
+<td>The data ID to change. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Change the metadata for data IDs <code>10</code> and <code>20</code> as follows.</p>
+<ul class="simple">
+<li>Change the name to "new name."</li>
+<li>Set the update permission to principal ID <code>100</code> only.</li>
+</ul>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/datastore/v2/metainfo</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;name&gt;new name&lt;/name&gt;
+  &lt;update_permission&gt;
+    &lt;type&gt;specified&lt;/type&gt;
+    &lt;recipient_ids&gt;
+      &lt;recipient_id&gt;100&lt;/recipient_id&gt;
+    &lt;/recipient_ids&gt;
+  &lt;/update_permission&gt;
+  &lt;param&gt;
+    &lt;data_id&gt;10&lt;/data_id&gt;
+  &lt;/param&gt;
+  &lt;param&gt;
+    &lt;data_id&gt;20&lt;/data_id&gt;
+  &lt;/param&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;metainfo&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"2"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/metainfo&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id5">
+<h3>11.4.2.3. Deleting Data</h3>
+<p>Deletes data.</p>
+<dl class="delete">
+<dt id="delete--nex-datastore-v2-data-(data_id)">
+<code class="descname">DELETE </code><code class="descname">/nex/datastore/v2/data/</code><span class="sig-paren">(</span><em>data_id</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-datastore-v2-data-(data_id)-delete">
+<code class="descname">POST </code><code class="descname">/nex/datastore/v2/data/</code><span class="sig-paren">(</span><em>data_id</em><span class="sig-paren">)</span><code class="descname">/delete</code></dt>
+<dd><p>Deletes one piece of data, <code><em>data_id</em></code>.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>data_<wbr/>id</strong></td>
+<td>The data ID to delete. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Delete the data with a data ID of <code>10</code>.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/datastore/v2/data/10</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;data&gt;</span>
+      <span class="nt">&lt;deleted</span> <span class="na">length=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/data&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="post">
+<dt id="post--nex-datastore-v2-data-delete">
+<code class="descname">POST </code><code class="descname">/nex/datastore/v2/data/delete</code></dt>
+<dd><p>Deletes multiple pieces of data.</p>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%"/>
+<col width="22%"/>
+<col width="58%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>delete</strong></td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>param</td>
+<td>delete</td>
+<td>The data to delete. Multiple values can be specified (up to 100). <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>data_<wbr/>id</strong></td>
+<td>param</td>
+<td>The data ID to delete. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Delete the data with data IDs of <code>10</code> and <code>20</code>.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/nex/datastore/v2/data/delete</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;delete&gt;
+  &lt;param&gt;
+    &lt;data_id&gt;10&lt;/data_id&gt;
+  &lt;/param&gt;
+  &lt;param&gt;
+    &lt;data_id&gt;20&lt;/data_id&gt;
+  &lt;/param&gt;
+&lt;/delete&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;data&gt;</span>
+      <span class="nt">&lt;deleted</span> <span class="na">length=</span><span class="s">"2"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/data&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="webapi-datastore-metainfo-search">
+<span id="id6"></span><h3>11.4.2.4. Searching for Data</h3>
+<p>Searches data.</p>
+<dl class="get">
+<dt id="get--nex-datastore-v2-metainfo-search">
+<code class="descname">GET </code><code class="descname">/nex/datastore/v2/metainfo/search</code></dt>
+<dd><p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%"/>
+<col width="83%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>type</td>
+<td>Data type. You can specify multiple values, delimited by commas. If multiple values are specified, they are combined using OR during the search.</td>
+</tr>
+<tr class="row-odd"><td>status</td>
+<td>The status. For more information, see the following table.</td>
+</tr>
+<tr class="row-even"><td>owner_<wbr/>ids</td>
+<td>Owner ID. You can specify multiple values, delimited by commas. If multiple values are specified, they are combined using OR during the search.</td>
+</tr>
+<tr class="row-odd"><td>owner_<wbr/>type</td>
+<td>Owner type. For more information, see the following table.</td>
+</tr>
+<tr class="row-even"><td>name</td>
+<td>Name. Specify a URL-encoded value.</td>
+</tr>
+<tr class="row-odd"><td>tags</td>
+<td>Tags. Specify the value as a URL-safe Base64-encoded string. If you have more than one tag, encode each tag, and delimit them with commas.</td>
+</tr>
+<tr class="row-even"><td>created_<wbr/>after</td>
+<td>Start of creation date range (UNIX timestamp).</td>
+</tr>
+<tr class="row-odd"><td>created_<wbr/>before</td>
+<td>End of creation date range (UNIX timestamp).</td>
+</tr>
+<tr class="row-even"><td>updated_<wbr/>after</td>
+<td>Start of update date range (UNIX timestamp).</td>
+</tr>
+<tr class="row-odd"><td>updated_<wbr/>before</td>
+<td>End of update date range (UNIX timestamp).</td>
+</tr>
+<tr class="row-even"><td>sort</td>
+<td>Sort order. For more information, see the following table.</td>
+</tr>
+<tr class="row-odd"><td>offset</td>
+<td>Position to start getting results. If you specify <code class="docutils literal"><span class="pre">any</span></code>, a pseudo-random order is used based on <code><var>sort</var></code>.</td>
+</tr>
+<tr class="row-even"><td>limit</td>
+<td>The number of results to get. A maximum of 10,000 records. However, if <code><var>offset</var></code> has been specified as <code class="docutils literal"><span class="pre">any</span></code>, a maximum of 20 records will be returned.</td>
+</tr>
+<tr class="row-odd"><td>response</td>
+<td>Additional data to include in the response. For more information, see the following table. You can specify multiple values, delimited by commas.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>status</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%"/>
+<col width="73%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>none</td>
+<td>Normal state.</td>
+</tr>
+<tr class="row-odd"><td>pending</td>
+<td>Rating Pending</td>
+</tr>
+<tr class="row-even"><td>rejected</td>
+<td>Rejected.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>owner_type</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="41%"/>
+<col width="59%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>anybody</td>
+<td>Everyone.</td>
+</tr>
+<tr class="row-odd"><td>exclude_<wbr/>specified_<wbr/>ids</td>
+<td>An ID other than those specified in <cite>owner_<wbr/>ids</cite>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>sort</strong></p>
+<p>The default sort order is ascending. To sort in descending order, prefix the name with a hyphen (-).</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%"/>
+<col width="77%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Comments</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_<wbr/>id</td>
+<td>Data ID</td>
+</tr>
+<tr class="row-odd"><td>size</td>
+<td>Data size</td>
+</tr>
+<tr class="row-even"><td>name</td>
+<td>Name</td>
+</tr>
+<tr class="row-odd"><td>type</td>
+<td>Data type. Sorting in descending order is not supported.</td>
+</tr>
+<tr class="row-even"><td>created_<wbr/>time</td>
+<td>Creation date and time</td>
+</tr>
+<tr class="row-odd"><td>updated_<wbr/>time</td>
+<td>Date modified</td>
+</tr>
+<tr class="row-even"><td>owner_<wbr/>id</td>
+<td>Owner ID</td>
+</tr>
+</tbody>
+</table>
+<p><strong>response</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%"/>
+<col width="73%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>meta_<wbr/>binary</td>
+<td>Meta-binary data</td>
+</tr>
+<tr class="row-odd"><td>tags</td>
+<td>Tags</td>
+</tr>
+<tr class="row-even"><td>ratings</td>
+<td>Ratings</td>
+</tr>
+<tr class="row-odd"><td>url</td>
+<td>URL for the data, which expires after 30 days.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Search for data with a data type of <code>100</code>.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/datastore/v2/metainfo/search?type=100</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;metainfos</span> <span class="na">length=</span><span class="s">"1"</span> <span class="na">offset=</span><span class="s">"0"</span> <span class="na">total=</span><span class="s">"100"</span> <span class="na">total_type=</span><span class="s">"exact"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;metainfo&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>10<span class="nt">&lt;/data_id&gt;</span>
+        <span class="nt">&lt;name&gt;</span>name<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;owner_id&gt;</span>100<span class="nt">&lt;/owner_id&gt;</span>
+        <span class="nt">&lt;size&gt;</span>100<span class="nt">&lt;/size&gt;</span>
+        <span class="nt">&lt;type&gt;</span>100<span class="nt">&lt;/type&gt;</span>
+        <span class="nt">&lt;access_permission&gt;</span>
+          <span class="nt">&lt;type&gt;</span>public<span class="nt">&lt;/type&gt;</span>
+          <span class="nt">&lt;recipient_ids</span> <span class="na">length=</span><span class="s">"0"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/access_permission&gt;</span>
+        <span class="nt">&lt;update_permission&gt;</span>
+          <span class="nt">&lt;type&gt;</span>private<span class="nt">&lt;/type&gt;</span>
+          <span class="nt">&lt;recipient_ids</span> <span class="na">length=</span><span class="s">"0"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/update_permission&gt;</span>
+        <span class="nt">&lt;flags</span> <span class="na">length=</span><span class="s">"0"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;period&gt;</span>30<span class="nt">&lt;/period&gt;</span>
+        <span class="nt">&lt;created_time&gt;</span>2013-01-01T00:00:00Z<span class="nt">&lt;/created_time&gt;</span>
+        <span class="nt">&lt;updated_time&gt;</span>2013-01-01T00:00:00Z<span class="nt">&lt;/updated_time&gt;</span>
+        <span class="nt">&lt;referred_time&gt;</span>2013-01-01T00:00:00Z<span class="nt">&lt;/referred_time&gt;</span>
+        <span class="nt">&lt;expire_time&gt;</span>2013-01-30T00:00:00Z<span class="nt">&lt;/expire_time&gt;</span>
+        <span class="nt">&lt;status&gt;</span>none<span class="nt">&lt;/status&gt;</span>
+        <span class="nt">&lt;referred_count&gt;</span>0<span class="nt">&lt;/referred_count&gt;</span>
+        <span class="nt">&lt;refer_data_id&gt;</span>0<span class="nt">&lt;/refer_data_id&gt;</span>
+      <span class="nt">&lt;/metainfo&gt;</span>
+    <span class="nt">&lt;/metainfos&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code>meta_binary</code> and <code>tag</code> are in URL-safe Base64 encoded format.</p>
+</dd></dl>
+</div>
+<div class="section" id="id7">
+<h3>11.4.2.5. Uploading Data</h3>
+<div class="section" id="id8">
+<h4>11.4.2.5.1. Upload Procedure</h4>
+<div class="section" id="id9">
+<h5>11.4.2.5.1.1. Ordinary Data</h5>
+<ol class="arabic simple">
+<li>Prepare to upload using <code>prepare</code>. Set <code><em>size</em></code> to the size of the data to upload (in bytes). Specify other parameters as necessary.</li>
+<li>On success, the location where the data was uploaded and other information is returned. You can upload data to a storage server based on this information. (You must use multipart form-data.)</li>
+<li>If the upload completes successfully, call <code>complete</code> and include the data ID returned from <code>prepare</code> in the path.</li>
+<li>If 200 is returned, the function succeeded.</li>
+</ol>
+</div>
+<div class="section" id="id10">
+<h5>11.4.2.5.1.2. Meta-Binary Only</h5>
+<ol class="arabic simple">
+<li>Prepare to upload using <code>prepare</code>. The <code><var>size</var></code> parameter is <code>0</code>. Set <code><var>flag</var></code> to <code class="docutils literal"><span class="pre">not_use_storageserver</span></code>, and the data to upload to <code><var>meta_binary</var></code> as a URL-safe Base64-encoded string.</li>
+<li>If the same XML as usual is returned, the operation was successful. Only the data ID is specified.</li>
+<li>You do not need to call <code>complete</code>.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="webapi-datastore-prepare">
+<span id="id11"></span><h4>11.4.2.5.2. Preparing for Upload</h4>
+<p>Prepares to upload data.</p>
+<dl class="post">
+<dt id="post--nex-datastore-v2-data-prepare">
+<code class="descname">POST </code><code class="descname">/nex/datastore/v2/data/prepare</code></dt>
+<dd><p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%"/>
+<col width="22%"/>
+<col width="63%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>prepare</strong></td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>size</strong></td>
+<td>prepare</td>
+<td>Size of the data to be uploaded. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td>name</td>
+<td>prepare</td>
+<td>Name.</td>
+</tr>
+<tr class="row-odd"><td>owner_<wbr/>id</td>
+<td>prepare</td>
+<td>The principal ID to set as the data owner.</td>
+</tr>
+<tr class="row-even"><td>type</td>
+<td>prepare</td>
+<td>Data type. The default value is <code class="docutils literal"><span class="pre">0</span></code>.</td>
+</tr>
+<tr class="row-odd"><td>meta_<wbr/>binary</td>
+<td>prepare</td>
+<td>Meta-binary data. Specify the value as a URL-safe Base64-encoded string.</td>
+</tr>
+<tr class="row-even"><td>flags</td>
+<td>prepare</td>
+<td>Flag. Specify in the <code><em>flag</em></code> child element.</td>
+</tr>
+<tr class="row-odd"><td>flag</td>
+<td>flags</td>
+<td>Flag. For more information, see the following table. More than one can be specified.</td>
+</tr>
+<tr class="row-even"><td>period</td>
+<td>prepare</td>
+<td>The number of valid days. The default value is <code class="docutils literal"><span class="pre">90</span></code>.</td>
+</tr>
+<tr class="row-odd"><td>access_<wbr/>permission</td>
+<td>prepare</td>
+<td>Access permission.</td>
+</tr>
+<tr class="row-even"><td>update_<wbr/>permission</td>
+<td>prepare</td>
+<td>Update permissions.</td>
+</tr>
+<tr class="row-odd"><td>type</td>
+<td>access_<wbr/>permission, update_<wbr/>permission</td>
+<td>Permission type. For more information, see the following table.</td>
+</tr>
+<tr class="row-even"><td>recipient_<wbr/>ids</td>
+<td>access_<wbr/>permission, update_<wbr/>permission</td>
+<td>User with permission. If <cite>type</cite> is <code class="docutils literal"><span class="pre">specified</span></code> or <code class="docutils literal"><span class="pre">specified_<wbr/>friend</span></code>, specify in the <code>recipient_id</code> child element.</td>
+</tr>
+<tr class="row-odd"><td>recipient_<wbr/>id</td>
+<td>recipient_<wbr/>ids</td>
+<td>User with permission. More than one can be specified.</td>
+</tr>
+<tr class="row-even"><td>tags</td>
+<td>prepare</td>
+<td>Tags. Specify in the <code><var>tag</var></code> child element.</td>
+</tr>
+<tr class="row-odd"><td>tag</td>
+<td>tags</td>
+<td>Tags. Specify the value as a URL-safe Base64-encoded string. Multiple values can be specified (up to 16).</td>
+</tr>
+<tr class="row-even"><td>rating_<wbr/>init_<wbr/>params</td>
+<td>prepare</td>
+<td>Rating initialization parameters. Specify in child elements.</td>
+</tr>
+<tr class="row-odd"><td>param</td>
+<td>rating_<wbr/>init_<wbr/>params</td>
+<td>An individual rating initialization parameter. Multiple values can be specified (up to 16).</td>
+</tr>
+<tr class="row-even"><td>slot</td>
+<td>param</td>
+<td>Rating slot.</td>
+</tr>
+<tr class="row-odd"><td>flags</td>
+<td>param</td>
+<td>Rating option flags. Specify in the <code><em>flag</em></code> child element.</td>
+</tr>
+<tr class="row-even"><td>flag</td>
+<td>flags</td>
+<td>Rating option flags. For more information, see the following table. More than one can be specified.</td>
+</tr>
+<tr class="row-odd"><td>initial_<wbr/>value</td>
+<td>param</td>
+<td>Initial value for ratings.</td>
+</tr>
+<tr class="row-even"><td>range_<wbr/>min</td>
+<td>param</td>
+<td>Minimum rating value.</td>
+</tr>
+<tr class="row-odd"><td>range_<wbr/>max</td>
+<td>param</td>
+<td>Maximum rating value.</td>
+</tr>
+<tr class="row-even"><td>lock</td>
+<td>param</td>
+<td>Duplicate lock. Specify in child elements.</td>
+</tr>
+<tr class="row-odd"><td>type</td>
+<td>lock</td>
+<td>Lock type. For more information, see the following table.</td>
+</tr>
+<tr class="row-even"><td>period_<wbr/>hour</td>
+<td>lock</td>
+<td>Time at which to remove the lock. Only valid when <code><var>type</var></code> is <code class="docutils literal"><span class="pre">period</span></code>.</td>
+</tr>
+<tr class="row-odd"><td>period_<wbr/>duration</td>
+<td>lock</td>
+<td>The lock period. Duration in seconds when <code><var>type</var></code> is <code class="docutils literal"><span class="pre">internal</span></code>, and in days when it is <code class="docutils literal"><span class="pre">period</span></code>.</td>
+</tr>
+<tr class="row-even"><td>persistence_<wbr/>init_<wbr/>param</td>
+<td>prepare</td>
+<td>Persistence parameter. Specify in child elements.</td>
+</tr>
+<tr class="row-odd"><td>slot</td>
+<td>persistence_<wbr/>init_<wbr/>param</td>
+<td>Slot to use for persistence.</td>
+</tr>
+<tr class="row-even"><td>delete_<wbr/>last_<wbr/>object</td>
+<td>persistence_<wbr/>init_<wbr/>param</td>
+<td>Specify whether to delete previous data. Set it to <code class="docutils literal"><span class="pre">1</span></code> (<code>true</code>) or <code class="docutils literal"><span class="pre">0</span></code> (<code>false</code>).</td>
+</tr>
+</tbody>
+</table>
+<p>If <code><var>owner_id</var></code> has not been specified, the principal ID (1500443851674475083) of the official user will be used.</p>
+<p><strong>flags/flag</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%"/>
+<col width="70%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>none</td>
+<td>Not set.</td>
+</tr>
+<tr class="row-odd"><td>need_<wbr/>review</td>
+<td>Indicates that a data review is required by an administrator.</td>
+</tr>
+<tr class="row-even"><td>period_<wbr/>from_<wbr/>last_<wbr/>referred</td>
+<td>Extends the validity period when the data is referenced or updated.</td>
+</tr>
+<tr class="row-odd"><td>use_<wbr/>notification_<wbr/>on_<wbr/>post</td>
+<td>Notifies to recipient when data is uploaded.</td>
+</tr>
+<tr class="row-even"><td>not_<wbr/>use_<wbr/>storageserver</td>
+<td>Storage server is not used with only meta-binary data.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>access_permission/type, update_permission/type</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%"/>
+<col width="73%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>public</td>
+<td>Overall.</td>
+</tr>
+<tr class="row-odd"><td>friend</td>
+<td>Friends only.</td>
+</tr>
+<tr class="row-even"><td>specified</td>
+<td>Only the specified recipients.</td>
+</tr>
+<tr class="row-odd"><td>private</td>
+<td>Oneself only.</td>
+</tr>
+<tr class="row-even"><td>specified_<wbr/>friend</td>
+<td>Specified users who are friends.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>rating_init_params/param/flags/flag</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="35%"/>
+<col width="65%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>modifiable</td>
+<td>Enables modification.</td>
+</tr>
+<tr class="row-odd"><td>round_<wbr/>minus</td>
+<td>Rounded to 0 in the case of a negative result from subtraction.</td>
+</tr>
+<tr class="row-even"><td>disable_<wbr/>self_<wbr/>rating</td>
+<td>Disables self-rating.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>rating_init_params/param/lock/type</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%"/>
+<col width="69%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>none</td>
+<td>Duplicate locks are not used.</td>
+</tr>
+<tr class="row-odd"><td>interval</td>
+<td>Lock by interval.</td>
+</tr>
+<tr class="row-even"><td>period</td>
+<td>Lock by expiration date.</td>
+</tr>
+<tr class="row-odd"><td>permanent</td>
+<td>Permanent lock.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Prepare 100 bytes of data for upload.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/nex/datastore/v2/data/prepare</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;prepare&gt;
+  &lt;size&gt;100&lt;/size&gt;
+&lt;/prepare&gt;
+</pre></div>
+</div>
+<p><strong>Response Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%"/>
+<col width="15%"/>
+<col width="71%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data</td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td>data_<wbr/>id</td>
+<td>data</td>
+<td>Data ID. Specify on <code>complete</code>. When only uploading a meta binary, set only this value.</td>
+</tr>
+<tr class="row-even"><td>url</td>
+<td>data</td>
+<td>Specifies the request URL for the storage server. Request using <cite>https://</cite>.</td>
+</tr>
+<tr class="row-odd"><td>request_<wbr/>header</td>
+<td>data</td>
+<td>Request header for storage server.</td>
+</tr>
+<tr class="row-even"><td>date</td>
+<td>request_<wbr/>header</td>
+<td>One of the storage server request headers.</td>
+</tr>
+<tr class="row-odd"><td>post_<wbr/>param</td>
+<td>data</td>
+<td>Request parameter for storage server.</td>
+</tr>
+<tr class="row-even"><td>x-amz-algorithm</td>
+<td>post_<wbr/>param</td>
+<td>One of the storage server request parameters.</td>
+</tr>
+<tr class="row-odd"><td>x-amz-credential</td>
+<td>post_<wbr/>param</td>
+<td>One of the storage server request parameters.</td>
+</tr>
+<tr class="row-even"><td>x-amz-date</td>
+<td>post_<wbr/>param</td>
+<td>One of the storage server request parameters.</td>
+</tr>
+<tr class="row-odd"><td>x-amz-signature</td>
+<td>post_<wbr/>param</td>
+<td>One of the storage server request parameters.</td>
+</tr>
+<tr class="row-even"><td>key</td>
+<td>post_<wbr/>param</td>
+<td>One of the storage server request parameters.</td>
+</tr>
+<tr class="row-odd"><td>acl</td>
+<td>post_<wbr/>param</td>
+<td>One of the storage server request parameters.</td>
+</tr>
+<tr class="row-even"><td>policy</td>
+<td>post_<wbr/>param</td>
+<td>One of the storage server request parameters.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;data&gt;</span>
+      <span class="nt">&lt;url&gt;</span>dev.example.org/<span class="nt">&lt;/url&gt;</span>
+      <span class="nt">&lt;request_header&gt;</span>
+        <span class="nt">&lt;date&gt;</span>Wed, 01 Jan 2013 00:00:00 GMT<span class="nt">&lt;/date&gt;</span>
+      <span class="nt">&lt;/request_header&gt;</span>
+      <span class="nt">&lt;post_param&gt;</span>
+        <span class="nt">&lt;x-amz-algorithm&gt;</span>AWS4-HMAC-SHA256<span class="nt">&lt;/x-amz-algorithm&gt;</span>
+        <span class="nt">&lt;x-amz-credential&gt;</span>XXXX<span class="nt">&lt;/x-amz-credential&gt;</span>
+        <span class="nt">&lt;x-amz-date&gt;</span>20130101T000000Z<span class="nt">&lt;/x-amz-date&gt;</span>
+        <span class="nt">&lt;x-amz-signature&gt;</span>XXXX<span class="nt">&lt;/x-amz-signature&gt;</span>
+        <span class="nt">&lt;key&gt;</span>XXXX<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;acl&gt;</span>private<span class="nt">&lt;/acl&gt;</span>
+        <span class="nt">&lt;policy&gt;</span>XXXX<span class="nt">&lt;/policy&gt;</span>
+      <span class="nt">&lt;/post_param&gt;</span>
+      <span class="nt">&lt;data_id&gt;</span>10<span class="nt">&lt;/data_id&gt;</span>
+    <span class="nt">&lt;/data&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><strong>Example command when uploading data to the storage server:</strong></p>
+<p>When using cURL to upload data to the storage server, issue a request as in the following example.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl <span class="se">\</span>
+  --request POST <span class="se">\</span>
+  --header <span class="s2">"date: Wed, 01 Jan 2013 00:00:00 GMT"</span> <span class="se">\</span>
+  --form x-amz-algorithm<span class="o">=</span>AWS4-HMAC-SHA256 <span class="se">\</span>
+  --form x-amz-credential<span class="o">=</span>XXXX <span class="se">\</span>
+  --form x-amz-date<span class="o">=</span>20130101T000000Z <span class="se">\</span>
+  --form x-amz-signature<span class="o">=</span>XXXX <span class="se">\</span>
+  --form <span class="nv">key</span><span class="o">=</span>XXXX <span class="se">\</span>
+  --form <span class="nv">acl</span><span class="o">=</span>private <span class="se">\</span>
+  --form <span class="nv">policy</span><span class="o">=</span>XXXX <span class="se">\</span>
+  --form <span class="s2">"file=@C:/path/to/upload_file.bin"</span> <span class="se">\</span>
+  https://dev.example.org/
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<ul class="last simple">
+<li><code>Content-Type</code> must be <cite>multipart/form-data</cite>. If uploading to the storage server with the <code>POST</code> method fails, verify that the request header includes <cite>Content-Type: multipart/form-data; boundary=</cite>.</li>
+<li>Specify the data to upload using the <code><em>file</em></code> parameter. The <code><em>file</em></code> parameter must be the last request parameter (the last field in the form).</li>
+</ul>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id12">
+<h4>11.4.2.5.3. Completing the Upload</h4>
+<p>Completes the data upload.</p>
+<dl class="post">
+<dt id="post--nex-datastore-v2-data-complete-(data_id)">
+<code class="descname">POST </code><code class="descname">/nex/datastore/v2/data/complete/</code><span class="sig-paren">(</span><em>data_id</em><span class="sig-paren">)</span></dt>
+<dd><p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>data_<wbr/>id</strong></td>
+<td>The data ID to complete. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%"/>
+<col width="22%"/>
+<col width="58%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>complete</td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td>owner_<wbr/>id</td>
+<td>complete</td>
+<td>The principal ID to set as the data owner.</td>
+</tr>
+</tbody>
+</table>
+<p>If <code><var>owner_id</var></code> has not been specified, the principal ID (1500443851674475083) of the official user will be used.</p>
+<p><strong>Request Example:</strong></p>
+<p>Use <code>prepare</code> to complete the upload of the data for which a data ID of <code>10</code> was returned.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/nex/datastore/v2/data/complete/10</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+</div>
+<div class="section" id="url">
+<h3>11.4.2.6. Getting the URL</h3>
+<dl class="get">
+<dt id="get--nex-datastore-v2-urlinfo-(data_id)">
+<code class="descname">GET </code><code class="descname">/nex/datastore/v2/urlinfo/</code><span class="sig-paren">(</span><em>data_id</em><span class="sig-paren">)</span></dt>
+<dd><p>Gets the URL for a single piece of data, <code><var>data_id</var></code>.</p>
+<p>This URL contains authentication information, so it can be used to download data from the storage server.</p>
+<p>Use this URL within minutes after getting it. The reason is because the specifications for the storage server might be changed in the future in a way that makes it impossible to honor the number of days of validity specified for the URL.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>data_<wbr/>id</strong></td>
+<td>The data ID to get the URL for. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>period</td>
+<td>The number of days that the URL is valid. The default is <code class="docutils literal"><span class="pre">7</span></code>. The maximum value is <code class="docutils literal"><span class="pre">7</span></code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Get the URL for data ID <code>10</code>.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/datastore/v2/urlinfo/10</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;urlinfos</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;urlinfo&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>10<span class="nt">&lt;/data_id&gt;</span>
+        <span class="nt">&lt;url&gt;</span>https://dev.example.org/path/to/data/10?Credential=XXX<span class="nt">&lt;/url&gt;</span>
+      <span class="nt">&lt;/urlinfo&gt;</span>
+    <span class="nt">&lt;/urlinfos&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-datastore-v2-urlinfo">
+<code class="descname">GET </code><code class="descname">/nex/datastore/v2/urlinfo</code></dt>
+<dd><p>Gets the URLs for multiple pieces of data.</p>
+<p>The rest of the description is the same as for getting the URL for a single piece of data.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%"/>
+<col width="79%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>data_<wbr/>ids</strong></td>
+<td>The data ID to get the URL for. You can specify up to 100, delimited by commas. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>period</td>
+<td>The number of days that the URL is valid. The default is <code class="docutils literal"><span class="pre">7</span></code>. The maximum value is <code class="docutils literal"><span class="pre">7</span></code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Get the URLs for data IDs <code>10</code>, <code>20</code>, and <code>30</code>.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/datastore/v2/urlinfo?data_ids=10,20,30</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;urlinfos</span> <span class="na">length=</span><span class="s">"3"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;urlinfo&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>10<span class="nt">&lt;/data_id&gt;</span>
+        <span class="nt">&lt;url&gt;</span>https://dev1.example.org/path/to/data/10?Credential=XXX<span class="nt">&lt;/url&gt;</span>
+      <span class="nt">&lt;/urlinfo&gt;</span>
+      <span class="nt">&lt;urlinfo&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>20<span class="nt">&lt;/data_id&gt;</span>
+        <span class="nt">&lt;url&gt;</span>https://dev2.example.org/path/to/data/20?Credential=XXX<span class="nt">&lt;/url&gt;</span>
+      <span class="nt">&lt;/urlinfo&gt;</span>
+      <span class="nt">&lt;urlinfo&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>30<span class="nt">&lt;/data_id&gt;</span>
+        <span class="nt">&lt;url&gt;</span>https://dev3.example.org/path/to/data/30?Credential=XXX<span class="nt">&lt;/url&gt;</span>
+      <span class="nt">&lt;/urlinfo&gt;</span>
+    <span class="nt">&lt;/urlinfos&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id13">
+<h3>11.4.2.7. Getting Passwords</h3>
+<dl class="get">
+<dt id="get--nex-datastore-v2-passwordinfo-(data_id)">
+<code class="descname">GET </code><code class="descname">/nex/datastore/v2/passwordinfo/</code><span class="sig-paren">(</span><em>data_id</em><span class="sig-paren">)</span></dt>
+<dd><p>Gets the password for a single piece of data, <code><var>data_id</var></code>.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>data_<wbr/>id</strong></td>
+<td>The data ID to get the password for. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Get the password for data ID <code>10</code>.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/datastore/v2/passwordinfo/10</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;passwordinfos</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;passwordinfo&gt;</span>
+        <span class="nt">&lt;access_password&gt;</span>XXXXXXXXXXXXXXXXXXXX<span class="nt">&lt;/access_password&gt;</span>
+        <span class="nt">&lt;update_password&gt;</span>XXXXXXXXXXXXXXXXXXXX<span class="nt">&lt;/update_password&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>10<span class="nt">&lt;/data_id&gt;</span>
+      <span class="nt">&lt;/passwordinfo&gt;</span>
+    <span class="nt">&lt;/passwordinfos&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-datastore-v2-passwordinfo">
+<code class="descname">GET </code><code class="descname">/nex/datastore/v2/passwordinfo</code></dt>
+<dd><p>Gets the passwords of multiple pieces of data.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%"/>
+<col width="80%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>data_<wbr/>ids</strong></td>
+<td>The data ID to get the password for. You can specify up to 100, delimited by commas. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Get the passwords for data IDs <code>10</code>, <code>20</code>, and <code>30</code>.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/datastore/v2/passwordinfo?data_ids=10,20,30</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;passwordinfos</span> <span class="na">length=</span><span class="s">"3"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;passwordinfo&gt;</span>
+        <span class="nt">&lt;access_password&gt;</span>XXXXXXXXXXXXXXXXXXXX<span class="nt">&lt;/access_password&gt;</span>
+        <span class="nt">&lt;update_password&gt;</span>XXXXXXXXXXXXXXXXXXXX<span class="nt">&lt;/update_password&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>10<span class="nt">&lt;/data_id&gt;</span>
+      <span class="nt">&lt;/passwordinfo&gt;</span>
+      <span class="nt">&lt;passwordinfo&gt;</span>
+        <span class="nt">&lt;access_password&gt;</span>YYYYYYYYYYYYYYYYYYYY<span class="nt">&lt;/access_password&gt;</span>
+        <span class="nt">&lt;update_password&gt;</span>YYYYYYYYYYYYYYYYYYYY<span class="nt">&lt;/update_password&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>20<span class="nt">&lt;/data_id&gt;</span>
+      <span class="nt">&lt;/passwordinfo&gt;</span>
+      <span class="nt">&lt;passwordinfo&gt;</span>
+        <span class="nt">&lt;access_password&gt;</span>ZZZZZZZZZZZZZZZZZZZZ<span class="nt">&lt;/access_password&gt;</span>
+        <span class="nt">&lt;update_password&gt;</span>ZZZZZZZZZZZZZZZZZZZZ<span class="nt">&lt;/update_password&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>30<span class="nt">&lt;/data_id&gt;</span>
+      <span class="nt">&lt;/passwordinfo&gt;</span>
+    <span class="nt">&lt;/passwordinfos&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id14">
+<h3>11.4.2.8.1. Rating Data</h3>
+<div class="section" id="webapi-datastore-ratings-put">
+<span id="id15"></span><h4>11.4.2.8.1. Rating Data</h4>
+<p>Rates data.</p>
+<dl class="put">
+<dt id="put--nex-datastore-v2-metainfo-(data_id)-ratings-(slot)">
+<code class="descname">PUT </code><code class="descname">/nex/datastore/v2/metainfo/</code><span class="sig-paren">(</span><em>data_id</em><span class="sig-paren">)</span><code class="descname">/ratings/</code><span class="sig-paren">(</span><em>slot</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-datastore-v2-metainfo-(data_id)-ratings-(slot)-put">
+<code class="descname">POST </code><code class="descname">/nex/datastore/v2/metainfo/</code><span class="sig-paren">(</span><em>data_id</em><span class="sig-paren">)</span><code class="descname">/ratings/</code><span class="sig-paren">(</span><em>slot</em><span class="sig-paren">)</span><code class="descname">/put</code></dt>
+<dd><p>Rates a single piece of data (<code><var>data_id</var></code>) using the rating slot (<code><var>slot</var></code>).</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>data_<wbr/>id</strong></td>
+<td>The data ID to rate. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>slot</strong></td>
+<td>The rating slot to use. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%"/>
+<col width="22%"/>
+<col width="58%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>rate</strong></td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>rating_<wbr/>value</strong></td>
+<td>rate</td>
+<td>Rating value. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Using rating slot <code>0</code>, rate data ID <code>10</code> as <code>100</code>.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/datastore/v2/metainfo/10/ratings/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;rate&gt;
+  &lt;rating_value&gt;100&lt;/rating_value&gt;
+&lt;/rate&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;metainfo&gt;</span>
+      <span class="nt">&lt;ratings&gt;</span>
+        <span class="nt">&lt;rating&gt;</span>
+          <span class="nt">&lt;slot&gt;</span>0<span class="nt">&lt;/slot&gt;</span>
+          <span class="nt">&lt;count&gt;</span>1<span class="nt">&lt;/count&gt;</span>
+          <span class="nt">&lt;initial_value&gt;</span>0<span class="nt">&lt;/initial_value&gt;</span>
+          <span class="nt">&lt;total_value&gt;</span>100<span class="nt">&lt;/total_value&gt;</span>
+          <span class="nt">&lt;data_id&gt;</span>10<span class="nt">&lt;/data_id&gt;</span>
+        <span class="nt">&lt;/rating&gt;</span>
+      <span class="nt">&lt;/ratings&gt;</span>
+    <span class="nt">&lt;/metainfo&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="put">
+<dt id="put--nex-datastore-v2-metainfo-ratings">
+<code class="descname">PUT </code><code class="descname">/nex/datastore/v2/metainfo/ratings</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-datastore-v2-metainfo-ratings-put">
+<code class="descname">POST </code><code class="descname">/nex/datastore/v2/metainfo/ratings/put</code></dt>
+<dd><p>Rate multiple pieces of data in multiple rating slots.</p>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%"/>
+<col width="13%"/>
+<col width="75%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>rate</strong></td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>param</td>
+<td>rate</td>
+<td>Data to rate and slots to use. Multiple values can be specified (up to 100). <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>data_<wbr/>id</strong></td>
+<td>param</td>
+<td>The data ID to rate. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>slot</strong></td>
+<td>param</td>
+<td>The rating slot to use. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>rating_<wbr/>value</strong></td>
+<td>param</td>
+<td>Rating value. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>principal_<wbr/>id</td>
+<td>rate</td>
+<td>Principal ID of the user doing the rating. If it is not specified, the principal ID (1500443851674475083) of the official user will be used.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Rate data as follows.</p>
+<ul class="simple">
+<li>Rate data ID <code>10</code> as <code>100</code> using rating slot <code>0</code>.</li>
+<li>Rate data ID <code>20</code> as <code>200</code> using rating slot <code>0</code>.</li>
+<li>Rate data ID <code>20</code> as <code>210</code> using rating slot <code>1</code>.</li>
+</ul>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/datastore/v2/metainfo/ratings</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;rate&gt;
+  &lt;param&gt;
+    &lt;data_id&gt;10&lt;/data_id&gt;
+    &lt;slot&gt;0&lt;/slot&gt;
+    &lt;rating_value&gt;100&lt;/rating_value&gt;
+  &lt;/param&gt;
+  &lt;param&gt;
+    &lt;data_id&gt;20&lt;/data_id&gt;
+    &lt;slot&gt;0&lt;/slot&gt;
+    &lt;rating_value&gt;200&lt;/rating_value&gt;
+  &lt;/param&gt;
+  &lt;param&gt;
+    &lt;data_id&gt;20&lt;/data_id&gt;
+    &lt;slot&gt;1&lt;/slot&gt;
+    &lt;rating_value&gt;210&lt;/rating_value&gt;
+  &lt;/param&gt;
+&lt;/rate&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;metainfo&gt;</span>
+      <span class="nt">&lt;ratings&gt;</span>
+        <span class="nt">&lt;rating&gt;</span>
+          <span class="nt">&lt;slot&gt;</span>0<span class="nt">&lt;/slot&gt;</span>
+          <span class="nt">&lt;count&gt;</span>1<span class="nt">&lt;/count&gt;</span>
+          <span class="nt">&lt;initial_value&gt;</span>0<span class="nt">&lt;/initial_value&gt;</span>
+          <span class="nt">&lt;total_value&gt;</span>100<span class="nt">&lt;/total_value&gt;</span>
+          <span class="nt">&lt;data_id&gt;</span>10<span class="nt">&lt;/data_id&gt;</span>
+        <span class="nt">&lt;/rating&gt;</span>
+        <span class="nt">&lt;rating&gt;</span>
+          <span class="nt">&lt;slot&gt;</span>0<span class="nt">&lt;/slot&gt;</span>
+          <span class="nt">&lt;count&gt;</span>1<span class="nt">&lt;/count&gt;</span>
+          <span class="nt">&lt;initial_value&gt;</span>0<span class="nt">&lt;/initial_value&gt;</span>
+          <span class="nt">&lt;total_value&gt;</span>200<span class="nt">&lt;/total_value&gt;</span>
+          <span class="nt">&lt;data_id&gt;</span>20<span class="nt">&lt;/data_id&gt;</span>
+        <span class="nt">&lt;/rating&gt;</span>
+        <span class="nt">&lt;rating&gt;</span>
+          <span class="nt">&lt;slot&gt;</span>1<span class="nt">&lt;/slot&gt;</span>
+          <span class="nt">&lt;count&gt;</span>1<span class="nt">&lt;/count&gt;</span>
+          <span class="nt">&lt;initial_value&gt;</span>0<span class="nt">&lt;/initial_value&gt;</span>
+          <span class="nt">&lt;total_value&gt;</span>210<span class="nt">&lt;/total_value&gt;</span>
+          <span class="nt">&lt;data_id&gt;</span>20<span class="nt">&lt;/data_id&gt;</span>
+        <span class="nt">&lt;/rating&gt;</span>
+      <span class="nt">&lt;/ratings&gt;</span>
+    <span class="nt">&lt;/metainfo&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id16">
+<h4>11.4.2.8.2. Resetting Ratings</h4>
+<dl class="delete">
+<dt id="delete--nex-metainfo-(data_id)-ratings">
+<code class="descname">DELETE </code><code class="descname">/nex/metainfo/</code><span class="sig-paren">(</span><em>data_id</em><span class="sig-paren">)</span><code class="descname">/ratings</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-metainfo-(data_id)-ratings-delete">
+<code class="descname">POST </code><code class="descname">/nex/metainfo/</code><span class="sig-paren">(</span><em>data_id</em><span class="sig-paren">)</span><code class="descname">/ratings/delete</code></dt>
+<dd><p>Resets the ratings for a single piece of data (<code><var>data_id</var></code>).</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>data_<wbr/>id</strong></td>
+<td>The data ID to reset the rating for. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Reset the rating of data ID <code>10</code>.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/datastore/v2/metainfo/10/ratings</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;metainfo&gt;</span>
+      <span class="nt">&lt;ratings&gt;</span>
+        <span class="nt">&lt;reset</span> <span class="na">length=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;/ratings&gt;</span>
+    <span class="nt">&lt;/metainfo&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="post">
+<dt id="post--nex-metainfo-ratings-delete">
+<code class="descname">POST </code><code class="descname">/nex/metainfo/ratings/delete</code></dt>
+<dd><p>Resets the ratings of multiple pieces of data.</p>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%"/>
+<col width="20%"/>
+<col width="60%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>reset</strong></td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>param</td>
+<td>reset</td>
+<td>The data to reset the ratings for. Multiple values can be specified (up to 100). <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>data_<wbr/>id</strong></td>
+<td>param</td>
+<td>The data ID to reset the rating for. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Reset the ratings of data IDs <code>10</code> and <code>20</code>.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/nex/datastore/v2/metainfo/ratings/delete</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;reset&gt;
+  &lt;param&gt;
+    &lt;data_id&gt;10&lt;/data_id&gt;
+  &lt;/param&gt;
+  &lt;param&gt;
+    &lt;data_id&gt;20&lt;/data_id&gt;
+  &lt;/param&gt;
+&lt;/reset&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;metainfo&gt;</span>
+      <span class="nt">&lt;ratings&gt;</span>
+        <span class="nt">&lt;reset</span> <span class="na">length=</span><span class="s">"2"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;/ratings&gt;</span>
+    <span class="nt">&lt;/metainfo&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+</div>
+<div class="section" id="id17">
+<h3>11.4.2.9. Persisting Data</h3>
+<div class="section" id="id18">
+<h4>11.4.2.9.1. Getting Persistence Information</h4>
+<p>Gets the data persistence information.</p>
+<dl class="get">
+<dt id="get--nex-datastore-v2-persistenceinfo-(principal_id)-(slot)">
+<code class="descname">GET </code><code class="descname">/nex/datastore/v2/persistenceinfo/</code><span class="sig-paren">(</span><em>principal_id</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em>slot</em><span class="sig-paren">)</span></dt>
+<dd><p>Gets the persistence information from the persistence slot (<code><var>slot</var></code>) of <code><var>principal_id</var></code>.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>principal_<wbr/>id</strong></td>
+<td>Specifies the principal ID with the persistence information to get. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>slot</strong></td>
+<td>Specifies the persistence slot to get. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Get the information in persistence slot 0 for principal ID 100.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/datastore/v2/persistenceinfo/100/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;persistenceinfos</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;persistenceinfo&gt;</span>
+        <span class="nt">&lt;principal_id&gt;</span>100<span class="nt">&lt;/principal_id&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>10<span class="nt">&lt;/data_id&gt;</span>
+        <span class="nt">&lt;slot&gt;</span>0<span class="nt">&lt;/slot&gt;</span>
+      <span class="nt">&lt;/persistenceinfo&gt;</span>
+    <span class="nt">&lt;/persistenceinfos&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-datastore-v2-persistenceinfo">
+<code class="descname">GET </code><code class="descname">/nex/datastore/v2/persistenceinfo</code></dt>
+<dd><p>Gets the persistence information for multiple pieces of data.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%"/>
+<col width="79%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>principal_<wbr/>id</strong></td>
+<td>Specifies the principal ID with the persistence information to get. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>slots</strong></td>
+<td>Specifies the persistence slot to get. You can specify up to 16, delimited by commas. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Get the information in persistence slots 0, 1, and 2 for principal ID 100.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/datastore/v2/persistenceinfo?principal_id=100&amp;slots=0,1,2</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;persistenceinfos</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;persistenceinfo&gt;</span>
+        <span class="nt">&lt;principal_id&gt;</span>100<span class="nt">&lt;/principal_id&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>10<span class="nt">&lt;/data_id&gt;</span>
+        <span class="nt">&lt;slot&gt;</span>0<span class="nt">&lt;/slot&gt;</span>
+      <span class="nt">&lt;/persistenceinfo&gt;</span>
+      <span class="nt">&lt;persistenceinfo&gt;</span>
+        <span class="nt">&lt;principal_id&gt;</span>100<span class="nt">&lt;/principal_id&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>11<span class="nt">&lt;/data_id&gt;</span>
+        <span class="nt">&lt;slot&gt;</span>1<span class="nt">&lt;/slot&gt;</span>
+      <span class="nt">&lt;/persistenceinfo&gt;</span>
+      <span class="nt">&lt;persistenceinfo&gt;</span>
+        <span class="nt">&lt;principal_id&gt;</span>100<span class="nt">&lt;/principal_id&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>12<span class="nt">&lt;/data_id&gt;</span>
+        <span class="nt">&lt;slot&gt;</span>2<span class="nt">&lt;/slot&gt;</span>
+      <span class="nt">&lt;/persistenceinfo&gt;</span>
+    <span class="nt">&lt;/persistenceinfos&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id19">
+<h4>11.4.2.9.2. Persisting Data</h4>
+<p>Makes data persistent.</p>
+<dl class="put">
+<dt id="put--nex-datastore-v2-persistenceinfo-(principal_id)-(slot)">
+<code class="descname">PUT </code><code class="descname">/nex/datastore/v2/persistenceinfo/</code><span class="sig-paren">(</span><em>principal_id</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em>slot</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-datastore-v2-persistenceinfo-(principal_id)-(slot)-put">
+<code class="descname">POST </code><code class="descname">/nex/datastore/v2/persistenceinfo/</code><span class="sig-paren">(</span><em>principal_id</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em>slot</em><span class="sig-paren">)</span><code class="descname">/put</code></dt>
+<dd><p>Makes data persistent using the persistence slot <code><var>slot</var></code> of <code><var>principal_id</var></code>.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>principal_<wbr/>id</strong></td>
+<td>Specifies the principal ID to persist. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>slot</strong></td>
+<td>Slot to use for persistence. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%"/>
+<col width="17%"/>
+<col width="68%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>perpetuate</strong></td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>data_<wbr/>id</strong></td>
+<td>perpetuate</td>
+<td>The data ID of the data that is perpetuated. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td>delete_<wbr/>last_<wbr/>object</td>
+<td>perpetuate</td>
+<td>Specify whether to delete previous data. Set it to <code class="docutils literal"><span class="pre">1</span></code> (<code>true</code>) or <code class="docutils literal"><span class="pre">0</span></code> (<code>false</code>). The default value is <code class="docutils literal"><span class="pre">1</span></code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Persists the data with a data ID of <code>10</code> using persistence slot <code>0</code> of principal ID <code>100</code>.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/datastore/v2/persistenceinfo/100/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;perpetuate&gt;
+  &lt;data_id&gt;10&lt;/data_id&gt;
+&lt;/perpetuate&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;persistenceinfo&gt;</span>
+      <span class="nt">&lt;perpetuated</span> <span class="na">length=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/persistenceinfo&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id20">
+<h4>11.4.2.9.3. Unpersisting Data</h4>
+<p>Makes persistent data non-persistent.</p>
+<dl class="delete">
+<dt id="delete--nex-datastore-v2-persistenceinfo-(principal_id)-(slot)">
+<code class="descname">DELETE </code><code class="descname">/nex/datastore/v2/persistenceinfo/</code><span class="sig-paren">(</span><em>principal_id</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em>slot</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-datastore-v2-persistenceinfo-(principal_id)-(slot)-delete">
+<code class="descname">POST </code><code class="descname">/nex/datastore/v2/persistenceinfo/</code><span class="sig-paren">(</span><em>principal_id</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em>slot</em><span class="sig-paren">)</span><code class="descname">/delete</code></dt>
+<dd><p>Unpersists the persistent data in the persistence slot <code><var>slot</var></code> of <code><var>principal_id</var></code>.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>principal_<wbr/>id</strong></td>
+<td>Specifies the principal ID to unpersist. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>slots</strong></td>
+<td>Slot to use for unpersistence. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Body:</strong></p>
+<p>This can only be used with the POST method.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="16%"/>
+<col width="69%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>unperpetuate</td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td>delete_<wbr/>last_<wbr/>object</td>
+<td>unperpetuate</td>
+<td>Specify whether to delete the unpersisted data. Set it to <code class="docutils literal"><span class="pre">1</span></code> (<code>true</code>) or <code class="docutils literal"><span class="pre">0</span></code> (<code>false</code>). The default value is <code class="docutils literal"><span class="pre">0</span></code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Unpersist the persistent data in persistence slot <code>0</code> of principal ID <code>100</code>.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/datastore/v2/persistenceinfo/100/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;persistenceinfo&gt;</span>
+      <span class="nt">&lt;unperpetuated</span> <span class="na">length=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/persistenceinfo&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+</div>
+<div class="section" id="webapi-datastore-data-code">
+<span id="id21"></span><h3>11.4.2.10. Converting Data Code Strings</h3>
+<div class="section" id="id">
+<h4>11.4.2.10.1. Converting Data Code Strings to Data ID</h4>
+<dl class="get">
+<dt id="get--nex-datastore-v2-data_code-code_to_id-(data_code_string)">
+<code class="descname">GET </code><code class="descname">/nex/datastore/v2/data_code/code_to_id/</code><span class="sig-paren">(</span><em>data_code_string</em><span class="sig-paren">)</span></dt>
+<dd><p>Converts <code><var>data_code_string</var></code> to a data ID.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%"/>
+<col width="79%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>data_<wbr/>code_<wbr/>string</strong></td>
+<td>Data code string to be converted. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>key</td>
+<td>Key to use for calculating the checksum. When not specified, use the access key for the server.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Gets the data ID for the data code string 2WGVF71.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/datastore/v2/data_code/code_to_id/2WGVF71</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;data_codes</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;data_code&gt;</span>
+        <span class="nt">&lt;data_code_string&gt;</span>2WGVF71<span class="nt">&lt;/data_code_string&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>1000000<span class="nt">&lt;/data_id&gt;</span>
+      <span class="nt">&lt;/data_code&gt;</span>
+    <span class="nt">&lt;/data_codes&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-datastore-v2-data_code-code_to_id">
+<code class="descname">GET </code><code class="descname">/nex/datastore/v2/data_code/code_to_id</code></dt>
+<dd><p>Converts multiple data code strings to data ID.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%"/>
+<col width="79%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>data_<wbr/>code_<wbr/>strings</strong></td>
+<td>Data code strings to be converted. You can specify up to 100, delimited by commas. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>key</td>
+<td>Key to use for calculating the checksum. When not specified, use the access key for the server.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Get the data code strings for data code strings 2WGVF71 and 2VHJ5NN.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/datastore/v2/data_code/code_to_id? data_code_strings=2WGVF71,2VHJ5NN</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;data_codes</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;data_code&gt;</span>
+        <span class="nt">&lt;data_code_string&gt;</span>2WGVF71<span class="nt">&lt;/data_code_string&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>1000000<span class="nt">&lt;/data_id&gt;</span>
+      <span class="nt">&lt;/data_code&gt;</span>
+      <span class="nt">&lt;data_code&gt;</span>
+        <span class="nt">&lt;data_code_string&gt;</span>2VHJ5NN<span class="nt">&lt;/data_code_string&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>1000001<span class="nt">&lt;/data_id&gt;</span>
+      <span class="nt">&lt;/data_code&gt;</span>
+    <span class="nt">&lt;/data_codes&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id22">
+<h4>11.4.2.10.2. Converting Data ID to Data Code Strings</h4>
+<dl class="get">
+<dt id="get--nex-datastore-v2-data_code-id_to_code-(data_id)">
+<code class="descname">GET </code><code class="descname">/nex/datastore/v2/data_code/id_to_code/</code><span class="sig-paren">(</span><em>data_id</em><span class="sig-paren">)</span></dt>
+<dd><p>Converts <code><var>data_id</var></code> to a data code string.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%"/>
+<col width="87%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>data_<wbr/>id</strong></td>
+<td>Data ID to be converted. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>key</td>
+<td>Key to use for calculating the checksum. When not specified, use the access key for the server.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Gets the data code string for data ID 1000000.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/datastore/v2/data_code/id_to_code/1000000</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;data_codes</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;data_code&gt;</span>
+        <span class="nt">&lt;data_code_string&gt;</span>2WGVF71<span class="nt">&lt;/data_code_string&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>1000000<span class="nt">&lt;/data_id&gt;</span>
+      <span class="nt">&lt;/data_code&gt;</span>
+    <span class="nt">&lt;/data_codes&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-datastore-v2-data_code-id_to_code">
+<code class="descname">GET </code><code class="descname">/nex/datastore/v2/data_code/id_to_code</code></dt>
+<dd><p>Converts multiple data IDs to data code strings.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%"/>
+<col width="86%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>data_<wbr/>ids</strong></td>
+<td>Data ID to be converted. You can specify up to 100, delimited by commas. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>key</td>
+<td>Key to use for calculating the checksum. When not specified, use the access key for the server.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Gets the data code strings for data IDs 1000000 and 1000001.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/datastore/v2/data_code/id_to_code? data_ids=1000000,1000001</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;datastore&gt;</span>
+    <span class="nt">&lt;data_codes</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;data_code&gt;</span>
+        <span class="nt">&lt;data_code_string&gt;</span>2WGVF71<span class="nt">&lt;/data_code_string&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>1000000<span class="nt">&lt;/data_id&gt;</span>
+      <span class="nt">&lt;/data_code&gt;</span>
+      <span class="nt">&lt;data_code&gt;</span>
+        <span class="nt">&lt;data_code_string&gt;</span>2VHJ5NN<span class="nt">&lt;/data_code_string&gt;</span>
+        <span class="nt">&lt;data_id&gt;</span>1000001<span class="nt">&lt;/data_id&gt;</span>
+      <span class="nt">&lt;/data_code&gt;</span>
+    <span class="nt">&lt;/data_codes&gt;</span>
+  <span class="nt">&lt;/datastore&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

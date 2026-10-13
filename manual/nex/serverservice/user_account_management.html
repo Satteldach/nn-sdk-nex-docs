@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>2. User Management — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="user-account-top">
+<span id="id1"></span><h1>2. User Management</h1>
+<div class="section" id="id2">
+<h2>2.1. Managing User Information</h2>
+<p>NEX uses network service account IDs (NSA IDs) to identify users. NSA IDs can be used in the same way as principal IDs in NEX. There are two user management methods in the current version.</p>
+<ul class="simple">
+<li>Select users set up on the Nintendo game server (NGS) in advance.</li>
+<li>Select network service accounts managed with the account library.</li>
+</ul>
+<p>However, when using network service accounts, advance preparations described in <a class="reference internal" href="login_logout.html#login-logout-login"><span class="std std-ref">Connecting to a Game Server</span></a> must be performed.</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">In NX, the type used for principal IDs is <tt>uint64_t</tt>.</p>
+</div>
+</div>
+<div class="section" id="id">
+<h2>2.2. Game Server ID and Access Key</h2>
+<p>With NEX, each application has a game server to use for matchmaking and ranking features. To log in to a game server, you need a game server ID to identify that game server and an access key to access it. Maintain strict control over the game ID and password because they are given out specifically to each application. To have a new game server ID and access key issued to you, submit an application through the Online Title Management Service (OMAS).</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">A title is assigned the same game server ID and access key, and it uses the same game server in different regions. To perform matchmaking between different game titles, match these parameters to one of the titles.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">If you do not want to make matchmaking and ranking data visible across regions, you must specify search criteria to restrict access from your application.</p>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

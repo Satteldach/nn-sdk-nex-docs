@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>8. Subscriber — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="subscriber-top">
+<span id="id1"></span><h1>8. Subscriber</h1>
+<div class="section" id="subscriber-overview">
+<span id="id2"></span><h2>8.1. Introduction</h2>
+<p>Subscriber features are for handling user information on the server. The following two features are available.</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Topics feature</dt>
+<dd>Deprecated.</dd>
+</dl>
+</li>
+<li>User Status Sharing feature</li>
+</ul>
+<div class="section" id="topic-overview">
+<span id="id3"></span><h3>8.1.1. Topics Feature</h3>
+<p>The Topics feature performs messaging for purchased and published models. Message senders post messages called <em>content</em> to special channels called <em>topics</em> that include a particular topic of discussion. Message receivers can then retrieve content from any topic of interest. (<a class="reference internal" href="#topic-fig-getcontent"><span class="std std-ref">Figure 8.1</span></a>)</p>
+<p>Content data includes a content ID, an arbitrary string (up to <code>SubscriberConstants::MAX_CONTENT_MESSAGE_LEN</code> characters in length), arbitrary binary data (up to <code>SubscriberConstants::MAX_CONTENT_BINARY_SIZE</code> in size), the principal ID of the user who posted the content, the topics to which the content is posted, and the post date and time. A single piece of content can be posted to multiple topics. Although polling techniques are prohibited in the standard NEX APIs, the use of polling techniques is permitted in APIs for receiving content. For more information, see <a class="reference internal" href="#topic-get-content"><span class="std std-ref">Getting Content From Topics</span></a>.</p>
+<div class="figure" id="id19">
+<span id="topic-fig-getcontent"></span><img alt="../_images/Fig_Subscriber_GetContent.png" src="../_images/Fig_Subscriber_GetContent.png"/>
+<p class="caption"><span class="caption-text">Figure 8.1. Getting Content From Topics</span></p>
+</div>
+<p>The subscriber feature is intended for use cases such as the following.</p>
+<ul class="simple">
+<li>A user posts content such as "All soldiers report! Match conditions will be X and Y!" to a topic when recruiting other players for a match. Other users looking for matches who are following that topic can look through the matches and get involved in one that looks fun.</li>
+<li>A message saying that user-generated map data has been uploaded to the data store is posted to the topic, and that message is added to the new post lists of followers of that topic.</li>
+</ul>
+</div>
+<div class="section" id="userstatus">
+<span id="id4"></span><h3>8.1.2. User Status Sharing Feature</h3>
+<p>The User Status Sharing feature allows friends and their status to be shared by posting user status to the server.</p>
+<p>This feature makes an area available for recording the status for each individual user. Data expressing a user’s individual status can be posted to this area at any time. Data expressing posted status is kept by the server until the user logs out, and is returned in response to retrieval requests from other users. Because a posting notification can be sent to friends when a user status is posted, it is also possible to efficiently get the status of other users without polling whenever there is a posting notification.</p>
+<p>Additionally, because more than one area is prepared for each user, a user status that is being posted is posted in association with a numeric value that becomes its identification key. By dividing this key by purpose and application, only required statuses can be posted and obtained.</p>
+<p>This feature is intended primarily for the following kinds of applications.</p>
+<ul class="simple">
+<li>Sharing gathering IDs and user information to bring friends into matchmaking sessions</li>
+<li>Publicly announcing game play status or progress status to friends</li>
+</ul>
+<p>This feature has the following kinds of limitations. If these restrictions are not compatible with your application, consider using a different system.</p>
+<ul class="simple">
+<li>Data that expresses posted status has a lifetime that lasts until the user logs out, and data is quickly deleted when the user has logged out.</li>
+<li>One area can accommodate only one set of data expressing status, and cannot handle data with multiple types of content, such as topics.</li>
+<li>A user can post data expressing their status only to their own personal area, and cannot post to another user’s area.</li>
+<li>The range of what is shared is in game server units, and other titles and statuses cannot be shared.</li>
+<li>Because data expressing status is managed by a volatile system on the server, you may not be able to recover it entirely if a failure occurs.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="subscriber-flow">
+<span id="id5"></span><h2>8.2. Using the Subscriber Feature</h2>
+<p>The general workflow for using the subscriber feature is as follows.</p>
+<ol class="arabic">
+<li><p class="first">Log in to the game server.</p>
+</li>
+<li><p class="first">Initialize a service client (see section <a class="reference internal" href="#subscriber-initialize"><span class="std std-ref">8.3</span></a>).</p>
+</li>
+<li><p class="first">Work with topics (see section <a class="reference internal" href="#topic-operation"><span class="std std-ref">8.4</span></a>).</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Post content on topics (see section <a class="reference internal" href="#topic-post-content"><span class="std std-ref">8.4.1</span></a>).</li>
+<li>Get content from topics (see section <a class="reference internal" href="#topic-get-content"><span class="std std-ref">8.4.2</span></a>).</li>
+</ol>
+</div></blockquote>
+</li>
+<li><p class="first">Work with user status (see section <a class="reference internal" href="#userstatus-operation"><span class="std std-ref">8.5</span></a>).</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Get friend status from the server (see section <a class="reference internal" href="#userstatus-getfriends"><span class="std std-ref">8.5.1</span></a>).</li>
+<li>Register user status with the server (see section <a class="reference internal" href="#userstatus-update"><span class="std std-ref">8.5.2</span></a>).</li>
+<li>Get notification about user status registration from the server (see section <a class="reference internal" href="#userstatus-notify"><span class="std std-ref">8.5.3</span></a>).</li>
+<li>Get user status from the server (see section <a class="reference internal" href="#userstatus-get"><span class="std std-ref">8.5.4</span></a>).</li>
+</ol>
+</div></blockquote>
+</li>
+<li><p class="first">Finalize the service client, and log out from the game server.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="subscriber-initialize">
+<span id="id6"></span><h2>8.3. Initializing and Finalizing a Service Client</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html">SubscriberClient</a></code> service client. Initialization and finalization of the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html">SubscriberClient</a> object works the same as it does for the matchmaking service client. For more information, see <a class="reference internal" href="matchmake.html#matchmake-initialize"><span class="std std-ref">4.3</span></a>.</p>
+<div class="section" id="userstatus-cache-initialize">
+<span id="id7"></span><h3>8.3.1. Specifying the Cache Feature in the User Status Sharing Feature</h3>
+<p>When using the User Status Sharing feature, specify the cache feature after the service client is initialized. There is no need to call this when using only the Topics feature.</p>
+<p>Typically, enable the cache feature by calling the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#ab9413effc408199c0f092f7d98095621">SubscriberClient::EnableFriendUserStatusesCache</a>()</code> function. If you are not using the cache feature, call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#ae96da814a47cefe477b64d6a82043194">SubscriberClient::DisableFriendUserStatusesCache</a>()</code> function to disable the cache feature. Make sure that you explicitly call one or the other.</p>
+<p>For more information about this cache feature, see <a class="reference internal" href="#userstatus-cache"><span class="std std-ref">Cache Feature in the User Status Sharing Feature</span></a>.</p>
+</div>
+</div>
+<div class="section" id="topic-operation">
+<span id="id8"></span><h2>8.4. Operating Topics</h2>
+<div class="section" id="topic-post-content">
+<span id="id9"></span><h3>8.4.1. Posting Content to Topics</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#a81b933bc046225cf52b784c32e2aa8fc">SubscriberClient::PostContent</a>()</code> function to post content to a topic. You can specify to post content to multiple topics. At least one topic must be specified. Each piece of content posted to a topic is assigned a content ID. Content IDs are incremented each time content is posted.</p>
+<p>Specify topics as strings formatted as shown below.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">"r_&lt;reserved topic number&gt;"</span>
+</pre></div>
+</div>
+<p>Reserved topic numbers range from 0 to (<code>SubscriberConstants::NUM_RESERVED_TOPICS</code> - 1). In other words, “r_0”, “r_1”, ... , “r_127” are available. Use the <code>SubscriberUtil::ReservedTopicNumToTopicString()</code> function to convert a reserved topic number to a properly formatted topic string. Use the <code>SubscriberUtil::TopicStringToReservedTopicNum()</code> function to convert a topic string to a reserved topic number.</p>
+</div>
+<div class="section" id="topic-get-content">
+<span id="id10"></span><h3>8.4.2. Getting Content From Topics</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#a42cb513e83b3e2072b460ceb51e5cd41">SubscriberClient::GetContent</a>()</code> function to get the content from the specified topic. Up to <code>SubscriberConstants::MAX_TOPIC_CONTENT_SIZE</code> pieces of content can be stored in a topic at one time.</p>
+<p>Content retrieved from a topic is listed in decreasing order by content ID. Content IDs are issued in the order that the content is posted and are strictly increasing. The post date and time included in the content may be off by several seconds, however. Note that these timestamps may not reflect the exact order in which content was posted. Content with a smaller ID than the content with the largest ID that was obtained the last time content was retrieved may be inserted later due to differences in processing time on the server. For example, if, after retrieving the content from a topic, you had two pieces of content with IDs 3 and 1, you could potentially get three pieces of content with IDs 3, 2, and 1 if you retrieve the content from the same topic again later.</p>
+<p>In some cases, you may be able to periodically call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#a42cb513e83b3e2072b460ceb51e5cd41">SubscriberClient::GetContent</a>()</code> function at a frequency outside of the call frequency range specified in the guidelines. For the limits on call frequency for this function, see the guidelines. When polling, set the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_get_content_param.html#a361331e5d3bc500af3c494fdf1e36145">SubscriberGetContentParam::SetMinimumContentId</a>()</code> function so that you do not get the same content that was retrieved before, and get no more than 20 posts from any one topic at a time. You can also poll using an overload of the function that gets content from multiple topics at the same time. When the application transitions to a scene where the obtained information is not used, stop polling and avoid unnecessary access as much as possible.</p>
+</div>
+<div class="section" id="topic-delete-content">
+<span id="id11"></span><h3>8.4.3. Deleting Posted Content</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#afd3e5e0c342303bb4254ec4f6c7247c0">SubscriberClient::DeleteContent</a>()</code> function to delete content that the local user posted previously. To delete content, you must specify the content ID and the topics it was posted to. If a user specified three topics when the content was posted, for example, all three topics would need to be specified when deleting the content for it to be deleted from all of them. Specify a single topic if you want to delete the piece of content from that topic only. In this case, the piece of content would remain untouched in the other two topics. Users cannot delete content posted by other users.</p>
+</div>
+</div>
+<div class="section" id="userstatus-operation">
+<span id="id12"></span><h2>8.5. Operating User Status</h2>
+<div class="section" id="userstatus-getfriends">
+<span id="id13"></span><h3>8.5.1. Getting the Status of Friends From the Server</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#afcf6cac0433f9dae282f7674520647ca">SubscriberClient::GetFriendUserStatuses</a>()</code> function to get the status of friends from the server.</p>
+<p>All of the user data from all of the users who are your friends who have posted their status is retrieved collectively as <code>UserStatusInfo</code>. If you only want to get specific statuses, you can specify a numeric value as a key to focus the retrieval targets. However, if a user has restricted publication of their presence, you cannot get their status even if they are a friend.</p>
+<p>Use this method to collectively get the status of friends when you start, and then only get the differences as needed later.</p>
+</div>
+<div class="section" id="userstatus-update">
+<span id="id14"></span><h3>8.5.2. Registering User Status to the Server</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#a3b6927ab6c13032530441ddff21b167b">SubscriberClient::UpdateUserStatus</a>()</code> function to add your own status to the server.</p>
+<p>Specify binary data that expresses the status, and set numeric values as keys that specify statuses that indicate the purpose and application, in <code>UserStatusParam</code>. The maximum buffer length of binary data that can be set is <code>SubscriberConstants::MAX_STATUS_BINARY_SIZE</code>. Also, the number of numeric values that can be set as keys specifying the statuses that can be set is <code>SubscriberConstants::STATUS_KEY_SIZE</code>. Specify a value in the range from 0 to less than SubscriberConstants::STATUS_KEY_SIZE.</p>
+<p>The number of statuses that can be registered at one time is <code>SubscriberConstants::STATUS_KEY_SIZE</code>. You can not register more than this number of statuses. Also, you must not duplicate numeric values used as keys specifying the status in <code>UserStatusParam</code> that are specified at the same time.</p>
+<p>When a status is registered, a notification can be set to users who are friends. The notification does not contain data about the status, but it is possible to get the status when the notification has been received. Set the <code><em>isNotify</em></code> parameter to <code>true</code> to receive notifications. If <code>false</code> is specified for this argument, or if it is omitted, no notification is sent. Specify not to send notification if there is no need for a registered status to have immediate effect, or no processing is to be performed even if notification is received.</p>
+</div>
+<div class="section" id="userstatus-notify">
+<span id="id15"></span><h3>8.5.3. Receiving Notifications of User Status Registrations From the Server</h3>
+<p>You can receive notifications sent when another user registers their status. The way notifications are received is the same as the handling of notification events in matchmaking (<a class="reference internal" href="matchmake.html#matchmake-notification"><span class="std std-ref">4.18.</span></a>). </p>
+<p>Notifications can be sent (obtainable with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a6d8e34efc6d35321246b7e68f66a2c89">NotificationEvent::GetType</a>()</code> function) for the following event types.</p>
+<ul class="simple">
+<li>NotificationEvents::StatusUpdatedEvent: Notification when a user status has been registered. Notification is only of users that are friends. There will be no notification for users who are not friends. The principal ID obtained with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#adfda598e421eaf0ab581952f0bd28061">NotificationEvent::GetSource</a>()</code> function is that of a user that has made the registration. The notification is only that a registration has been made, and values obtained with the sub-types <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a040abab846bf0204b55eaa8348e7ab07">NotificationEvent::GetParam1</a>()</code>, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a0d927da06c783b43d8a5a6b15631be24">NotificationEvent::GetParam2</a>()</code>, and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a43ac9402e159c8d5adf2fd00d770f079">NotificationEvent::GetStringParam</a>()</code> are meaningless.</li>
+</ul>
+</div>
+<div class="section" id="userstatus-get">
+<span id="id16"></span><h3>8.5.4. Getting the Status of Users From the Server</h3>
+<p>Use the <code>GetUserStatuses()</code> function to get the status when there is a posting notification.</p>
+<p>You can specify the user to get. The number of users for which status can be obtained at one time is <code>SubscriberConstants::MAX_GET_STATUS_USER_SIZE</code>. If you get the status each time there is a notification, there is a risk of exceeding the guideline. For this reason, select the option to collectively get status for users with this range.</p>
+</div>
+</div>
+<div class="section" id="userstatus-cache">
+<span id="id17"></span><h2>8.6. Cache Feature in the User Status Sharing Feature</h2>
+<p>The User Status Sharing feature has a caching feature. When caching is enabled with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#ab9413effc408199c0f092f7d98095621">SubscriberClient::EnableFriendUserStatusesCache</a>()</code> function, the library runs the following functions.</p>
+<ol class="arabic simple">
+<li>Batch retrieve the status of friends and cache them in memory.</li>
+<li>Stand by for posting notifications of friends.</li>
+<li>Get the status of friends for whom notifications were received, and update the cache in memory.</li>
+<li>Resume standing by for the posting notifications of friends.</li>
+</ol>
+<p>If caching is enabled, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#afcf6cac0433f9dae282f7674520647ca">SubscriberClient::GetFriendUserStatuses</a>()</code> function to get status. There is no need to pass <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code>. Because the statuses of friends are cached on the client, a value is returned immediately without establishing communication, at the time of retrieval from the application.</p>
+<p>Communication for updating the cache is performed at a set interval to keep it within the scope specified in the guidelines. Basically, a status is retrieved at the time of a notification, but if a notification is received immediately after updating the cache, the cache is updated after several seconds. Even in this case, all notifications received while no communication is underway are held, and all retrievals are performed in a batch at the next opportunity.</p>
+<p>To specify the cache feature, explicitly call <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#ab9413effc408199c0f092f7d98095621">SubscriberClient::EnableFriendUserStatusesCache</a>()</code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#ae96da814a47cefe477b64d6a82043194">SubscriberClient::DisableFriendUserStatusesCache</a>()</code> immediately after the service client has been initialized. You can also call these functions to enable or disable the cache feature if you want to change the cache feature specification while the application is running.</p>
+</div>
+<div class="section" id="subscriber-error-handling">
+<span id="id18"></span><h2>8.7. Error Handling</h2>
+<p>Error handling is the same as for matchmaking. For more information, see <a class="reference internal" href="matchmake.html#matchmake-error-handling"><span class="std std-ref">4.24</span></a>. <a class="reference internal" href="#subscriber-table-error"><span class="std std-ref">Table 8.1</span></a> lists the errors that can occur when using the subscriber feature. The functions that return these errors are listed in the individual API Reference. This table excludes shared errors that occur during NEX communication, and so on.</p>
+<span id="subscriber-table-error"></span><table border="1" class="docutils" id="id20">
+<caption><span class="caption-text">Table 8.1. Subscriber Errors</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">ReturnCode Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>QERROR(Subscriber, Unknown)</td>
+<td>Unknown error. This error could be caused by an unexpected server error.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(Subscriber, InvalidArgument)</td>
+<td>Invalid argument. This error is caused by an implementation error.</td>
+</tr>
+<tr class="row-even"><td>QERROR(Subscriber, OverLimit)</td>
+<td>This error is caused by an implementation error. Consider the following example. The message or binary data included in posted content is too large. Too many topics are retrieved at the same time. As an exception, this error can also occur when statuses are updated simultaneously (over a period of about one minute) for 100 or more users of those targeted for status retrieval.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(Subscriber, PermissionDenied)</td>
+<td>Attempted to delete content that was posted by another user. This error is caused by an implementation error.</td>
+</tr>
+<tr class="row-even"><td>QERROR(RendezVous, DatabaseTemporarilyUnavailable)</td>
+<td>This error can occur when the database is temporarily inaccessible.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>2. NEX Initialization and Finalization — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="nex">
+<span id="nex-init-final"></span><h1>2. NEX Initialization and Finalization</h1>
+<div class="section" id="prepare-init">
+<span id="id1"></span><h2>2.1. Preparing for Initialization</h2>
+<p>Complete the following steps before initializing NEX.</p>
+<ul class="simple">
+<li>Initialize <code>nn::nifm</code>, submit a network use request, and then verify that this has been accepted by the system.</li>
+<li>Initialize <code>nn::socket</code> and libcurl.</li>
+<li>Initialize nn::account.</li>
+</ul>
+</div>
+<div class="section" id="do-init">
+<span id="id2"></span><h2>2.2. Initialization</h2>
+<p>Initialize NEX as follows.</p>
+<ul class="simple">
+<li>Set the functions that NEX uses to allocate and deallocate memory, by using the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_memory_manager.html#a346e93b188e228f020d830ff28fd831d">MemoryManager::SetBasicMemoryFunctions()</a> function.</li>
+<li>Set the thread mode (<a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a0f0105dd4e2d4b2bbf63cb544f8186ea">Core::SetThreadMode()</a>).</li>
+<li>Generate the NEX <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html">Core</a> object (call nn::nex::Initialize() or generate various client instances such as <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html">NgsFacade</a>, <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a>, and <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html">MatchmakeExtensionClient</a>).</li>
+</ul>
+<p>The NEX <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html">Core</a> object is generated either when nn::nex::Initialize() is first called, or when one of the various client instances such as <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html">NgsFacade</a>, <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a>, and <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html">MatchmakeExtensionClient</a> are first generated. Although it is not required, we recommend calling nn::nex::Initialize(true) to prevent situations such as the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html">Core</a> object being generated unintentionally, and the thread mode settings not being applied.</p>
+<p>For more information about initialization, see <span class="std std-ref"><a class="reference internal" href="memory.html#memory-top">3. Memory Management</a></span> and <a class="reference internal" href="initialize_detail.html#initialize-top"><span class="std std-ref">4. Initialization Settings (Thread Models, Exclusive Control, Log Output)</span></a>.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">You must create an instance of <code>NgsFacade</code> before you create a service client instance (for example, an instance of <code>RankingClient</code>). If you do not follow this procedure when creating instances, internal inconsistencies will be detected when <code>nn::nex::Finalize(true)</code> is called and finalization will fail.</p>
+</div>
+</div>
+<div class="section" id="do-finalize">
+<span id="id3"></span><h2>2.3. Finalization</h2>
+<p>Use the following procedure to finalize NEX.</p>
+<ul class="simple">
+<li>Release the NEX <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html">Core</a></code> object (call <code>nn::nex::Finalize()</code>, and destroy all of the client instances, such as <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html">NgsFacade</a></code>, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a></code>, and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html">MatchmakeExtensionClient</a></code>).</li>
+<li>(Optional) Clear the settings of the functions that NEX uses to allocate and deallocate memory (call <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_memory_manager.html#a346e93b188e228f020d830ff28fd831d">MemoryManager::SetBasicMemoryFunctions</a>(NULL, NULL)</code>).</li>
+<li>(Optional) Runs processes after finishing using the libraries that were initialized to prepare for initializing NEX.</li>
+</ul>
+<p>Call <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a82bcddd1655012c8d0fefca529955b1b">Core::GetInstance()</a><code>-&gt;SetTerminateImmediately(true)</code> to speed up finalization during shutdown, sleep mode, or when not connected to the network, and to make <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html#ae3566a0cacdb0d59d20d7a880e4c91be">NgsFacade::Logout()</a> execute faster. However, because standard disconnection is not performed, the local terminal sometimes appears to be suddenly disconnected from the network (from the perspective of other peers) because of a keep-alive timeout. For this reason, do not set this mode for normal termination sequences. After <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a3031f078f75c940616d6958131280e68">Core::SetTerminateImmediately()</a></code> has been called, all functions that communicate with the server will fail.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">You can only use the Core::SetTerminateImmediately() function if you are destroying an entire NEX session when shutting down, entering sleep mode, or when you are not connected to a network.</p>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

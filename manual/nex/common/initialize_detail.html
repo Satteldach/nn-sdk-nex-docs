@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>4. Initialization Settings (Thread Models, Exclusive Control, Log Output) — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="initialize-top">
+<span id="id1"></span><h1>4. Initialization Settings (Thread Models, Exclusive Control, Log Output)</h1>
+<p>This section describes the NEX initialization settings.</p>
+<div class="section" id="thread-top">
+<span id="id2"></span><h2>4.1. Threading Model</h2>
+<p>NEX provides flexibility in choosing a threading model based on your game's specifications.</p>
+<p>NEX is designed to perform internal processing and send and receive packets by periodically executing the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch()</a></code> function. Considering performance and usability, we recommend using <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99a906d5d9f7d0056954a4bef3a3c97bc17">Core::ThreadModeSafeTransportBuffer</a></code>.</p>
+<div class="section" id="set-thread-mode">
+<span id="id3"></span><h3>4.1.1. Setting the Thread Mode</h3>
+<div class="section" id="id4">
+<h4>4.1.1.1. Recommended Settings</h4>
+<p>We recommend the following NEX settings and API function usage. This setting balances performance and usability. Using separate threads for sending and receiving reduces the block time; the NEX API is also called in a thread-safe state, and this makes it easier to develop applications. This setting is recommended unless there is a particular reason to use a different setting.</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Thread Settings</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt><code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a0f0105dd4e2d4b2bbf63cb544f8186ea">Core::SetThreadMode</a>(<a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99a906d5d9f7d0056954a4bef3a3c97bc17">Core::ThreadModeSafeTransportBuffer</a>)</code></dt>
+<dd><ul class="first last">
+<li>This mode only sends and receives packets with long block times in a separate thread.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>NEX usage</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>The NEX API can be called simultaneously from multiple threads.</dt>
+<dd><ul class="first last">
+<li>Use a thread-safe memory allocator when calling it from multiple threads simultaneously.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>The application calls the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch()</a></code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#af891ae9986e9f9b373f58b6b26ee385a">Scheduler::DispatchAll()</a></code> function at the beginning and end of the game frame.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p>Because operating system processes for sending and receiving packets block for several milliseconds due to waiting for I/O processes, the processing for sending and receiving packets through the operating system API is handled in separate threads to lessen the affect of extended blocking inside <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code>. Under NEX, such threads are called <em>transport buffer threads</em>.</p>
+<p class="last">The transport buffer thread never manipulates memory because NEX allocates the memory that the thread requires before starting it. Also, NEX and the transport buffer thread are exclusive of each other regardless of the thread mode.</p>
+</div>
+<p>If you want to further reduce the CPU load, consider using <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99a7ed455ff56476229d7bc883888cc5bff">Core::ThreadModeUnsafeTransportBuffer</a></code>. To automatically call <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#af891ae9986e9f9b373f58b6b26ee385a">Scheduler::DispatchAll</a>()</code>, consider using <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99ace3148fd4b6c40d50268c6c957f6f246">Core::ThreadModeInternalTransportBuffer</a></code>.</p>
+</div>
+<div class="section" id="id5">
+<h4>4.1.1.2. Thread Modes</h4>
+<p>The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a0f0105dd4e2d4b2bbf63cb544f8186ea">Core::SetThreadMode</a>()</code> function provides an easy way to set the thread mode for the NEX library.</p>
+<ul>
+<li><p class="first"><code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99a2f18d4793390934a5070d07dcbaab332">Core::ThreadModeUndefined</a></code></p>
+<p>This value is the default. It works the same as <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99ada07de3703afd06bcede7692458ff1b6">Core::ThreadModeInternal</a></code>.</p>
+</li>
+<li><p class="first"><code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99a7ed455ff56476229d7bc883888cc5bff">Core::ThreadModeUnsafeTransportBuffer</a></code></p>
+<p>The application must periodically execute the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function. The transport buffer thread starts.</p>
+<p>The CPU load is low because exclusive control (<code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_critical_section.html">CriticalSection</a></code>) inside NEX, other than that with the transport buffer thread, is disabled. You must either use all NEX API functions from the same thread or locking in the application, as appropriate. If the NEX API was not called correctly in parallel, the system will detect this internally, and stop the process with an assertion failure. A high-speed memory allocator that is not thread-safe can be used.</p>
+</li>
+<li><p class="first"><code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99a906d5d9f7d0056954a4bef3a3c97bc17">Core::ThreadModeSafeTransportBuffer</a></code></p>
+<p>The application must periodically execute the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function. The transport buffer thread starts.</p>
+<p>The CPU load is higher because exclusive control (<code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_critical_section.html">CriticalSection</a></code>) inside NEX is enabled.</p>
+</li>
+<li><p class="first"><code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99a5a77f04ecfdb70e07e66cde853e9bbb5">Core::ThreadModeUnsafeUser</a></code></p>
+<p>The application must periodically execute the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function. The socket calls made in the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function can block for several milliseconds, so call this function from a thread other than the main thread.</p>
+<p>The CPU load is low because exclusive control (<code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_critical_section.html">CriticalSection</a></code>) inside NEX is disabled. You must either use all NEX API functions from the same thread or locking in the application, as appropriate. If the NEX API was not called correctly in parallel, the system will detect this internally, and stop the process with an assertion failure. A high-speed memory allocator that is not thread-safe can be used.</p>
+</li>
+<li><p class="first"><code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99ada07de3703afd06bcede7692458ff1b6">Core::ThreadModeInternal</a></code></p>
+<p>Dispatching and communication processes are both handled automatically by threads inside the library. The application does not need to call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function. The CPU load is higher because exclusive control (<code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_critical_section.html">CriticalSection</a></code>) inside NEX is enabled. A thread-safe memory allocator must be used. NEX callbacks are called from the thread from which the NEX API function was called or from an internal thread in the library. To prevent competitions with the internal threads, exclusive processes obtained using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a44e6cce93da35e2ce170ead8307a9a92">Scheduler::SystemLock</a>()</code> function must be used as appropriate in the application. Depending on when the application calls NEX API functions, those function calls may get caught in exclusive control during socket API function calls and block for an extended time. To avoid this problem, use <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99ace3148fd4b6c40d50268c6c957f6f246">Core::ThreadModeInternalTransportBuffer</a></code>.</p>
+</li>
+<li><p class="first"><code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99ace3148fd4b6c40d50268c6c957f6f246">Core::ThreadModeInternalTransportBuffer</a></code></p>
+<p>Dispatching and communication processes are both handled automatically by threads inside the library. The application does not need to call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function. The CPU load is higher because exclusive control (<code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_critical_section.html">CriticalSection</a></code>) inside NEX is enabled. A thread-safe memory allocator must be used. NEX callbacks are called from the thread from which the NEX API function was called or from an internal thread in the library. To prevent competitions with the internal threads, exclusive processes obtained using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a44e6cce93da35e2ce170ead8307a9a92">Scheduler::SystemLock</a>()</code> function must be used as appropriate in the application. The transport buffer thread starts.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="threadmode-comparison">
+<span id="id6"></span><h4>4.1.1.3. Thread Mode Comparison and Thread Types</h4>
+<span id="thread-table-threadmode-comparison"></span><table border="1" class="docutils" id="id11">
+<caption><span class="caption-text">Table 4.1. Thread Mode Comparison</span></caption>
+<colgroup>
+<col width="20%"/>
+<col width="20%"/>
+<col width="20%"/>
+<col width="20%"/>
+<col width="20%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Thread Mode</th>
+<th class="head">Transport Buffer Threads</th>
+<th class="head">Internal Threads</th>
+<th class="head">Thread-Safe</th>
+<th class="head">Memory Allocator That Is Not Thread-Safe Allowed</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Core::<wbr/>ThreadModeUnsafeTransportBuffer</td>
+<td>○</td>
+<td>×</td>
+<td>×</td>
+<td>○</td>
+</tr>
+<tr class="row-odd"><td>Core::<wbr/>ThreadModeSafeTransportBuffer</td>
+<td>○</td>
+<td>×</td>
+<td>○</td>
+<td>△</td>
+</tr>
+<tr class="row-even"><td>Core::<wbr/>ThreadModeUnsafeUser</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+<td>○</td>
+</tr>
+<tr class="row-odd"><td>Core::<wbr/>ThreadModeInternal</td>
+<td>×</td>
+<td>○</td>
+<td>○</td>
+<td>×</td>
+</tr>
+<tr class="row-even"><td>Core::<wbr/>ThreadModeInternalTransportBuffer</td>
+<td>○</td>
+<td>○</td>
+<td>○</td>
+<td>×</td>
+</tr>
+</tbody>
+</table>
+<p>In NEX, main threads can be classified as one of the following thread types.</p>
+<ul>
+<li><p class="first">Transport Buffer Threads</p>
+<p>Threads created internally in NEX. Sends and receives packets. Total of two threads: one for sending and one for receiving. Enabling this threading mode reduces how long NEX API functions block.</p>
+</li>
+<li><p class="first">Internal Threads</p>
+<p>Threads created internally in NEX. These threads call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function periodically to advance internal NEX processes. Enabling this threading mode removes the need to call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function from the application. Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a2248ae83d2f46616b338d76b69442bd5">Scheduler::SetInternalThreadDispatchInterval</a>()</code> function to change the interval at which the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function is called.</p>
+</li>
+<li><p class="first">User Threads</p>
+<p>Threads managed by the application while making NEX function calls are known as user threads.</p>
+</li>
+</ul>
+<p>The type of threads used when NEX makes a callback to the application differ depending on the threading mode. In thread modes that use internal threads, use callbacks that use internal threads. With threading modes that do not use internal threads, callbacks are made from a user thread.</p>
+<p>The property of being thread-safe refers to whether a NEX API function can simultaneously be called on multiple different threads. This property affects whether the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_critical_section.html">CriticalSection</a></code> class is enabled or disabled. In thread modes that are not thread-safe, the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_critical_section.html#a24abbfda80d1396f51f9d2c39e4c0ca0">CriticalSection::Enter</a>()</code> function does not do anything.</p>
+<p>NEX dynamically allocates memory from user threads and internal threads. In other words, in thread modes that use internal threads, memory is sometimes allocated from both the user threads and the internal threads simultaneously. For this reason, you must use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_memory_manager.html#a346e93b188e228f020d830ff28fd831d">MemoryManager::SetBasicMemoryFunctions</a>()</code> function to specify a thread-safe memory allocator in such cases. In thread modes that do not use internal threads, a thread-safe memory allocator must only be specified when calling NEX functions in parallel from multiple user threads.</p>
+</div>
+<div class="section" id="thread-priority">
+<span id="id7"></span><h4>4.1.1.4. Thread Priority</h4>
+<p>Configure transport buffer threads to have higher priority than internal threads, so that internal threads are prioritized higher than user threads and the application's main thread. This is similar to one of the following.</p>
+<blockquote>
+<div>User threads/application main thread ≤ internal threads ≤ transport buffer threads.</div></blockquote>
+<p>OR</p>
+<blockquote>
+<div>User threads/application main thread ≤ transport buffer threads.</div></blockquote>
+<p>Thread priority configurations that do not satisfy these relationships may result in unanticipated packet transfer delays and increased memory usage.</p>
+<p><strong>Detailed Description</strong></p>
+<blockquote>
+<div><p>The typical process flow for NEX processes is as follows.</p>
+<ol class="arabic simple">
+<li>The application calls a NEX send or receive function such as RMC.</li>
+<li>NEX internal processes are advanced by a call to the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function, and the packets that need to be sent are pushed into the packet queue.</li>
+<li>Packets are taken from the packet queue and transferred to the operating system.</li>
+</ol>
+<p>The threads where each of these processes are executed are different depending on the thread mode.</p>
+<div class="figure" id="id12">
+<span id="thread-fig-thread-layer"></span><img alt="../_images/Fig_Thread_ThreadLayer.png" src="../_images/Fig_Thread_ThreadLayer.png"/>
+<p class="caption"><span class="caption-text">Figure 4.1. Processes Executed on Each Thread</span></p>
+</div>
+<p>Process 1 corresponds to the interface layer in <a class="reference internal" href="#thread-fig-thread-layer"><span class="std std-ref">Figure 4.1</span></a>, process 2 corresponds to the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_job.html">Job</a> dispatch layer, and process 3 corresponds to the transport layer. The horizontal axis represents the thread mode. <code>User</code> corresponds to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99a5a77f04ecfdb70e07e66cde853e9bbb5">Core::ThreadModeUnsafeUser</a></code>; <code>TransportBuffer</code> corresponds to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99a7ed455ff56476229d7bc883888cc5bff">Core::ThreadModeUnsafeTransportBuffer</a></code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99a906d5d9f7d0056954a4bef3a3c97bc17">Core::ThreadModeSafeTransportBuffer</a></code>; <code>Internal</code> corresponds to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99ada07de3703afd06bcede7692458ff1b6">Core::ThreadModeInternal</a></code>; and <code>InternalTransportBuffer</code> corresponds to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99ace3148fd4b6c40d50268c6c957f6f246">Core::ThreadModeInternalTransportBuffer</a></code>. For example, in <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99ace3148fd4b6c40d50268c6c957f6f246">Core::ThreadModeInternalTransportBuffer</a></code> mode, interface layer processes are executed on the user threads, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_job.html">Job</a></code> dispatch layer processes are executed on internal threads, and transport layer processes are executed on the transport buffer threads. When packets are pushed into the packet queue by internal processes on internal threads, a transport buffer thread is started and the packets are transferred immediately. However, if the priority of the transport buffer thread is lower than the priority of the internal threads, the user threads, or the application main thread, the packets are not transferred immediately even if a transport buffer thread is started. This may cause a delay in packet transfer.</p>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="id8">
+<h3>4.1.2. Mutex Processing</h3>
+<div class="section" id="id9">
+<h4>4.1.2.1. Mutex for Accessing Resources From Callbacks</h4>
+<p>Perform appropriate mutex processing when NEX accesses resources from a resource, using a called back thread.</p>
+</div>
+</div>
+</div>
+<div class="section" id="set-output-log">
+<span id="id10"></span><h2>4.2 Log Output Settings</h2>
+<p>When we receive an inquiry about unexpected NEX behavior, Nintendo Support may request that you send the log that was output by the NEX library.</p>
+<p>To enable NEX library log output, specify the following settings before generating a NEX <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_core.html">Core</a></code> object (calling <code>Initialize()</code> or generating various client instances such as <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html">NgsFacade</a></code>, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a></code>, and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html">MatchmakeExtensionClient</a></code>).</p>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">Code 4.1 Log Output Settings Example</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">nn</span><span class="o">::</span><span class="n">nex</span><span class="o">::</span><span class="n">EventLog</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">SetLogLevel</span><span class="p">(</span><span class="n">nn</span><span class="o">::</span><span class="n">nex</span><span class="o">::</span><span class="n">EventLog</span><span class="o">::</span><span class="n">Debug</span><span class="p">);</span>
+<span class="n">nn</span><span class="o">::</span><span class="n">nex</span><span class="o">::</span><span class="n">TraceLog</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">SetFlag</span><span class="p">(</span><span class="n">TRACE_ALWAYS</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<p>Depending on the inquiry status, you may be instructed to use additional option flags or the like. Configure the settings as instructed by Nintendo Support.</p>
+<p>The log output settings are optional when not making an inquiry, but we recommend that you configure the settings so that you can respond smoothly when dealing with support.</p>
+<p>Specifications related to these log settings, and the log output content, are not made available to the public because they are used by Nintendo for support purposes.</p>
+</div>
+</div>
+</div>
+
+</body>
+</html>

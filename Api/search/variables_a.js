@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['rating_5fslot_5fmax',['RATING_SLOT_MAX',['../namespacenn_1_1nex_1_1_data_store_constants.html#a14b99f4a679f7dcd42ed6d0870bb193d',1,'nn::nex::DataStoreConstants']]],
+  ['realunitsize',['realUnitSize',['../structnn_1_1nex_1_1_packet_buffer_manager_1_1_unit_heap_debug_info.html#a2b2739d82506507dba1825cdf397832e',1,'nn::nex::PacketBufferManager::UnitHeapDebugInfo']]],
+  ['receiveackwantedcount',['receiveAckWantedCount',['../structnn_1_1nex_1_1_end_point_info.html#a127b43f4dd2dccfbdc1733ea71ed56ca',1,'nn::nex::EndPointInfo']]],
+  ['receivepingcount',['receivePingCount',['../structnn_1_1nex_1_1_end_point_info.html#a8431031a9edbfa4c739d0e49105acafd',1,'nn::nex::EndPointInfo']]],
+  ['receivereliablecount',['receiveReliableCount',['../structnn_1_1nex_1_1_end_point_info.html#af174542eee91015cea4ea77a2f99df88',1,'nn::nex::EndPointInfo']]],
+  ['receivereliabletotalsize',['receiveReliableTotalSize',['../structnn_1_1nex_1_1_end_point_info.html#a609b9f651a45a0a474d0b526219d747f',1,'nn::nex::EndPointInfo']]],
+  ['receiveunreliablebroadcastcount',['receiveUnreliableBroadcastCount',['../structnn_1_1nex_1_1_end_point_info.html#a826dfe3d10f2c92539363721a0257c87',1,'nn::nex::EndPointInfo']]],
+  ['receiveunreliablebroadcasttotalsize',['receiveUnreliableBroadcastTotalSize',['../structnn_1_1nex_1_1_end_point_info.html#a93c7423e440ccb6ee38db6374230600b',1,'nn::nex::EndPointInfo']]],
+  ['receiveunreliablecount',['receiveUnreliableCount',['../structnn_1_1nex_1_1_end_point_info.html#aa4f93f210832eddf8b5c894dbf2d1342',1,'nn::nex::EndPointInfo']]],
+  ['receiveunreliabledatacount',['receiveUnreliableDataCount',['../structnn_1_1nex_1_1_end_point_info.html#aaf752b5762a2de54dba384b5444f4de7',1,'nn::nex::EndPointInfo']]],
+  ['receiveunreliabledatatotalsize',['receiveUnreliableDataTotalSize',['../structnn_1_1nex_1_1_end_point_info.html#a6bdc7119a7c1d5b7837bf80ffaa2dca8',1,'nn::nex::EndPointInfo']]],
+  ['receiveunreliabledropcount',['receiveUnreliableDropCount',['../structnn_1_1nex_1_1_end_point_info.html#a8bd59459a338d905d78158a5d060a913',1,'nn::nex::EndPointInfo']]],
+  ['receiveunreliableduplicatereorderingcount',['receiveUnreliableDuplicateReorderingCount',['../structnn_1_1nex_1_1_end_point_info.html#ad224f559b2016a2f12e6c4d890ed71fe',1,'nn::nex::EndPointInfo']]],
+  ['receiveunreliableneglectcount',['receiveUnreliableNeglectCount',['../structnn_1_1nex_1_1_end_point_info.html#a291302b59eb9804d50308760d7900a31',1,'nn::nex::EndPointInfo']]],
+  ['receiveunreliablesendmulticount',['receiveUnreliableSendMultiCount',['../structnn_1_1nex_1_1_end_point_info.html#aaefaa83ac159432251f139f8071b7639',1,'nn::nex::EndPointInfo']]],
+  ['receiveunreliablesendmultitotalsize',['receiveUnreliableSendMultiTotalSize',['../structnn_1_1nex_1_1_end_point_info.html#ab699d0de31f981088c04c090904155f4',1,'nn::nex::EndPointInfo']]],
+  ['receiveunreliabletotalsize',['receiveUnreliableTotalSize',['../structnn_1_1nex_1_1_end_point_info.html#a67ef550fcabf98241bfda81f50b5ec2c',1,'nn::nex::EndPointInfo']]],
+  ['receiveuselessackcount',['receiveUselessAckCount',['../structnn_1_1nex_1_1_end_point_info.html#a86f958c3abfd4deec01c6ec98b9c27ba',1,'nn::nex::EndPointInfo']]],
+  ['resettime',['resetTime',['../structnn_1_1nex_1_1_end_point_info.html#a34c6518e75be2df1dea044e83ce49c64',1,'nn::nex::EndPointInfo']]],
+  ['rtomax',['rtoMax',['../structnn_1_1nex_1_1_end_point_info.html#a0beec8b50b4b8d0442631742dd9f29e8',1,'nn::nex::EndPointInfo']]],
+  ['rtomin',['rtoMin',['../structnn_1_1nex_1_1_end_point_info.html#a0d1179ae1c9c689a7a02c58daba3773f',1,'nn::nex::EndPointInfo']]],
+  ['rtt',['rtt',['../structnn_1_1nex_1_1_end_point_info.html#abed19720aee8e4f23b744ec926e65685',1,'nn::nex::EndPointInfo']]],
+  ['rttaverage',['rttAverage',['../structnn_1_1nex_1_1_end_point_info.html#aec60e29172d79102c75dcc2fd64b2c05',1,'nn::nex::EndPointInfo']]]
+];

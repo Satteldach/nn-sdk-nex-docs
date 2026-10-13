@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>5. Ranking — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="ranking-top">
+<span id="id1"></span><h1>5. Ranking</h1>
+<div class="section" id="ranking-first-of-all">
+<span id="id2"></span><h2>5.1. Introduction</h2>
+<p>Ranking is a feature for generating rankings based on the scores registered by users. The scores registered by users are tallied by the server, and afterward, users can get their ranking in the game.</p>
+<p>A user can have, and register, many types of scores, and these scores can be handled individually to generate separate rankings, and to register data related to the scores. For example, IN a game where the user chooses to play as a particular character, when the game is cleared, the time it took and the number of coins collected are registered as scores. These two scores can be ranked separately, and they can be associated with the character played in the game.</p>
+<p>A variety of different kinds of rankings can be obtained. Examples include the top ranking, nearby rankings, or the ranking only among friends. It is also possible to filter using data associated with scores when getting rankings.</p>
+<p>There is also a feature to get cached rankings, which enables the calls to get rankings to be made much more frequently, and a feature to get score statistics.</p>
+</div>
+<div class="section" id="ranking-server-data">
+<span id="id3"></span><h2>5.2. Information Saved by the Ranking Feature</h2>
+<p>The ranking feature can be used to save not only scores, but also a number of different kinds of related data. <a class="reference internal" href="#ranking-fig-rankingdata"><span class="std std-ref">Figure 5.1</span></a> shows the kinds of data sets that are stored on the game server for each principal ID.</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Common user data</dt>
+<dd><ul class="first last">
+<li>One set of optional binary data that can be registered for each user.</li>
+<li>Information such as the user name can be saved here.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Score</dt>
+<dd><ul class="first last">
+<li>Score values.</li>
+<li>A different kind of score can be used for each category number. When rankings are retrieved, a ranking is generated for each separate category number.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Group</dt>
+<dd><ul class="first last">
+<li>A value associated with a single score that is used as a criterion for filtering scores</li>
+<li>When rankings are obtained, you can get just those rankings that match a particular group value. For more information, see <a class="reference internal" href="#ranking-filter-group"><span class="std std-ref">5.6.4.1</span></a>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Parameter</dt>
+<dd><ul class="first last">
+<li>An optional value associated with a single score.</li>
+<li>Use to save things like the character number used in the game, or score-associated data such as the ID of the replay data uploaded to the data store.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="figure" id="id30">
+<span id="ranking-fig-rankingdata"></span><img alt="../_images/Fig_Ranking_Server_Data.png" src="../_images/Fig_Ranking_Server_Data.png"/>
+<p class="caption"><span class="caption-text">Figure 5.1. Information Saved on the Game Server</span></p>
+</div>
+<p>If more than one score is registered for the same category, only the highest score is saved.</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">By using a <a class="reference internal" href="utility.html#utility-uniqueid"><span class="std std-ref">NEX Unique ID</span></a>, you can use multiple datasets with a single principal ID. For more information, see <a class="reference internal" href="utility.html#utility-uniqueid-ranking-usage"><span class="std std-ref">Using NEX Unique IDs for Rankings</span></a>.</p>
+</div>
+</div>
+<div class="section" id="ranking-overview">
+<span id="id4"></span><h2>5.3. Ranking Workflow</h2>
+<p>This is the basic workflow when you use the ranking features.</p>
+<ol class="arabic simple">
+<li>Log in to the game server.</li>
+<li>Initialize a service client. For more information, see <a class="reference internal" href="#ranking-initialize"><span class="std std-ref">5.4</span></a>.</li>
+<li>Use the various kinds of ranking features.<ul>
+<li>Upload scores. For more information, see <a class="reference internal" href="#ranking-upload-score"><span class="std std-ref">5.5</span></a>.</li>
+<li>Get rankings. For more information, see <a class="reference internal" href="#ranking-get-ranking"><span class="std std-ref">5.6</span></a>.</li>
+<li>Call other API functions as needed.</li>
+</ul>
+</li>
+<li>Finalize the service client, and log out from the game server.</li>
+</ol>
+</div>
+<div class="section" id="ranking-initialize">
+<span id="id5"></span><h2>5.4. Initializing and Finalizing a Service Client</h2>
+<p>Initializing and finalizing a service client for ranking (<a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html">RankingClient</a>) involves the same processes as matchmaking. For more information, see <a class="reference internal" href="matchmake.html#matchmake-initialize"><span class="std std-ref">4.3</span></a>.</p>
+</div>
+<div class="section" id="ranking-upload-score">
+<span id="id6"></span><h2>5.5. Uploading Scores</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#af89e532a129407b36c383d9980ed50d4">RankingClient::UploadScore</a>()</code> function to register or modify scores.</p>
+<p><a class="reference internal" href="#ranking-table-scoredata"><span class="std std-ref">Table 5.1</span></a> shows the values that can be set to the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_score_data.html">RankingScoreData</a></code> object as score attribute information.</p>
+<span id="ranking-table-scoredata"></span><table border="1" class="colwidths-given docutils" id="id31">
+<caption><span class="caption-text">Table 5.1. RankingScoreData Attribute Values</span></caption>
+<colgroup>
+<col width="12%"/>
+<col width="46%"/>
+<col width="15%"/>
+<col width="15%"/>
+<col width="12%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Description</th>
+<th class="head">Values Allowed</th>
+<th class="head">Initial Value</th>
+<th class="head">Function Used</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Category</td>
+<td>Specifies the category number of the category to which to upload the score.</td>
+<td>32-bit, non-negative, integer</td>
+<td>0</td>
+<td>SetCategory()</td>
+</tr>
+<tr class="row-odd"><td>Score</td>
+<td>Specifies the score.</td>
+<td>32-bit, non-negative, integer</td>
+<td>0</td>
+<td>SetScore()</td>
+</tr>
+<tr class="row-even"><td>Group 0</td>
+<td>Specifies a group value to use as a filtering condition.</td>
+<td>An integer between 0 and 255.</td>
+<td>0</td>
+<td>SetGroup0()</td>
+</tr>
+<tr class="row-odd"><td>Group 1</td>
+<td>Specifies a group value to use as a filtering condition.</td>
+<td>An integer between 0 and 255.</td>
+<td>0</td>
+<td>SetGroup1()</td>
+</tr>
+<tr class="row-even"><td>Parameter</td>
+<td>Specifies data to associate with each score.</td>
+<td>64-bit, non-negative, integer</td>
+<td>0</td>
+<td>SetParam()</td>
+</tr>
+<tr class="row-odd"><td>Score order</td>
+<td>Specifies the score order (ascending or descending). This order is applied to rankings when they are retrieved.</td>
+<td><div class="first last line-block">
+<div class="line">RankingConstants::<wbr/>ORDER_<wbr/>BY_<wbr/>DESC</div>
+<div class="line">or</div>
+<div class="line">RankingConstants::<wbr/>ORDER_<wbr/>BY_<wbr/>ASC</div>
+</div>
+</td>
+<td>RankingConstants::<wbr/>ORDER_<wbr/>BY_<wbr/>DESC</td>
+<td>SetOrderBy()</td>
+</tr>
+<tr class="row-even"><td>Score update mode</td>
+<td>If scores are repeatedly registered to the same category, this specifies whether to overwrite the score.</td>
+<td><div class="first last line-block">
+<div class="line">RankingConstants::<wbr/>UPDATE_<wbr/>MODE_<wbr/>NORMAL</div>
+<div class="line">or</div>
+<div class="line">RankingConstants::<wbr/>UPDATE_<wbr/>MODE_<wbr/>DELETE_<wbr/>OLD</div>
+</div>
+</td>
+<td>RankingConstants::<wbr/>UPDATE_<wbr/>MODE_<wbr/>NORMAL</td>
+<td>SetUpdateMode()</td>
+</tr>
+</tbody>
+</table>
+<p>Any 32-bit, non-negative, integer between 0 and 4,294,967,295 can be specified for the score, but it is also possible to set upper and lower limits so that invalid scores do not get registered. For more information, see <a class="reference internal" href="#ranking-nmas-set-limit-of-score"><span class="std std-ref">Setting Score Upper and Lower Limits</span></a>.</p>
+<p>The parameter could be used to store the character number used in the game, or for some kind of score-associated data uploaded to the data store, like the ID of the replay data.</p>
+<p>The behavior differs depending on what value has been set for the score order, as follows.</p>
+<ul class="simple">
+<li><code>RankingConstants::ORDER_BY_DESC</code> (descending order): Larger scores are ranked higher.</li>
+<li><code>RankingConstants::ORDER_BY_ASC</code> (ascending order): Smaller scores are ranked higher.</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p>Always specify the same sort order for scores in the same category. If different sort orders are specified for data registered to the same category, there will be problems with the sorting when rankings are retrieved.</p>
+<p class="last">To make changes when scores are already registered on the game server, delete all of the score data using the <a class="reference internal" href="#ranking-nmas"><span class="std std-ref">NEX Server Management System tool (NMAS)</span></a>.</p>
+</div>
+<p>The behavior differs depending on what value has been set for the score update mode, as follows.</p>
+<ul class="simple">
+<li><code>RankingConstants::UPDATE_MODE_NORMAL</code>: Records the score if it is better than the earlier score in that category.</li>
+<li><code>RankingConstants::UPDATE_MODE_DELETE_OLD</code>: Deletes the earlier score in the category and records the latest score. The latest score is always used, regardless of whether it is better or worse.</li>
+</ul>
+<p>This function can only be used to register scores associated with the principal ID of the local user.</p>
+<p>By specifying a <a class="reference internal" href="utility.html#utility-uniqueid"><span class="std std-ref">NEX unique ID</span></a> as an argument of the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#af89e532a129407b36c383d9980ed50d4">RankingClient::UploadScore()</a> function, you can register scores at a more granular level than the principal ID. For more information, see <a class="reference internal" href="utility.html#utility-uniqueid-ranking-usage"><span class="std std-ref">10.3.1.1</span></a>.</p>
+</div>
+<div class="section" id="ranking-get-ranking">
+<span id="id7"></span><h2>5.6. Getting Rankings</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a5d6aef10dea52a8ef48b3b9d8ece9eb5">RankingClient::GetRanking</a>()</code> function to get rankings.</p>
+<p>You can choose to get a variety of different kinds of rankings, including top rankings, nearby rankings, or friend rankings. You can also specify how to calculate rankings and filtering criteria.</p>
+<p>Rankings are generated for each separate category.</p>
+<div class="section" id="id8">
+<h3>5.6.1. Ranking Types</h3>
+<p>Select which kind of ranking to get by specifying a <code>RankingMode</code> for the parameter of the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a5d6aef10dea52a8ef48b3b9d8ece9eb5">RankingClient::GetRanking</a>()</code> function. <a class="reference internal" href="#ranking-table-ranking-mode"><span class="std std-ref">Table 5.2</span></a> shows which kinds of rankings can be retrieved.</p>
+<span id="ranking-table-ranking-mode"></span><table border="1" class="colwidths-given docutils" id="id32">
+<caption><span class="caption-text">Table 5.2. Ranking Types</span></caption>
+<colgroup>
+<col width="15%"/>
+<col width="25%"/>
+<col width="60%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Type (Mode)</th>
+<th class="head">RankingMode Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Range ranking</td>
+<td>RANKING_<wbr/>MODE_<wbr/>RANGE</td>
+<td>Gets rankings in the range of the specified starting position and length.</td>
+</tr>
+<tr class="row-odd"><td>Nearby rankings</td>
+<td>RANKING_<wbr/>MODE_<wbr/>NEAR</td>
+<td>Gets rankings near the specified user.</td>
+</tr>
+<tr class="row-even"><td>Friend rankings</td>
+<td>RANKING_<wbr/>MODE_<wbr/>FRIEND_<wbr/>RANGE</td>
+<td>Gets the rankings of friends of the local host. If a player does not have any friends, this gets only that player's data.</td>
+</tr>
+<tr class="row-odd"><td>Rankings near friends</td>
+<td>RANKING_<wbr/>MODE_<wbr/>FRIEND_<wbr/>NEAR</td>
+<td>Gets rankings of friends that are near to the rankings of the local host.</td>
+</tr>
+<tr class="row-even"><td>Individual ranking data</td>
+<td>RANKING_<wbr/>MODE_<wbr/>USER</td>
+<td>Gets the ranking data for the specified user.</td>
+</tr>
+</tbody>
+</table>
+<p>Rankings are retrieved by specifying a starting position and length within the range of ranks that run from first to <em>n</em>th position, where <em>n</em> = <code>RankingConstants::MAX_RANGE_RANKING_ORDER</code>. The value specified for the starting position cannot be greater than (<code>RankingConstants::MAX_RANGE_RANKING_ORDER</code> – 1).</p>
+<p>To get the top rankings, you can use the function that gets the cached top rankings, instead of a range of rankings. For more information, see <a class="reference internal" href="#ranking-cached-topx"><span class="std std-ref">5.6.6</span></a>.</p>
+<p>When neighboring rankings are retrieved, the ranking of the specified user sits in the middle of the list. Of course, if the specified user ranks near the top or the bottom, this might not be the case. In those cases, you cannot get the specified number of rankings, regardless of the actual number of scores that have been registered.</p>
+<p>Neighboring rankings differ from bounded rankings in that there is no restriction on which ranks can be obtained, and rankings can be obtained even if the rank of the specified user is lower than <code>RankingConstants::MAX_RANGE_RANKING_ORDER</code>.</p>
+</div>
+<div class="section" id="id9">
+<h3>5.6.2. Parameters for Calculating Ranking Order</h3>
+<p>Use the parameters of the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_order_param.html">RankingOrderParam</a></code> class to specify how to calculate the rankings and which filter criteria to use. To do this, you must pass the parameters listed in <a class="reference internal" href="#ranking-table-order-param"><span class="std std-ref">Table 5.3</span></a> to the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_order_param.html">RankingOrderParam</a></code> object.</p>
+<span id="ranking-table-order-param"></span><table border="1" class="colwidths-given docutils" id="id33">
+<caption><span class="caption-text">Table 5.3. RankingOrderParam Parameters</span></caption>
+<colgroup>
+<col width="15%"/>
+<col width="45%"/>
+<col width="25%"/>
+<col width="15%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Overview</th>
+<th class="head">Initial Value</th>
+<th class="head">Function Used</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Order calculation method</td>
+<td>Specifies how to calculate rankings when there are duplicate scores.</td>
+<td>RankingConstants::<wbr/>ORDER_<wbr/>CALCULATION_<wbr/>113</td>
+<td>SetOrderCalculation()</td>
+</tr>
+<tr class="row-odd"><td>Offset</td>
+<td>Specifying a start position allows you to get rankings starting from the specified position, where the first score in the rankings is in position 0. This can only be used when getting a range of rankings.</td>
+<td>0</td>
+<td>SetOffset()</td>
+</tr>
+<tr class="row-even"><td>Length (number of scores)</td>
+<td>Specifies the maximum number of records to get.</td>
+<td>10</td>
+<td>SetLength()</td>
+</tr>
+<tr class="row-odd"><td>Group index</td>
+<td>Specifies the group index to use for filtering by group. For more information, see <a class="reference internal" href="#ranking-filter-group"><span class="std std-ref">5.6.4.1</span></a>.</td>
+<td>RankingConstants::<wbr/>FILTER_<wbr/>GROUP_<wbr/>INDEX_<wbr/>NONE</td>
+<td>SetFilterGroupIndex()</td>
+</tr>
+<tr class="row-even"><td>Filter group number</td>
+<td>Specifies the number when filtering by group.</td>
+<td>0</td>
+<td>SetFilterGroupNum()</td>
+</tr>
+<tr class="row-odd"><td>Time scope</td>
+<td>Specifies the time scope to use for filtering by time. For more information, see <a class="reference internal" href="#ranking-time-scope"><span class="std std-ref">5.6.4.2.</span></a>.</td>
+<td>RankingConstants::<wbr/>TIME_<wbr/>SCOPE_<wbr/>ALL</td>
+<td>SetTimeScope()</td>
+</tr>
+</tbody>
+</table>
+<p>The behavior differs depending on which method is used to calculate rankings, as follows.</p>
+<ul class="simple">
+<li><code>RankingConstants::ORDER_CALCULATION_113</code>: If there are multiple identical scores, it sets all identical scores at the same rank (Example: first, first, third). The ranking order among the same rank puts ranks with older update times (in seconds) toward the top. If update times are the same, the one with the lower principal ID is placed higher.</li>
+<li><code>RankingConstants::ORDER_CALCULATION_123</code>: If there are identical scores, rank them according to time of update (measured in units of seconds), giving the older one the higher rank. If they have the same update time, give the one with the smaller principal ID the higher rank.</li>
+</ul>
+</div>
+<div class="section" id="ranking-result">
+<span id="id10"></span><h3>5.6.3. Results of Getting Rankings</h3>
+<p>Ranking results are stored in a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_result.html">RankingResult</a></code> object. The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_result.html">RankingResult</a></code> object includes the total number of scores matching the specified conditions, the start date and time of the rankings that were calculated, and a list of ranking data (<a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_vector.html">qVector</a>&lt;<a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_rank_data.html">RankingRankData</a>&gt;). For a list of the items that can be obtained from <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_rank_data.html"><code>RankingRankData</code></a>, see <a class="reference internal" href="#ranking-table-ranking-data"><span class="std std-ref">Table 5.4</span></a>.</p>
+<span id="ranking-table-ranking-data"></span><table border="1" class="docutils" id="id34">
+<caption><span class="caption-text">Table 5.4. Items Available From RankingRankData</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Get Function</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Principal ID</td>
+<td>GetPrincipalId()</td>
+</tr>
+<tr class="row-odd"><td>NEX Unique ID</td>
+<td>GetUniqueId()</td>
+</tr>
+<tr class="row-even"><td>Category</td>
+<td>GetCategory()</td>
+</tr>
+<tr class="row-odd"><td>Rank</td>
+<td>GetOrder()</td>
+</tr>
+<tr class="row-even"><td>Score</td>
+<td>GetScore()</td>
+</tr>
+<tr class="row-odd"><td>Group 0</td>
+<td>GetGroup0()</td>
+</tr>
+<tr class="row-even"><td>Group 1</td>
+<td>GetGroup1()</td>
+</tr>
+<tr class="row-odd"><td>Parameter</td>
+<td>GetParam()</td>
+</tr>
+<tr class="row-even"><td>Common user data</td>
+<td>GetCommonData()</td>
+</tr>
+</tbody>
+</table>
+<p>The order in which scores are arranged (ascending or descending) when rankings are retrieved depends on the order specified for the category by the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_score_data.html#a2c8dc2b4116acd5992f12f4d110c6d7b">RankingScoreData::SetOrderBy</a>()</code> function when the scores were registered. The order of scores cannot be changed when rankings are retrieved.</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p>When you get nearby rankings or individual user ranking data, there can be small errors in the ranking order returned by the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_rank_data.html#a535d12f928ff791c5889d34b323780a3">RankingRankData::GetOrder</a>()</code> function among those user rankings that rank below the value of <code>RankingConstants::MAX_ACCURATE_ORDER</code>.</p>
+<p>To reduce the load on the game server, a special process is used for calculating the ranking order below <code>RankingConstants::MAX_ACCURATE_ORDER</code>. This process may cause small ranking calculation errors. Although the errors are periodically corrected, there is no guarantee that these rankings can be obtained accurately in real time.</p>
+<p class="last">On the other hand, the rankings of scores above the rank of <code>RankingConstants::MAX_ACCURATE_ORDER</code> can be obteained accurately in real time.</p>
+</div>
+</div>
+<div class="section" id="ranking-filter">
+<span id="id11"></span><h3>5.6.4. Filtering Ranking Data</h3>
+<p>You can filter which ranking data to get based on groups and based on when the scores were registered.</p>
+<div class="section" id="ranking-filter-group">
+<span id="id12"></span><h4>5.6.4.1. Filtering by Group</h4>
+<p>If you want to get the rankings for scores with particular associated attributes, you can filter the scores using a group value. When this is done, the ranking data is generated based only using those scores whose group value (as set when the score was registered) matches the group that has been set as the filtering value.</p>
+<p>Specify the index of the group to filter by (either group 0 or group 1) with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_order_param.html#a2de4e37272dd3ecd4626fe8af6813948">RankingOrderParam::SetFilterGroupIndex</a>()</code> function, and specify the value for that group in the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_order_param.html#a9646b31f0d302d78d26cca897875dc1b">RankingOrderParam::SetFilterGroupNum</a>()</code> function. You can specify one of two groups to filter on.</p>
+<p>For example, if you store numbers that represent gender in group 0 and numbers that represent region in group 1 when scores are uploaded, you can filter the scores in the following ways.</p>
+<ul class="simple">
+<li>To get the rankings for only men, specify the gender value for men in <code>RankingConstants::FILTER_GROUP_INDEX_0</code>.</li>
+<li>To get the rankings for only Japan, specify the country value for Japan in <code>RankingConstants::FILTER_GROUP_INDEX_1</code>.</li>
+<li>You cannot filter for men in Japan because that is two separate groups.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p>When registering scores in a category, associate the same group attribute with each user.</p>
+<p class="last">Only the high score for each user is registered. If a number of scores with different group attributes are all registered in the same category, you will not see anything but the high score rankings even when you filter by group to get rankings.</p>
+</div>
+</div>
+<div class="section" id="ranking-time-scope">
+<span id="id13"></span><h4>5.6.4.2. Filtering by Period</h4>
+<p>If you want to get the rankings for scores only within a particular time period, you can filter based on when the scores were registered.</p>
+<p>The period is called the time scope. The time scope is disabled by default. Up to two time-scope values can be set during game development. Each time scope has its own table of registered scores, and each can be used as a separate score filter.</p>
+<p>When scores are registered they are saved automatically to a valid time scope. Specify the number for a time scope when rankings are retrieved to filter for that period.</p>
+<p>As shown in <a class="reference internal" href="#ranking-fig-update-mode"><span class="std std-ref">Figure 5.2</span></a>, the rankings are then based on the highest score registered for each user within the time period being used as the filter.</p>
+<div class="figure" id="id35">
+<span id="ranking-fig-update-mode"></span><img alt="../_images/Fig_Ranking_Update_Mode.png" src="../_images/Fig_Ranking_Update_Mode.png"/>
+<p class="caption"><span class="caption-text">Figure 5.2. Scores Used for a User's Score History and Ranking</span></p>
+</div>
+<p>The following table shows the three types of time scopes. Specify one of them for the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_order_param.html#ac4f682f92931ca8eabab5b63dd20e8d7">RankingOrderParam::SetTimeScope</a>()</code> function.</p>
+<span id="ranking-time-scope-kinds"></span><table border="1" class="docutils" id="id36">
+<caption><span class="caption-text">Table 5.5. Time Scope Types</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Setting</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>RankingConstants::<wbr/>TIME_<wbr/>SCOPE_<wbr/>ALL</td>
+<td>The entire period. No filtering.</td>
+</tr>
+<tr class="row-odd"><td>RankingConstants::<wbr/>TIME_<wbr/>SCOPE_<wbr/>CUSTOM_<wbr/>0</td>
+<td>Filters using a predefined period of time. Disabled by default.</td>
+</tr>
+<tr class="row-even"><td>RankingConstants::<wbr/>TIME_<wbr/>SCOPE_<wbr/>CUSTOM_<wbr/>1</td>
+<td>Filters using a predefined period of time. Disabled by default.</td>
+</tr>
+</tbody>
+</table>
+<p>With <code>RankingConstants::TIME_SCOPE_ALL</code>, there is no filtering based on time. The time-period setting cannot be changed.</p>
+<p>With <code>RankingConstants::TIME_SCOPE_CUSTOM_0</code> or <code>RankingConstants::TIME_SCOPE_CUSTOM_1</code>, filtering uses the kind of time scope configured ahead of time using the <a class="reference internal" href="#ranking-nmas"><span class="std std-ref">NEX Server Management System (NMAS)</span></a>. These are disabled by default, so you must enable them on NMAS before the scores are registered. For more information, see <a class="reference internal" href="#ranking-nmas-set-timescope-type"><span class="std std-ref">Setting Time Scopes</span></a>.</p>
+<p>You can get information about what time the ranking results you have obtained were filtered from with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_result.html#aab367a654d667772b945e32ec847a2e9">RankingResult::GetSinceTime</a>()</code> function. When there is no time-based filtering (when <code>RankingConstants::TIME_SCOPE_ALL</code> is specified), the function returns January 1, 2000, 0:00 (UTC).</p>
+</div>
+</div>
+<div class="section" id="ranking-by-id-list">
+<span id="id14"></span><h3>5.6.5 Getting Rankings Among Specified Users</h3>
+<p>You can use <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a38940608650733bee24f7f56ba7e6151">RankingClient::GetRankingByPIDList</a>()</code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a6faa4df8e06d0bed9e3ef06da4af3432">RankingClient::GetRankingByUniqueIdList</a>()</code> to get rankings among specified users. For <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a38940608650733bee24f7f56ba7e6151">RankingClient::GetRankingByPIDList</a>()</code>, principal IDs are used to specify users. Scores for all registered NEX unique IDs are included in the ranking when scores have been added using multiple NEX unique IDs for the specified principal ID. <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a6faa4df8e06d0bed9e3ef06da4af3432">RankingClient::GetRankingByUniqueIdList</a>()</code> uses NEX unique IDs to specify users.</p>
+<p>You can use <code>RANKING_MODE_RANGE</code> (for a range of rankings) and <code>RANKING_MODE_NEAR</code> (for nearby rankings) as the ranking acquisition mode.</p>
+<p>The user acquiring rankings, when getting rankings among specified users, is automatically included in the rankings. Scores for all registered NEX unique IDs are included in the ranking when scores have been added using multiple NEX unique IDs for the user's own principal ID, when using <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a38940608650733bee24f7f56ba7e6151">RankingClient::GetRankingByPIDList</a>()</code>. The value for the <code><var>nexUniqueId</var></code> parameter is ignored when <code>RANKING_MODE_RANGE</code>, for range ranking, is specified. Nearby ranking, focused on scores for the NEX unique ID specified for the <code><var>nexUniqueId</var></code> parameter, are acquired when <code>RANKING_MODE_NEAR</code>, for nearby ranking, is specified. Only scores for the NEX unique ID specified for the <code><var>nexUniqueId</var></code> parameter are included in the ranking when using <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a6faa4df8e06d0bed9e3ef06da4af3432">RankingClient::GetRankingByUniqueIdList</a>()</code>.</p>
+</div>
+<div class="section" id="ranking-cached-topx">
+<span id="id15"></span><h3>5.6.6. Getting the Cached Top Rankings</h3>
+<p>To get the cached top rankings, you can use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#af54d7158c518004f2e7b9f1aa8a5124f">RankingClient::GetCachedTopXRanking</a>()</code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#ab798c64ff9067a3ea04d2b218f7019b6">RankingClient::GetCachedTopXRankings</a>()</code> functions. With data cached for up to five minutes on the server, these functions can be called more frequently than the regular functions to get rankings. In addition, the access count is recorded separately from the other ranking functions for the guideline check.</p>
+<p>A different cache is built for each combination of category and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_order_param.html">RankingOrderParam</a></code>. Up to a maximum of 200 caches can be used across a game. Caching is marginally beneficial. Do not use it in cases such as rankings linked to user-created communities, where the number may increase as more users make use of them.</p>
+<p>Use <a class="reference internal" href="#ranking-nmas"><span class="std std-ref">NMAS</span></a> to specify how many ranks to get (the "length," from the top ranking to the <em>n</em>th ranking). The default is to enable getting rankings down to the twentieth place, but you can select 10, 20, 50, or 100.</p>
+<p>Ranking results are stored in a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_cached_result.html">RankingCachedResult</a></code> object. The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_cached_result.html">RankingCachedResult</a></code> object includes the total number of scores matching the specified conditions, the date when rankings started being tabulated, the time when the cache was created, the expiration date, and a list of ranking data (<a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_vector.html">qVector</a>&lt;<a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_rank_data.html">RankingRankData</a>&gt;). For a list of the items that can be obtained from <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_rank_data.html"><code>RankingRankData</code></a>, see <a class="reference internal" href="#ranking-table-ranking-data"><span class="std std-ref">Table 5.4</span></a>.</p>
+<p>The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#ab798c64ff9067a3ea04d2b218f7019b6">RankingClient::GetCachedTopXRankings</a>()</code> function can specify several categories. The maximum that can be retrieved is 100, as calculated as the product of the NMAS-specified length and the number of categories. By default, up to five different categories may be specified.</p>
+<p>Date retrieved by the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#af54d7158c518004f2e7b9f1aa8a5124f">RankingClient::GetCachedTopXRanking</a>()</code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#ab798c64ff9067a3ea04d2b218f7019b6">RankingClient::GetCachedTopXRankings</a>()</code> functions is not updated with new scores until the scheduled update, even if new scores are registered before then. Instead, the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_cached_result.html#a246ccd65bf3eff1415c2d8cad249f799">RankingCachedResult::LocalUpdate</a>()</code> function can be used to insert the score into the already obtained local ranking cache, to make it seem as if the global rankings are being updated. For the limitations, see the API reference.</p>
+</div>
+</div>
+<div class="section" id="ranking-upload-common-data">
+<span id="id16"></span><h2>5.7. Registering Common User Data</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a06561a6082a612fcf615bd257a18464c">RankingClient::UploadCommonData</a>()</code> function to register or modify common user data for the local host.</p>
+<p>One set of optional binary data can be registered for each user as common user data. The maximum size that can be registered for common user data is 255 bytes.</p>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a87b88c3b34224d9a7de343e4d6ce049b">RankingClient::GetCommonData</a>()</code> function to get common user data for the local host. Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a1f7d84b300a589d32d53b89966348133">RankingClient::DeleteCommonData</a>()</code> function to delete common user data. These functions can only be used to get or modify common user data that has the same principal ID as the local host.</p>
+<p>Common user data for other users can be obtained from the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_rank_data.html">RankingRankData</a></code> object that is returned when getting rankings.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">Follow the UGC guidelines when registering common user data that includes UGC.</p>
+</div>
+</div>
+<div class="section" id="ranking-change-attribute">
+<span id="id17"></span><h2>5.8. Changing Score Attributes</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a180d4f5072ecbeaae0fb12c0786be866">RankingClient::ChangeAttributes</a>()</code> function to change a score's attributes. You can change the group and parameter attributes associated with scores.</p>
+<p>This function can only be used to modify scores uploaded with the same principal ID as the local one.</p>
+</div>
+<div class="section" id="ranking-delete-score">
+<span id="id18"></span><h2>5.9. Deleting Scores</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a311f206744bec58ab5d8ddf523786734">RankingClient::DeleteScore</a>()</code> function to delete scores. You delete scores in a specified category or in all categories.</p>
+<p>This function can only be used to delete scores uploaded with the same principal ID as the local one.</p>
+</div>
+<div class="section" id="ranking-get-order">
+<span id="id19"></span><h2>5.10. Getting Approximate Rankings Based on Scores</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#accb9408c4577887c5769cc9f04d5da5c">RankingClient::GetApproxOrder</a>()</code> function before registering a score to get an approximate ranking for that score. The score is not actually registered in the rankings by using this function.</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">As mentioned in the comment in <a class="reference internal" href="#ranking-result"><span class="std std-ref">5.6.3. Ranking Retrieval Results</span></a>, rankings below <code>RankingConstants::MAX_ACCURATE_ORDER</code> may not necessarily be calculated accurately.</p>
+</div>
+</div>
+<div class="section" id="ranking-get-stats">
+<span id="id20"></span><h2>5.11. Getting Statistical Values for Scores</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a316656e4cfb547a903484f70b3688bef">RankingClient::GetStats</a>()</code> function to get statistics such as the sum of the scores, the maximum score, and the minimum score in each category. Set the argument to the bitwise OR of the order calculation parameter and the flag for the desired statistical value. <a class="reference internal" href="#ranking-table-stats-flag"><span class="std std-ref">Table 5.6</span></a> shows the flags that specify the statistics.</p>
+<span id="ranking-table-stats-flag"></span><table border="1" class="docutils" id="id37">
+<caption><span class="caption-text">Table 5.6. Statistic Flags</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">RankingConstants::StatsFlag</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>STATS_<wbr/>FLAG_<wbr/>TOTAL</td>
+<td>Total number of registered scores.</td>
+</tr>
+<tr class="row-odd"><td>STATS_<wbr/>FLAG_<wbr/>SUM</td>
+<td>Sum of scores.</td>
+</tr>
+<tr class="row-even"><td>STATS_<wbr/>FLAG_<wbr/>MIN</td>
+<td>Minimum score.</td>
+</tr>
+<tr class="row-odd"><td>STATS_<wbr/>FLAG_<wbr/>MAX</td>
+<td>Maximum score.</td>
+</tr>
+<tr class="row-even"><td>STATS_<wbr/>FLAG_<wbr/>AVERAGE</td>
+<td>Average score.</td>
+</tr>
+</tbody>
+</table>
+<p>Caching is used for the following statistics.</p>
+<ul class="simple">
+<li><code>STATS_FLAG_TOTAL</code> (Total number of registered scores)</li>
+<li><code>STATS_FLAG_SUM</code> (Sum of all scores)</li>
+<li><code>STATS_FLAG_AVERAGE</code> (Average score)</li>
+</ul>
+<p>When the scores to be tabulated exceed a certain number, a cache is created when <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a316656e4cfb547a903484f70b3688bef">RankingClient::GetStats</a>()</code> is called and remains for around 30 minutes. The cached value is returned if the cache exists, so the statistics are not necessarily the latest value.</p>
+</div>
+<div class="section" id="ranking-error-handling">
+<span id="id21"></span><h2>5.12. Error Handling</h2>
+<div class="section" id="api">
+<span id="ranking-error-api-call"></span><h3>5.12.1. Errors During Function Calls</h3>
+<p>If you call a function and it returns an error without starting asynchronous processing, there may have been a programming error. Check whether the NEX library has been successfully initialized, and whether you have logged in to the game server.</p>
+</div>
+<div class="section" id="ranking-error-async">
+<span id="id22"></span><h3>5.12.2. Asynchronous Processing Errors</h3>
+<p>Error handling is the same as for matchmaking. See <a class="reference internal" href="matchmake.html#matchmake-error-handling"><span class="std std-ref">4.24. Error Handling</span></a>.</p>
+<p><a class="reference internal" href="#ranking-table-errors"><span class="std std-ref">Table 5.7</span></a> lists errors that may occur with the ranking features. This table excludes NEX communication errors and other processes.</p>
+<p>For more information about NEX asynchronous processing and error handling, see <a class="reference internal" href="../common/overall.html#overall-async-job"><span class="std std-ref">Asynchronous Processing</span></a>.</p>
+<span id="ranking-table-errors"></span><table border="1" class="colwidths-given docutils" id="id38">
+<caption><span class="caption-text">Table 5.7. Ranking Errors</span></caption>
+<colgroup>
+<col width="30%"/>
+<col width="70%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">ReturnCode Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>QERROR(Ranking, InvalidArgument)</td>
+<td>An invalid argument was specified. This is an implementation error, so fix your implementation.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(Ranking, RegistrationError)</td>
+<td>Data failed to be registered. It is very likely that server operations are unstable.</td>
+</tr>
+<tr class="row-even"><td>QERROR(Ranking, NotFound)</td>
+<td>There is no data that matches the request. When this error occurs, handle it by ignoring it, or by taking some action like notifying the user that data could not be found.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(Ranking, InvalidDataSize)</td>
+<td>Invalid data size. The size of the common user data is invalid. This is an implementation error, so fix your implementation.</td>
+</tr>
+<tr class="row-even"><td>QERROR(Ranking, PermissionDenied)</td>
+<td>No access rights. There was an attempt to change another person's score or common user data. This is an implementation error, so fix your implementation.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(StorageBase, Unknown)</td>
+<td>Unknown error occurred. Abnormal server configuration. Please contact Nintendo if this error occurs.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="nex-nmas">
+<span id="ranking-nmas"></span><h2>5.13. NEX Server Management System (NMAS)</h2>
+<p>The ranking management features of the NEX Server Management System (NMAS) enable operations like viewing the scores registered in rankings, configuring time scopes, and deleting all scores. The tool supports both the development environment and the actual production environment.</p>
+<div class="section" id="ranking-nmas-access">
+<span id="id23"></span><h3>5.13.1. Accessing the Management Tool</h3>
+<p>Access this management tool from the following URL.</p>
+<p><a class="reference external" href="https://nmas.tool.n.mng.nintendo.net/">https://nmas.tool.n.mng.nintendo.net/</a></p>
+<p>Use the same login ID and password that you use for OMAS.</p>
+</div>
+<div class="section" id="ranking-nmas-set-limit-of-score">
+<span id="id24"></span><h3>5.13.2. Setting Score Upper and Lower Limits</h3>
+<p>You can use the tool to set upper and lower limits on scores, applying restrictions so invalid scores are not registered to the rankings. When a score that is outside of the set range is registered, it is registered as an invalid score that is isolated from the rankings that are accessed by clients. The list of invalid scores can be viewed on NMAS.</p>
+</div>
+<div class="section" id="ranking-nmas-set-timescope-type">
+<span id="id25"></span><h3>5.13.3. Setting Time Scopes</h3>
+<p>You can specify a period of time to use as a filter for scores. This kind of filter is called a time scope.</p>
+<p>The following types of time scopes can be used. Set "X" to the value of your choice on NMAS.</p>
+<ul>
+<li><dl class="first docutils">
+<dt>Filter on a periodically reset time. (The rankings appear to reset when the next time period comes)</dt>
+<dd><ul class="first last simple">
+<li>Every day at X time (UTC ±X) to the present</li>
+<li>Every week on X day at X time (UTC ±X) to the present</li>
+<li>On the X day of every month at X time (UTC ±X) to the present</li>
+<li>On the first X day of the week of every month at X time (UTC ±X) to the present</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Filter from a relative time to the present:</dt>
+<dd><ul class="first last">
+<li><div class="first line-block">
+<div class="line">From X time (UTC ±X) X days ago to the present.</div>
+<div class="line"><strong>Note:</strong> For <em>X days ago</em>, as many as 60 days can be specified.</div>
+</div>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>The default time zone is UTC+0.</p>
+<p>The time scope type settings are common to all categories. It is not possible to set them differently by category.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">If scores are already registered in the game server when you change the time scope type, delete all of the score data in NMAS. If you do not delete the score data, it might cause problems in the retrieved ranking results.</p>
+</div>
+<div class="section" id="id26">
+<h4>5.13.3.1. Temporary Storage of Multiple Scores</h4>
+<p>The same category temporarily stores multiple scores only when the time scope type is a relative period. This is because if multiple scores are registered and some of those scores fall out of the scope of the filter as time passes, the scores included in the rankings change.</p>
+<p>However, you do not have the option to get these multiple scores, and only the high score within the filtered period is included in the rankings.</p>
+<p>These temporarily held multiple scores are all processed in a batch when attributes are changed (see <a class="reference internal" href="#ranking-change-attribute"><span class="std std-ref">5.8</span></a>) or scores are deleted (see <a class="reference internal" href="#ranking-delete-score"><span class="std std-ref">5.9</span></a>).</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p>Although multiple scores are held temporarily with this type of time scope filter, if scores with different group attributes are being held in the same category and you filter by group, that filter will only work on the group to which the high score is set, and the rankings will not show the other scores.</p>
+<p class="last">This is so that group filtering is performed on the high scores selected by each user. The high scores for each user are chosen in advance for each time scope to reduce the load on the game server when scores are filtered by time.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="ranking-notice">
+<span id="id27"></span><h2>5.14. Notes</h2>
+<div class="section" id="id28">
+<h3>5.14.1. Expected Ranking Registration Volume</h3>
+<p>The number of scores expected to be registered using the NEX ranking function is less than 10,000,000 scores. Additional scores may cause effects such as reduced responsiveness. If you are using multiple categories, make sure to design it so that the total number of registered scores is less than 10,000,000. Please contact Nintendo for titles that may exceed 10,000,000 scores.</p>
+</div>
+<div class="section" id="id29">
+<h3>5.14.2. Registering Dummy Data for Debugging</h3>
+<p>Part of the ranking API limits the range of scores to the top 1000 values. Use the <strong>Register Dummy Data</strong> function in NMAS to register dummy data for debugging. We suggest adding at least 1500 scores to the dummy data.</p>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,3117 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>11.3. Ranking2 — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="webapi-ranking2-top">
+<span id="id1"></span><h1>11.3. Ranking2</h1>
+<div class="section" id="id2">
+<h2>11.3.1. General Information</h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%"/>
+<col width="61%"/>
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Module name</td>
+<td>ranking2</td>
+</tr>
+<tr class="row-even"><td>API version</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="api">
+<span id="ranking2-webapi-setting"></span><h2>11.3.2. Settings API</h2>
+<p>Use this API to get and modify the settings in Ranking2. For more information about each feature, see <span class="std std-ref"><a class="reference internal" href="ranking2.html#ranking2-setting">6.9. Settings</a></span>.</p>
+<div class="section" id="id3">
+<h3>11.3.2.1. Getting Category Type Settings</h3>
+<p>These methods get category type settings.</p>
+<p>If you specify a category type that has not yet been configured, the default settings are retrieved. When getting the settings for all category types, the settings for unconfigured category types are not retrieved. Only the settings for configured category types are retrieved. If no categories have been configured, 0 categories are included in the response.</p>
+<p>For more information about which values can be retrieved, see <span class="std std-ref"><a class="reference internal" href="ranking2.html#ranking2-setting-category-type">6.9.2. Category Type Settings</a></span>.</p>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-category_type_settings-(category_type_id)">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/category_type_settings/</code><span class="sig-paren">(</span><em>category_type_id</em><span class="sig-paren">)</span></dt>
+<dd><p>Gets the settings for a single category type.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>category_<wbr/>type_<wbr/>id</td>
+<td>The number of the category type for which to retrieve season data. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/category_type_settings/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-category_type_settings">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/category_type_settings</code></dt>
+<dd><p>Gets the settings for multiple category types.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>category_<wbr/>types</td>
+<td>The number of the category type for which to retrieve season data. You can specify multiple values, delimited by commas. If no category type numbers are specified, the season data for all category types is retrieved.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/category_type_settings?category_types=1,3</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;category_type_settings</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;category_type_setting&gt;</span>
+        <span class="nt">&lt;category_type&gt;</span>1<span class="nt">&lt;/category_type&gt;</span>
+        <span class="nt">&lt;min_score&gt;</span>0<span class="nt">&lt;/min_score&gt;</span>
+        <span class="nt">&lt;max_score&gt;</span>4294967295<span class="nt">&lt;/max_score&gt;</span>
+        <span class="nt">&lt;score_order&gt;</span>1<span class="nt">&lt;/score_order&gt;</span>
+        <span class="nt">&lt;lowest_rank&gt;</span>10000<span class="nt">&lt;/lowest_rank&gt;</span>
+        <span class="nt">&lt;max_seasons_to_go_back&gt;</span>5<span class="nt">&lt;/max_seasons_to_go_back&gt;</span>
+        <span class="nt">&lt;reset_mode&gt;</span>1<span class="nt">&lt;/reset_mode&gt;</span>
+        <span class="nt">&lt;reset_hour&gt;</span>2<span class="nt">&lt;/reset_hour&gt;</span>
+        <span class="nt">&lt;reset_day&gt;</span>1<span class="nt">&lt;/reset_day&gt;</span>
+        <span class="nt">&lt;reset_month&gt;</span>4095<span class="nt">&lt;/reset_month&gt;</span>
+      <span class="nt">&lt;/category_type_setting&gt;</span>
+      <span class="nt">&lt;category_type_setting&gt;</span>
+        <span class="nt">&lt;category_type&gt;</span>3<span class="nt">&lt;/category_type&gt;</span>
+        <span class="nt">&lt;min_score&gt;</span>0<span class="nt">&lt;/min_score&gt;</span>
+        <span class="nt">&lt;max_score&gt;</span>4294967295<span class="nt">&lt;/max_score&gt;</span>
+        <span class="nt">&lt;score_order&gt;</span>1<span class="nt">&lt;/score_order&gt;</span>
+        <span class="nt">&lt;lowest_rank&gt;</span>10000<span class="nt">&lt;/lowest_rank&gt;</span>
+        <span class="nt">&lt;max_seasons_to_go_back&gt;</span>5<span class="nt">&lt;/max_seasons_to_go_back&gt;</span>
+        <span class="nt">&lt;reset_mode&gt;</span>1<span class="nt">&lt;/reset_mode&gt;</span>
+        <span class="nt">&lt;reset_hour&gt;</span>2<span class="nt">&lt;/reset_hour&gt;</span>
+        <span class="nt">&lt;reset_day&gt;</span>1<span class="nt">&lt;/reset_day&gt;</span>
+        <span class="nt">&lt;reset_month&gt;</span>4095<span class="nt">&lt;/reset_month&gt;</span>
+      <span class="nt">&lt;/category_type_setting&gt;</span>
+    <span class="nt">&lt;/category_type_settings&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id4">
+<h3>11.3.2.2. Changing Category Type Settings</h3>
+<p>These methods change category type settings.</p>
+<p>For more information about which values can be configured, see <span class="std std-ref"><a class="reference internal" href="ranking2.html#ranking2-setting-category-type">6.9.2. Category Type Settings</a></span>.</p>
+<dl class="put">
+<dt id="put--nex-ranking2-v1-category_type_settings">
+<code class="descname">PUT </code><code class="descname">/nex/ranking2/v1/category_type_settings</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-category_type_settings-put">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/category_type_settings/put</code></dt>
+<dd><p>Changes the settings for multiple category types. Settings for which a new value is not specified are not changed.</p>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%"/>
+<col width="15%"/>
+<col width="68%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>change</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>category_<wbr/>type_<wbr/>settings</strong></td>
+<td>change</td>
+<td><strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>category_<wbr/>type_<wbr/>setting</strong></td>
+<td>category_<wbr/>type_<wbr/>settings</td>
+<td>Use multiple instances of this element to change the settings for multiple category types. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>category_<wbr/>type</strong></td>
+<td>category_<wbr/>type_<wbr/>setting</td>
+<td>Category type number. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td>min_<wbr/>score</td>
+<td>category_<wbr/>type_<wbr/>setting</td>
+<td>Minimum valid score. 0 to 4,294,967,295, and no greater than <code>max_<wbr/>score</code>. Must be specified at the same time as <code>max_<wbr/>score</code>.</td>
+</tr>
+<tr class="row-odd"><td>max_<wbr/>score</td>
+<td>category_<wbr/>type_<wbr/>setting</td>
+<td>Maximum valid score. 0 to 4,294,967,295, and at least <code>min_<wbr/>score</code>. Must be specified at the same time as <code>min_<wbr/>score</code>.</td>
+</tr>
+<tr class="row-even"><td>score_<wbr/>order</td>
+<td>category_<wbr/>type_<wbr/>setting</td>
+<td>Score order. 0: Ascending, 1: Descending</td>
+</tr>
+<tr class="row-odd"><td>lowest_<wbr/>rank</td>
+<td>category_<wbr/>type_<wbr/>setting</td>
+<td>The last place in rankings. 1 to 10000.</td>
+</tr>
+<tr class="row-even"><td>max_<wbr/>seasons_<wbr/>to_<wbr/>go_<wbr/>back</td>
+<td>category_<wbr/>type_<wbr/>setting</td>
+<td>The number of past seasons to save. 0 to 100.</td>
+</tr>
+<tr class="row-odd"><td>reset_<wbr/>mode</td>
+<td>category_<wbr/>type_<wbr/>setting</td>
+<td>The periodic reset mode.</td>
+</tr>
+<tr class="row-even"><td>reset_<wbr/>hour</td>
+<td>category_<wbr/>type_<wbr/>setting</td>
+<td>The time of day at which to reset rankings. 0 to 23. UTC.</td>
+</tr>
+<tr class="row-odd"><td>reset_<wbr/>day</td>
+<td>category_<wbr/>type_<wbr/>setting</td>
+<td>The day on which to reset rankings. 1 to 28 (for days of the month) or 0 to 6 (for days of the week). UTC.</td>
+</tr>
+<tr class="row-even"><td>reset_<wbr/>month</td>
+<td>category_<wbr/>type_<wbr/>setting</td>
+<td>The months in which to reset rankings. 1 to 4095 (A 12-bit value, where each bit represents one month. The lowest bit is January, the next bit is February, and so on.) UTC.</td>
+</tr>
+</tbody>
+</table>
+<p>When periodic reset settings are modified, the time at which to start the next season must be recalculated. To do this, <a class="reference internal" href="#ranking2-webapi-season-init"><span class="std std-ref">initialize the season data</span></a> or <a class="reference internal" href="#ranking2-webapi-season-change"><span class="std std-ref">change the season data</span></a> to the desired season number and period of time. Also, <a class="reference internal" href="#ranking2-webapi-score-delete"><span class="std std-ref">delete the score data</span></a> and delete all scores remaining in the category (the season 0 scores).</p>
+<p>The value of the periodic reset setting may be copied across server environments. For this reason, this operation must be performed not only in the server environment where the periodic reset setting was changed (such as the development environment), but also server environments where it was copied to (such as the production environment).</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/ranking2/v1/category_type_settings</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;category_type_settings&gt;
+    &lt;category_type_setting&gt;
+      &lt;category_type&gt;1&lt;/category_type&gt;
+      &lt;min_score&gt;1&lt;/min_score&gt;
+      &lt;max_score&gt;10000&lt;/max_score&gt;
+      &lt;score_order&gt;1&lt;/score_order&gt;
+      &lt;lowest_rank&gt;10000&lt;/lowest_rank&gt;
+      &lt;max_seasons_to_go_back&gt;5&lt;/max_seasons_to_go_back&gt;
+      &lt;reset_mode&gt;1&lt;/reset_mode&gt;
+      &lt;reset_hour&gt;2&lt;/reset_hour&gt;
+      &lt;reset_day&gt;1&lt;/reset_day&gt;
+      &lt;reset_month&gt;4095&lt;/reset_month&gt;
+    &lt;/category_type_setting&gt;
+    &lt;category_type_setting&gt;
+      &lt;category_type&gt;2&lt;/category_type&gt;
+      &lt;min_score&gt;1&lt;/min_score&gt;
+      &lt;max_score&gt;10000&lt;/max_score&gt;
+      &lt;score_order&gt;1&lt;/score_order&gt;
+      &lt;lowest_rank&gt;10000&lt;/lowest_rank&gt;
+      &lt;max_seasons_to_go_back&gt;5&lt;/max_seasons_to_go_back&gt;
+      &lt;reset_mode&gt;1&lt;/reset_mode&gt;
+      &lt;reset_hour&gt;2&lt;/reset_hour&gt;
+      &lt;reset_day&gt;1&lt;/reset_day&gt;
+      &lt;reset_month&gt;4095&lt;/reset_month&gt;
+    &lt;/category_type_setting&gt;
+  &lt;/category_type_settings&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;category_type_settings&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/category_type_settings&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of category types to which changes were made.</p>
+</dd></dl>
+</div>
+<div class="section" id="id5">
+<h3>11.3.2.3. Initializing Category Type Settings</h3>
+<p>These methods initialize category type settings.</p>
+<p>If category type settings are initialized after making a change to the periodic reset settings, the season data must also be initialized. To do this, <a class="reference internal" href="#ranking2-webapi-season-init"><span class="std std-ref">initialize the season data</span></a> or <a class="reference internal" href="#ranking2-webapi-season-change"><span class="std std-ref">change the season data</span></a> to the desired season number and period of time. Also, <a class="reference internal" href="#ranking2-webapi-score-delete"><span class="std std-ref">delete the score data</span></a> and delete all scores remaining in the category (the season 0 scores).</p>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-category_type_settings-(category_type_id)">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/category_type_settings/</code><span class="sig-paren">(</span><em>category_type_id</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-category_type_settings-(category_type_id)-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/category_type_settings/</code><span class="sig-paren">(</span><em>category_type_id</em><span class="sig-paren">)</span><code class="descname">/delete</code></dt>
+<dd><p>Initializes the settings for a single category type.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>category_<wbr/>type_<wbr/>id</td>
+<td>The number of the category type for which to initialize settings. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/category_type_settings/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;category_type_settings&gt;</span>
+      <span class="nt">&lt;initialized</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/category_type_settings&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of category types that were initialized.</p>
+</dd></dl>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-category_type_settings">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/category_type_settings</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-category_type_settings-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/category_type_settings/delete</code></dt>
+<dd><p>Initializes the settings for all category types.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/category_type_settings</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;category_type_settings&gt;</span>
+      <span class="nt">&lt;initialized</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/category_type_settings&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of category types that were initialized.</p>
+</dd></dl>
+</div>
+<div class="section" id="id6">
+<h3>11.3.2.4. Getting Category Settings</h3>
+<p>Gets category settings.</p>
+<p>If you specify a category that has not yet been configured, the response contains 0 categories. Default category settings cannot be retrieved. When getting the settings for all categories, the settings for unconfigured categories are not retrieved. Only the settings for configured categories are retrieved. If no categories have been configured, 0 categories are included in the response.</p>
+<p>For more information about which values can be retrieved, see <a class="reference internal" href="ranking2.html#ranking2-setting-category"><span class="std std-ref">6.9.1. Category Settings</span></a>.</p>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-category_settings-(category_id)">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/category_settings/</code><span class="sig-paren">(</span><em>category_id</em><span class="sig-paren">)</span></dt>
+<dd><p>Gets the settings for a single category.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>category_<wbr/>id</td>
+<td>The number of the category for which to retrieve settings. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/category_settings/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-category_settings">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/category_settings</code></dt>
+<dd><p>Gets the settings for multiple categories.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>categories</td>
+<td>The number of the category for which to retrieve settings. You can specify multiple values, delimited by commas. If no category numbers are specified, the settings for all categories are retrieved.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/category_settings?categories=0,1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;category_settings</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;category_setting&gt;</span>
+        <span class="nt">&lt;category&gt;</span>0<span class="nt">&lt;/category&gt;</span>
+        <span class="nt">&lt;min_score&gt;</span>1<span class="nt">&lt;/min_score&gt;</span>
+        <span class="nt">&lt;max_score&gt;</span>10000<span class="nt">&lt;/max_score&gt;</span>
+        <span class="nt">&lt;category_type&gt;</span>0<span class="nt">&lt;/category_type&gt;</span>
+      <span class="nt">&lt;/category_setting&gt;</span>
+      <span class="nt">&lt;category_setting&gt;</span>
+        <span class="nt">&lt;category&gt;</span>1<span class="nt">&lt;/category&gt;</span>
+        <span class="nt">&lt;min_score&gt;</span>1<span class="nt">&lt;/min_score&gt;</span>
+        <span class="nt">&lt;max_score&gt;</span>10000<span class="nt">&lt;/max_score&gt;</span>
+        <span class="nt">&lt;category_type&gt;</span>0<span class="nt">&lt;/category_type&gt;</span>
+      <span class="nt">&lt;/category_setting&gt;</span>
+    <span class="nt">&lt;/category_settings&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id7">
+<h3>11.3.2.5. Changing Category Settings</h3>
+<p>These methods change category settings.</p>
+<p>For more information about which values can be configured, see <a class="reference internal" href="ranking2.html#ranking2-setting-category"><span class="std std-ref">6.9.1. Category Settings</span></a>.</p>
+<dl class="put">
+<dt id="put--nex-ranking2-v1-category_settings">
+<code class="descname">PUT </code><code class="descname">/nex/ranking2/v1/category_settings</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-category_settings-put">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/category_settings/put</code></dt>
+<dd><p>Changes the settings for multiple categories. Settings for which a new value is not specified are not changed.</p>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%"/>
+<col width="15%"/>
+<col width="68%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>change</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>category_<wbr/>settings</strong></td>
+<td>change</td>
+<td><strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>category_<wbr/>setting</strong></td>
+<td>category_<wbr/>settings</td>
+<td>Use multiple instances of this element to change the settings for multiple categories. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>category</td>
+<td>category_<wbr/>setting</td>
+<td>The category number. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td>category_<wbr/>type</td>
+<td>category_<wbr/>setting</td>
+<td>The number of the category type to which the category belongs. 0 to 255.</td>
+</tr>
+<tr class="row-odd"><td>min_<wbr/>score</td>
+<td>category_<wbr/>setting</td>
+<td>Minimum valid score. 0 to 4,294,967,295, and no greater than <code>max_<wbr/>score</code>. Must be specified at the same time as <code>max_<wbr/>score</code>.</td>
+</tr>
+<tr class="row-even"><td>max_<wbr/>score</td>
+<td>category_<wbr/>setting</td>
+<td>Maximum valid score. 0 to 4,294,967,295, and at least <code>min_<wbr/>score</code>. Must be specified at the same time as <code>min_<wbr/>score</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/ranking2/v1/category_settings</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;category_settings&gt;
+    &lt;category_setting&gt;
+      &lt;category&gt;0&lt;/category&gt;
+      &lt;category_type&gt;0&lt;/category_type&gt;
+      &lt;max_score&gt;10000&lt;/max_score&gt;
+      &lt;min_score&gt;1&lt;/min_score&gt;
+    &lt;/category_setting&gt;
+    &lt;category_setting&gt;
+      &lt;category&gt;1&lt;/category&gt;
+      &lt;category_type&gt;0&lt;/category_type&gt;
+      &lt;max_score&gt;10000&lt;/max_score&gt;
+      &lt;min_score&gt;1&lt;/min_score&gt;
+    &lt;/category_setting&gt;
+  &lt;/category_settings&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;category_settings&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/category_settings&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of categories to which changes were made.</p>
+</dd></dl>
+</div>
+<div class="section" id="id8">
+<h3>11.3.2.6. Initializing Category Settings</h3>
+<p>These methods initialize category settings.</p>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-category_settings-(category_id)">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/category_settings/</code><span class="sig-paren">(</span><em>category_id</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-category_settings-(category_id)-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/category_settings/</code><span class="sig-paren">(</span><em>category_id</em><span class="sig-paren">)</span><code class="descname">/delete</code></dt>
+<dd><p>Initializes the settings for a single category.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>category_<wbr/>id</td>
+<td>The number of the category for which to initialize settings. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/category_settings/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;category_settings&gt;</span>
+      <span class="nt">&lt;initialized</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/category_settings&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of categories that were initialized.</p>
+</dd></dl>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-category_settings">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/category_settings</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-category_settings-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/category_settings/delete</code></dt>
+<dd><p>Initializes the settings for all categories.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/category_settings</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;category_settings&gt;</span>
+      <span class="nt">&lt;initialized</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/category_settings&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of categories that were initialized.</p>
+</dd></dl>
+</div>
+<div class="section" id="id9">
+<h3>11.3.2.7. Getting Categories</h3>
+<p>Gets a category for which score data has been added.</p>
+<p>All categories for which score data for at least one season has been added are obtained.</p>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-categories">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/categories</code></dt>
+<dd><p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/categories</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;categories</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;category&gt;</span>1<span class="nt">&lt;/category&gt;</span>
+        <span class="nt">&lt;category&gt;</span>2<span class="nt">&lt;/category&gt;</span>
+    <span class="nt">&lt;/categories&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+</div>
+<div class="section" id="id10">
+<h2>11.3.3. Season Data API</h2>
+<p>Use this API to get, change, and initialize season data. For more information about seasons, see <a class="reference internal" href="ranking2.html#ranking2-reset"><span class="std std-ref">6.2.6. Periodic Resets and Seasons</span></a>.</p>
+<div class="section" id="id11">
+<h3>11.3.3.1. Getting Season Data</h3>
+<p>These methods get season data.</p>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-season_info_entries-(category_type_id)">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/season_info_entries/</code><span class="sig-paren">(</span><em>category_type_id</em><span class="sig-paren">)</span></dt>
+<dd><p>Gets the data for a single season.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>category_<wbr/>type_<wbr/>id</td>
+<td>The number of the category type for which to retrieve season data. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/season_info_entries/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-season_info_entries">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/season_info_entries</code></dt>
+<dd><p>Gets the season data for multiple category types.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>category_<wbr/>types</td>
+<td>The number of the category type for which to retrieve season data. You can specify multiple values, delimited by commas. If no category type numbers are specified, the season data for all category types is retrieved.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/season_info_entries?category_types=1,2</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%"/>
+<col width="19%"/>
+<col width="62%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>season_<wbr/>info_<wbr/>entries</td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td>season_<wbr/>info_<wbr/>entry</td>
+<td>season_<wbr/>info_<wbr/>entries</td>
+<td>If you specify multiple category types, multiple instances of this element are included in the response.</td>
+</tr>
+<tr class="row-even"><td>category_<wbr/>type</td>
+<td>season_<wbr/>info_<wbr/>entry</td>
+<td>Category type number.</td>
+</tr>
+<tr class="row-odd"><td>season</td>
+<td>season_<wbr/>info_<wbr/>entry</td>
+<td>Season number.</td>
+</tr>
+<tr class="row-even"><td>season_<wbr/>from</td>
+<td>season_<wbr/>info_<wbr/>entry</td>
+<td>The date/time at which the current season started. The format is %Y-%m-%dT%H:%M:%SZ. UTC.</td>
+</tr>
+<tr class="row-odd"><td>season_<wbr/>to</td>
+<td>season_<wbr/>info_<wbr/>entry</td>
+<td>The date/time at which the current season will end. The format is %Y-%m-%dT%H:%M:%SZ. UTC.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;season_info_entries</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;season_info_entry&gt;</span>
+        <span class="nt">&lt;season_to&gt;</span>2015-06-13T02:00:00Z<span class="nt">&lt;/season_to&gt;</span>
+        <span class="nt">&lt;season&gt;</span>0<span class="nt">&lt;/season&gt;</span>
+        <span class="nt">&lt;category_type&gt;</span>1<span class="nt">&lt;/category_type&gt;</span>
+        <span class="nt">&lt;season_from&gt;</span>2000-01-01T00:00:00Z<span class="nt">&lt;/season_from&gt;</span>
+      <span class="nt">&lt;/season_info_entry&gt;</span>
+      <span class="nt">&lt;season_info_entry&gt;</span>
+        <span class="nt">&lt;season_to&gt;</span>2015-06-13T02:00:00Z<span class="nt">&lt;/season_to&gt;</span>
+        <span class="nt">&lt;season&gt;</span>0<span class="nt">&lt;/season&gt;</span>
+        <span class="nt">&lt;category_type&gt;</span>2<span class="nt">&lt;/category_type&gt;</span>
+        <span class="nt">&lt;season_from&gt;</span>2000-01-01T00:00:00Z<span class="nt">&lt;/season_from&gt;</span>
+      <span class="nt">&lt;/season_info_entry&gt;</span>
+    <span class="nt">&lt;/season_info_entries&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="ranking2-webapi-season-change">
+<span id="id12"></span><h3>11.3.3.2. Modifying Season Data</h3>
+<p>These methods modify season data.</p>
+<p>If you change the season numbers, retrieving and resetting season data should be performed using the new season numbers, and the data for the older seasons will be deleted. Be careful when changing season numbers because erroneous score data may be retrieved if left remaining in the older seasons.</p>
+<p>Changing <code><var>season_to</var></code> to a future date ensures that the season number will not be changed until the specified date/time, regardless of the applicable periodic reset settings. For example, this can be useful if you want a ranking category to be reset daily but you want the season number to remain at 0 during the server configuration/game testing period before the official game launch.</p>
+<dl class="put">
+<dt id="put--nex-ranking2-v1-season_info_entries">
+<code class="descname">PUT </code><code class="descname">/nex/ranking2/v1/season_info_entries</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-season_info_entries-put">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/season_info_entries/put</code></dt>
+<dd><p>Modifies the season data for the category types specified in the request body.</p>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%"/>
+<col width="16%"/>
+<col width="65%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>change</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>season_<wbr/>info_<wbr/>entries</strong></td>
+<td>change</td>
+<td><strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>season_<wbr/>info_<wbr/>entry</strong></td>
+<td>season_<wbr/>info_<wbr/>entries</td>
+<td>Use multiple instances of this element to change the season data for multiple category types. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>category_<wbr/>type</strong></td>
+<td>season_<wbr/>info_<wbr/>entry</td>
+<td>Category type number. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>season</strong></td>
+<td>season_<wbr/>info_<wbr/>entry</td>
+<td>Season number. 0 to 2147483647. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>season_<wbr/>from</strong></td>
+<td>season_<wbr/>info_<wbr/>entry</td>
+<td>The date/time at which the current season started. The format is %Y-%m-%dT%H:%M:%SZ. UTC. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>season_<wbr/>to</strong></td>
+<td>season_<wbr/>info_<wbr/>entry</td>
+<td>The date/time at which the current season will end. The format is %Y-%m-%dT%H:%M:%SZ. UTC. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/ranking2/v1/season_info_entries</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;season_info_entries&gt;
+    &lt;season_info_entry&gt;
+      &lt;category_type&gt;0&lt;/category_type&gt;
+      &lt;season&gt;2&lt;/season&gt;
+      &lt;season_from&gt;2015-05-01T02:00:00Z&lt;/season_from&gt;
+      &lt;season_to&gt;2016-05-20T02:00:00Z&lt;/season_to&gt;
+    &lt;/season_info_entry&gt;
+    &lt;season_info_entry&gt;
+      &lt;category_type&gt;1&lt;/category_type&gt;
+      &lt;season&gt;3&lt;/season&gt;
+      &lt;season_from&gt;2015-05-01T02:00:00Z&lt;/season_from&gt;
+      &lt;season_to&gt;2016-05-20T02:00:00Z&lt;/season_to&gt;
+    &lt;/season_info_entry&gt;
+  &lt;/season_info_entries&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;season_info_entries&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/season_info_entries&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of seasons to which changes were made.</p>
+</dd></dl>
+</div>
+<div class="section" id="ranking2-webapi-season-forward">
+<span id="id13"></span><h3>11.3.3.3. Force-Incrementing the Season Number</h3>
+<p>These methods advance the season number by one. Use these methods if you need to force-increment the season number during testing/debugging.</p>
+<p>These methods only change the season number. The season start date/end date does not change. To change the start/end date, see <a class="reference internal" href="#ranking2-webapi-season-change"><span class="std std-ref">Modifying Season Data</span></a>.</p>
+<p>When the season number is advanced, the data for older seasons (seasons older than the configured number of seasons for which to save data) becomes scheduled for deletion but is not deleted immediately. Old season data is deleted as part of the next periodic reset process.</p>
+<p>These methods will not change the season number of category types that are not configured to be periodically reset.</p>
+<dl class="put">
+<dt id="put--nex-ranking2-v1-season_info_entries-setting_forward">
+<code class="descname">PUT </code><code class="descname">/nex/ranking2/v1/season_info_entries/setting_forward</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-season_info_entries-setting_forward-put">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/season_info_entries/setting_forward/put</code></dt>
+<dd><p>Advances the season number of the category types specified in the request body.</p>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%"/>
+<col width="13%"/>
+<col width="71%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>change</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>season_<wbr/>info_<wbr/>entries</strong></td>
+<td>change</td>
+<td><strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>season_<wbr/>info_<wbr/>entry</strong></td>
+<td>season_<wbr/>info_<wbr/>entries</td>
+<td>Use multiple instances of this element to advance the seasons for multiple category types. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>category_<wbr/>type</strong></td>
+<td>season_<wbr/>info_<wbr/>entry</td>
+<td>The number of the category type for which to advance the season. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/ranking2/v1/season_info_entries/setting_forward</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;season_info_entries&gt;
+    &lt;season_info_entry&gt;
+      &lt;category_type&gt;0&lt;/category_type&gt;
+    &lt;/season_info_entry&gt;
+    &lt;season_info_entry&gt;
+      &lt;category_type&gt;1&lt;/category_type&gt;
+    &lt;/season_info_entry&gt;
+  &lt;/season_info_entries&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+</dd></dl>
+<dl class="put">
+<dt id="put--nex-ranking2-v1-season_info_entries-setting_forward-all">
+<code class="descname">PUT </code><code class="descname">/nex/ranking2/v1/season_info_entries/setting_forward/all</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-season_info_entries-setting_forward-all-put">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/season_info_entries/setting_forward/all/put</code></dt>
+<dd><p>Advances the season numbers of all category types.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/ranking2/v1/season_info_entries/setting_forward/all</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;season_info_entries&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"255"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/season_info_entries&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of category types for which the season was advanced.</p>
+</dd></dl>
+</div>
+<div class="section" id="ranking2-webapi-season-init">
+<span id="id14"></span><h3>11.3.3.4. Initializing Season Data</h3>
+<p>This process initializes the season data. If you want to get season data after using this API, wait for a few seconds first. This is because invalid data may be returned if you immediately attempt to get season data.</p>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-season_info_entries-(category_type_id)">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/season_info_entries/</code><span class="sig-paren">(</span><em>category_type_id</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-season_info_entries-(category_type_id)-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/season_info_entries/</code><span class="sig-paren">(</span><em>category_type_id</em><span class="sig-paren">)</span><code class="descname">/delete</code></dt>
+<dd><p>Initializes the season data for a single category type.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>category_<wbr/>type_<wbr/>id</td>
+<td>The number of the category type for which to initialize settings. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/season_info_entries/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;season_info_entries&gt;</span>
+      <span class="nt">&lt;initialized</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/season_info_entries&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of seasons that were initialized.</p>
+</dd></dl>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-season_info_entries">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/season_info_entries</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-season_info_entries-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/season_info_entries/delete</code></dt>
+<dd><p>Initializes the season data for all seasons.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/season_info_entries</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;season_info_entries&gt;</span>
+      <span class="nt">&lt;initialized</span> <span class="na">length=</span><span class="s">"256"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/season_info_entries&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of seasons that were initialized.</p>
+</dd></dl>
+</div>
+</div>
+<div class="section" id="id15">
+<h2>11.3.4. Ranking API</h2>
+<p>Use this API to get, upload, or delete rankings or individual scores.</p>
+<div class="section" id="id16">
+<h3>11.3.4.1. Getting Rankings</h3>
+<p>Gets rankings. This method can only get rankings in range ranking mode. For more information about range ranking mode, see <a class="reference internal" href="ranking2.html#ranking2-kinds-of-ranking"><span class="std std-ref">6.6.1. Ranking Types</span></a>.</p>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-categories-(category_id)-ranking">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/categories/</code><span class="sig-paren">(</span><em>category_id</em><span class="sig-paren">)</span><code class="descname">/ranking</code></dt>
+<dd><p>Gets the rankings for the specified category using the specified parameters.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%"/>
+<col width="84%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>category_<wbr/>id</strong></td>
+<td>The number of the category for which to get rankings. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>offset</td>
+<td>An offset from which to start getting rankings. Starts from 0. If not specified, the default value is <code>0</code>.</td>
+</tr>
+<tr class="row-even"><td>limit</td>
+<td>The number (length) of ranked scores to retrieve. 1 to 100. Defaults to limit=10 if unspecified.</td>
+</tr>
+<tr class="row-odd"><td>num_<wbr/>seasons_<wbr/>to_<wbr/>go_<wbr/>back</td>
+<td>Specifies to get rankings for a past season. Specify 0 to get the rankings for the current season. If not specified, the default value is <code>0</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/categories/1/ranking?offset=1&amp;limit=3</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%"/>
+<col width="13%"/>
+<col width="76%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>ranking</td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td>rank_<wbr/>data</td>
+<td>ranking</td>
+<td>A single piece of score data.</td>
+</tr>
+<tr class="row-even"><td>score_<wbr/>id</td>
+<td>rank_<wbr/>data</td>
+<td>Score ID.</td>
+</tr>
+<tr class="row-odd"><td>score_<wbr/>value</td>
+<td>rank_<wbr/>data</td>
+<td>The score.</td>
+</tr>
+<tr class="row-even"><td>rank</td>
+<td>rank_<wbr/>data</td>
+<td>Rank. Starts from 1.</td>
+</tr>
+<tr class="row-odd"><td>principal_<wbr/>id</td>
+<td>rank_<wbr/>data</td>
+<td>Principal ID.</td>
+</tr>
+<tr class="row-even"><td>unique_<wbr/>id</td>
+<td>rank_<wbr/>data</td>
+<td>The NEX unique ID. If the NEX unique ID is not used, this is 0.</td>
+</tr>
+<tr class="row-odd"><td>date</td>
+<td>rank_<wbr/>data</td>
+<td>Date modified. The format is %Y-%m-%dT%H:%M:%SZ. UTC.</td>
+</tr>
+<tr class="row-even"><td>misc</td>
+<td>rank_<wbr/>data</td>
+<td>Miscellaneous data. 64-bit integer value.</td>
+</tr>
+<tr class="row-odd"><td>common_<wbr/>data</td>
+<td>rank_<wbr/>data</td>
+<td>Common user data.</td>
+</tr>
+<tr class="row-even"><td>name</td>
+<td>common_<wbr/>data</td>
+<td>The username associated with the common user data. URL-safe Base64-encoded value.</td>
+</tr>
+<tr class="row-odd"><td>binary_<wbr/>data</td>
+<td>common_<wbr/>data</td>
+<td>The binary data associated with the common user data. URL-safe Base64-encoded value.</td>
+</tr>
+<tr class="row-even"><td>mii</td>
+<td>common_<wbr/>data</td>
+<td>Mii character data. Cannot currently be retrieved using WebAPI. Always empty (for now).</td>
+</tr>
+<tr class="row-odd"><td>lowest_<wbr/>rank</td>
+<td>ranking</td>
+<td>The last place position configured for the corresponding category.</td>
+</tr>
+<tr class="row-even"><td>num_<wbr/>ranked_<wbr/>in</td>
+<td>ranking</td>
+<td>The number of scores in the corresponding ranking category.</td>
+</tr>
+<tr class="row-odd"><td>season</td>
+<td>ranking</td>
+<td>The season number of the corresponding category.</td>
+</tr>
+</tbody>
+</table>
+<p>The score ID is a unique value automatically assigned to each piece of score data. Use this ID to access and delete a specific score. This value cannot be used from the game.</p>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;ranking</span> <span class="na">length=</span><span class="s">"3"</span> <span class="na">offset=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;rank_data&gt;</span>
+        <span class="nt">&lt;principal_id&gt;</span>2002<span class="nt">&lt;/principal_id&gt;</span>
+        <span class="nt">&lt;score_value&gt;</span>3885986981<span class="nt">&lt;/score_value&gt;</span>
+        <span class="nt">&lt;unique_id&gt;</span>0<span class="nt">&lt;/unique_id&gt;</span>
+        <span class="nt">&lt;score_id&gt;</span>66<span class="nt">&lt;/score_id&gt;</span>
+        <span class="nt">&lt;date&gt;</span>2015-06-12T05:01:31Z<span class="nt">&lt;/date&gt;</span>
+        <span class="nt">&lt;misc&gt;</span>2668039053452605242<span class="nt">&lt;/misc&gt;</span>
+        <span class="nt">&lt;common_data&gt;</span>
+          <span class="nt">&lt;mii&gt;&lt;/mii&gt;</span>
+          <span class="nt">&lt;binary_data&gt;</span>WmJyb1F1YnFYRU9JT0ZoUHVTVmV0ZUFhREdKeFh5TWxzUmVVamdBV2RQSXlQVmRSR0JXSmlyRHdNbW5RdGplQnFvSFBVa3F6eUNMYlluRUhtcWRNYmZPdU9abmlRV1hjUk5tUw==<span class="nt">&lt;/binary_data&gt;</span>
+          <span class="nt">&lt;name&gt;</span>UElEPTIwMDI=<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;/common_data&gt;</span>
+        <span class="nt">&lt;rank&gt;</span>2<span class="nt">&lt;/rank&gt;</span>
+      <span class="nt">&lt;/rank_data&gt;</span>
+      <span class="nt">&lt;rank_data&gt;</span>
+        <span class="nt">&lt;principal_id&gt;</span>2000<span class="nt">&lt;/principal_id&gt;</span>
+        <span class="nt">&lt;score_value&gt;</span>3201355316<span class="nt">&lt;/score_value&gt;</span>
+        <span class="nt">&lt;unique_id&gt;</span>0<span class="nt">&lt;/unique_id&gt;</span>
+        <span class="nt">&lt;score_id&gt;</span>64<span class="nt">&lt;/score_id&gt;</span>
+        <span class="nt">&lt;date&gt;</span>2015-06-12T05:01:31Z<span class="nt">&lt;/date&gt;</span>
+        <span class="nt">&lt;misc&gt;</span>17485265505298322584<span class="nt">&lt;/misc&gt;</span>
+        <span class="nt">&lt;common_data&gt;</span>
+          <span class="nt">&lt;mii&gt;&lt;/mii&gt;</span>
+          <span class="nt">&lt;binary_data&gt;</span>T09Cc1JVemlDcENVcWNudklnQUhEakZodmhLV2RReHpaSk1wTGp5Y0pwS0VzRWVEbFNpbVRQVG9xc3JmVGliZU1ybmtmbkxva1VjYlBQc2xiVWV4RFFZQnRzYnNrbWV4Vnhaag==<span class="nt">&lt;/binary_data&gt;</span>
+          <span class="nt">&lt;name&gt;</span>UElEPTIwMDA=<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;/common_data&gt;</span>
+        <span class="nt">&lt;rank&gt;</span>3<span class="nt">&lt;/rank&gt;</span>
+      <span class="nt">&lt;/rank_data&gt;</span>
+      <span class="nt">&lt;rank_data&gt;</span>
+        <span class="nt">&lt;principal_id&gt;</span>2005<span class="nt">&lt;/principal_id&gt;</span>
+        <span class="nt">&lt;score_value&gt;</span>2442138032<span class="nt">&lt;/score_value&gt;</span>
+        <span class="nt">&lt;unique_id&gt;</span>0<span class="nt">&lt;/unique_id&gt;</span>
+        <span class="nt">&lt;score_id&gt;</span>69<span class="nt">&lt;/score_id&gt;</span>
+        <span class="nt">&lt;date&gt;</span>2015-06-12T05:01:31Z<span class="nt">&lt;/date&gt;</span>
+        <span class="nt">&lt;misc&gt;</span>7042069569313320480<span class="nt">&lt;/misc&gt;</span>
+        <span class="nt">&lt;common_data&gt;</span>
+          <span class="nt">&lt;mii&gt;&lt;/mii&gt;</span>
+          <span class="nt">&lt;binary_data&gt;</span>VHlUYWVpSWRMeXpOSVBwTGlMeXZUdkZnTW9XckZrVVRjamlyRk9QV0ZOY0lYU0ZMQ2JlY21GaG9yQkxVeUZkeHNmYUtEamVudVhQQ0duWkhIelFSQkJyaVRPTktXdm5zRkFaSA==<span class="nt">&lt;/binary_data&gt;</span>
+          <span class="nt">&lt;name&gt;</span>UElEPTIwMDU=<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;/common_data&gt;</span>
+        <span class="nt">&lt;rank&gt;</span>4<span class="nt">&lt;/rank&gt;</span>
+      <span class="nt">&lt;/rank_data&gt;</span>
+    <span class="nt">&lt;/ranking&gt;</span>
+    <span class="nt">&lt;lowest_rank&gt;</span>10000<span class="nt">&lt;/lowest_rank&gt;</span>
+    <span class="nt">&lt;num_ranked_in&gt;</span>10<span class="nt">&lt;/num_ranked_in&gt;</span>
+    <span class="nt">&lt;season&gt;</span>0<span class="nt">&lt;/season&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id17">
+<h3>11.3.4.2. Getting Scores</h3>
+<p>This method gets individual scores.</p>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-scores-(score_id)">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/scores/</code><span class="sig-paren">(</span><em>score_id</em><span class="sig-paren">)</span></dt>
+<dd><p>Gets a single score.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%"/>
+<col width="84%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>score_<wbr/>id</td>
+<td>Score ID. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/scores/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-scores">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/scores</code></dt>
+<dd></dd></dl>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-categories-(category_id)-scores">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/categories/</code><span class="sig-paren">(</span><em>category_id</em><span class="sig-paren">)</span><code class="descname">/scores</code></dt>
+<dd><p>Gets the scores that match the specified parameters.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%"/>
+<col width="84%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>category_<wbr/>id</td>
+<td>The number of the category from which to get scores. Only one can be specified. Cannot be used together with <code>categories</code>.</td>
+</tr>
+<tr class="row-odd"><td>score_<wbr/>ids</td>
+<td>Score ID. You can specify multiple values, delimited by commas.</td>
+</tr>
+<tr class="row-even"><td>principal_<wbr/>ids</td>
+<td>Principal ID. You can specify multiple values, delimited by commas.</td>
+</tr>
+<tr class="row-odd"><td>unique_<wbr/>ids</td>
+<td>The NEX unique ID. You can specify multiple values, delimited by commas.</td>
+</tr>
+<tr class="row-even"><td>categories</td>
+<td>The category number. You can specify multiple values, delimited by commas. Cannot be specified at the same time as <code>category_<wbr/>id</code>.</td>
+</tr>
+<tr class="row-odd"><td>seasons</td>
+<td>Season number. You can specify multiple values, delimited by commas.</td>
+</tr>
+<tr class="row-even"><td>score_<wbr/>value</td>
+<td>The score. You can specify multiple values, delimited by commas.</td>
+</tr>
+<tr class="row-odd"><td>miscs</td>
+<td>Miscellaneous data. You can specify multiple values, delimited by commas.</td>
+</tr>
+<tr class="row-even"><td>offset</td>
+<td>An offset from which to start getting scores. Starts from 0. If not specified, the default value is <code>0</code>.</td>
+</tr>
+<tr class="row-odd"><td>limit</td>
+<td>The number of scores (length) to get. 1 to 1000. Defaults to limit=10 if unspecified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/scores?categories=1&amp;seasons=0&amp;offset=1&amp;limit=3</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/categories/1/scores?seasons=0&amp;offset=1&amp;limit=3</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%"/>
+<col width="15%"/>
+<col width="70%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>scores</td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td>score</td>
+<td>scores</td>
+<td>A single piece of score data.</td>
+</tr>
+<tr class="row-even"><td>score_<wbr/>id</td>
+<td>score</td>
+<td>Score ID. Used to delete a score.</td>
+</tr>
+<tr class="row-odd"><td>score_<wbr/>value</td>
+<td>score</td>
+<td>The score.</td>
+</tr>
+<tr class="row-even"><td>principal_<wbr/>id</td>
+<td>score</td>
+<td>Principal ID.</td>
+</tr>
+<tr class="row-odd"><td>unique_<wbr/>id</td>
+<td>score</td>
+<td>The NEX unique ID. If the NEX unique ID is not used, this is 0.</td>
+</tr>
+<tr class="row-even"><td>date</td>
+<td>score</td>
+<td>Date modified. The format is %Y-%m-%dT%H:%M:%SZ. UTC.</td>
+</tr>
+<tr class="row-odd"><td>misc</td>
+<td>score</td>
+<td>Miscellaneous data. 64-bit integer value.</td>
+</tr>
+<tr class="row-even"><td>category</td>
+<td>score</td>
+<td>The category number.</td>
+</tr>
+<tr class="row-odd"><td>season</td>
+<td>score</td>
+<td>Season number.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;scores</span> <span class="na">length=</span><span class="s">"3"</span> <span class="na">offset=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;score&gt;</span>
+        <span class="nt">&lt;category&gt;</span>1<span class="nt">&lt;/category&gt;</span>
+        <span class="nt">&lt;season&gt;</span>0<span class="nt">&lt;/season&gt;</span>
+        <span class="nt">&lt;misc&gt;</span>9308000101998636569<span class="nt">&lt;/misc&gt;</span>
+        <span class="nt">&lt;principal_id&gt;</span>2001<span class="nt">&lt;/principal_id&gt;</span>
+        <span class="nt">&lt;score_value&gt;</span>1804411040<span class="nt">&lt;/score_value&gt;</span>
+        <span class="nt">&lt;score_id&gt;</span>65<span class="nt">&lt;/score_id&gt;</span>
+        <span class="nt">&lt;date&gt;</span>2015-06-12T05:01:31Z<span class="nt">&lt;/date&gt;</span>
+        <span class="nt">&lt;unique_id&gt;</span>0<span class="nt">&lt;/unique_id&gt;</span>
+      <span class="nt">&lt;/score&gt;</span>
+      <span class="nt">&lt;score&gt;</span>
+        <span class="nt">&lt;category&gt;</span>1<span class="nt">&lt;/category&gt;</span>
+        <span class="nt">&lt;season&gt;</span>0<span class="nt">&lt;/season&gt;</span>
+        <span class="nt">&lt;misc&gt;</span>2668039053452605242<span class="nt">&lt;/misc&gt;</span>
+        <span class="nt">&lt;principal_id&gt;</span>2002<span class="nt">&lt;/principal_id&gt;</span>
+        <span class="nt">&lt;score_value&gt;</span>3885986981<span class="nt">&lt;/score_value&gt;</span>
+        <span class="nt">&lt;score_id&gt;</span>66<span class="nt">&lt;/score_id&gt;</span>
+        <span class="nt">&lt;date&gt;</span>2015-06-12T05:01:31Z<span class="nt">&lt;/date&gt;</span>
+        <span class="nt">&lt;unique_id&gt;</span>0<span class="nt">&lt;/unique_id&gt;</span>
+      <span class="nt">&lt;/score&gt;</span>
+      <span class="nt">&lt;score&gt;</span>
+        <span class="nt">&lt;category&gt;</span>1<span class="nt">&lt;/category&gt;</span>
+        <span class="nt">&lt;season&gt;</span>0<span class="nt">&lt;/season&gt;</span>
+        <span class="nt">&lt;misc&gt;</span>11310608647177294438<span class="nt">&lt;/misc&gt;</span>
+        <span class="nt">&lt;principal_id&gt;</span>2003<span class="nt">&lt;/principal_id&gt;</span>
+        <span class="nt">&lt;score_value&gt;</span>1727690968<span class="nt">&lt;/score_value&gt;</span>
+        <span class="nt">&lt;score_id&gt;</span>67<span class="nt">&lt;/score_id&gt;</span>
+        <span class="nt">&lt;date&gt;</span>2015-06-12T05:01:31Z<span class="nt">&lt;/date&gt;</span>
+        <span class="nt">&lt;unique_id&gt;</span>0<span class="nt">&lt;/unique_id&gt;</span>
+      <span class="nt">&lt;/score&gt;</span>
+    <span class="nt">&lt;/scores&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id18">
+<h3>11.3.4.3. Uploading Scores</h3>
+<p>These methods upload scores. Score IDs cannot be specified manually. A unique value is automatically assigned. To modify the data associated with a particular score ID, delete that score and then upload it again.</p>
+<dl class="put">
+<dt id="put--nex-ranking2-v1-scores">
+<code class="descname">PUT </code><code class="descname">/nex/ranking2/v1/scores</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-scores-put">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/scores/put</code></dt>
+<dd><p>These methods upload scores.</p>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%"/>
+<col width="16%"/>
+<col width="65%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>change</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>scores</td>
+<td>change</td>
+<td><strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td>score</td>
+<td>scores</td>
+<td>Use multiple instances of this element to upload multiple scores at once. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>principal_<wbr/>id</strong></td>
+<td>score</td>
+<td>The principal ID. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>unique_<wbr/>id</strong></td>
+<td>score</td>
+<td>The NEX unique ID. If the NEX unique ID is not used, this is 0. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>category</td>
+<td>score</td>
+<td>The category number. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>season</strong></td>
+<td>score</td>
+<td>Season number. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>score_<wbr/>value</strong></td>
+<td>score</td>
+<td>The score itself. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td>misc</td>
+<td>score</td>
+<td>Miscellaneous data. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Specify a principal ID and NEX unique ID to match the association when the NEX unique ID is associated with a target principal ID. Added scores may not be correctly referenced when a combination of IDs that does not match the actual association is specified.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/ranking2/v1/scores</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;scores&gt;
+    &lt;score&gt;
+      &lt;principal_id&gt;2000&lt;/principal_id&gt;
+      &lt;unique_id&gt;0&lt;/unique_id&gt;
+      &lt;category&gt;3&lt;/category&gt;
+      &lt;season&gt;0&lt;/season&gt;
+      &lt;score_value&gt;100&lt;/score_value&gt;
+      &lt;misc&gt;123&lt;/misc&gt;
+    &lt;/score&gt;
+  &lt;/scores&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;scores&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/scores&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of scores that were uploaded.</p>
+</dd></dl>
+</div>
+<div class="section" id="ranking2-webapi-score-delete">
+<span id="id19"></span><h3>11.3.4.4. Deleting Scores</h3>
+<p>These methods delete scores.</p>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-scores-(score_id)">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/scores/</code><span class="sig-paren">(</span><em>score_id</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-scores-(score_id)-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/scores/</code><span class="sig-paren">(</span><em>score_id</em><span class="sig-paren">)</span><code class="descname">/delete</code></dt>
+<dd><p>Deletes a single score.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>score_<wbr/>id</td>
+<td>The score ID of the score to delete. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/scores/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;scores&gt;</span>
+      <span class="nt">&lt;deleted</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/scores&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of scores that were deleted.</p>
+</dd></dl>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-categories-(category_id)-scores">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/categories/</code><span class="sig-paren">(</span><em>category_id</em><span class="sig-paren">)</span><code class="descname">/scores</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-categories-(category_id)-scores-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/categories/</code><span class="sig-paren">(</span><em>category_id</em><span class="sig-paren">)</span><code class="descname">/scores/delete</code></dt>
+<dd><p>Deletes all scores in the specified category.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>category_<wbr/>id</td>
+<td>The category ID that deletes the score. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/categories/0/scores</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;scores&gt;</span>
+      <span class="nt">&lt;deleted</span> <span class="na">length=</span><span class="s">"10"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/scores&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of category and season combinations that were deleted.</p>
+</dd></dl>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-scores">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/scores</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-scores-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/scores/delete</code></dt>
+<dd><p>Deletes all scores.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/scores</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;scores&gt;</span>
+      <span class="nt">&lt;deleted</span> <span class="na">length=</span><span class="s">"100"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/scores&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of category and season combinations that were deleted.</p>
+</dd></dl>
+</div>
+</div>
+<div class="section" id="id20">
+<h2>11.3.5. Common User Data API</h2>
+<p>Use this API to get, upload, or delete common user data. For more information about common user data, see <a class="reference internal" href="ranking2.html#ranking2-common-data"><span class="std std-ref">6.2.5. Common User Data</span></a>.</p>
+<div class="section" id="id21">
+<h3>11.3.5.1. Getting Common User Data</h3>
+<p>Gets common user data.</p>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-common_data_entries-(common_data_id)">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/common_data_entries/</code><span class="sig-paren">(</span><em>common_data_id</em><span class="sig-paren">)</span></dt>
+<dd><p>This method gets the common user data for a single user.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>common_<wbr/>data_<wbr/>id</td>
+<td>The common user data IDs of the common user data sets to get. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p>The common user data ID is a unique value automatically assigned to the common user data for each user. Use this ID to access and delete a specific score. This value cannot be used from the game.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/common_data_entries/2001</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-common_data_entries">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/common_data_entries</code></dt>
+<dd><p>Gets the sets of common user data that match the specified parameters.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>common_<wbr/>data_<wbr/>ids</td>
+<td>The common user data IDs of the common user data sets to get. You can specify multiple values, delimited by commas.</td>
+</tr>
+<tr class="row-odd"><td>principal_<wbr/>ids</td>
+<td>The principal IDs for which to get common user data. You can specify multiple values, delimited by commas.</td>
+</tr>
+<tr class="row-even"><td>unique_<wbr/>ids</td>
+<td>The NEX unique IDs for which to get common user data. You can specify multiple values, delimited by commas.</td>
+</tr>
+<tr class="row-odd"><td>offset</td>
+<td>An offset from which to start getting scores. Starts from 0. If not specified, the default value is <code>0</code>.</td>
+</tr>
+<tr class="row-even"><td>limit</td>
+<td>The number of scores (length) to get. 1 to 1000. Defaults to limit=10 if unspecified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/common_data_entries?principal_ids=2000,2001</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%"/>
+<col width="17%"/>
+<col width="67%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>common_<wbr/>data_<wbr/>entries</td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td>common_<wbr/>data_<wbr/>entry</td>
+<td>common_<wbr/>data_<wbr/>entries</td>
+<td>If you specified multiple common user data IDs, multiple instances of this element are included in the response.</td>
+</tr>
+<tr class="row-even"><td>common_<wbr/>data_<wbr/>id</td>
+<td>common_<wbr/>data_<wbr/>entry</td>
+<td>The common user data ID.</td>
+</tr>
+<tr class="row-odd"><td>principal_<wbr/>id</td>
+<td>common_<wbr/>data_<wbr/>entry</td>
+<td>Principal ID.</td>
+</tr>
+<tr class="row-even"><td>unique_<wbr/>id</td>
+<td>common_<wbr/>data_<wbr/>entry</td>
+<td>The NEX unique ID. If the NEX unique ID is not used, this is 0.</td>
+</tr>
+<tr class="row-odd"><td>date</td>
+<td>common_<wbr/>data_<wbr/>entry</td>
+<td>Date modified. The format is %Y-%m-%dT%H:%M:%SZ. UTC.</td>
+</tr>
+<tr class="row-even"><td>name</td>
+<td>common_<wbr/>data_<wbr/>entry</td>
+<td>The username associated with the common user data. URL-safe Base64-encoded value.</td>
+</tr>
+<tr class="row-odd"><td>binary_<wbr/>data</td>
+<td>common_<wbr/>data_<wbr/>entry</td>
+<td>The binary data associated with the common user data. URL-safe Base64-encoded value.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;common_data_entries</span> <span class="na">length=</span><span class="s">"2"</span> <span class="na">offset=</span><span class="s">"0"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;common_data_entry&gt;</span>
+        <span class="nt">&lt;binary_data&gt;</span>THF5YWx4RGNNTXFKcmRLb3prQnBUTkl3YWxFWFp0VXJCRGNIU3hzSktncmJ5d25HRk1vSkJBR0FDYnVIeGx2dlR6bkhUdlJJZHpLaHBTamFSWE9kRHNPV0R3eHR1bmJ6aEx2cw==<span class="nt">&lt;/binary_data&gt;</span>
+        <span class="nt">&lt;name&gt;</span>UElEPTIwMDA=<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;common_data_id&gt;</span>1<span class="nt">&lt;/common_data_id&gt;</span>
+        <span class="nt">&lt;principal_id&gt;</span>2000<span class="nt">&lt;/principal_id&gt;</span>
+        <span class="nt">&lt;date&gt;</span>2015-06-15T01:26:49Z<span class="nt">&lt;/date&gt;</span>
+        <span class="nt">&lt;unique_id&gt;</span>0<span class="nt">&lt;/unique_id&gt;</span>
+      <span class="nt">&lt;/common_data_entry&gt;</span>
+      <span class="nt">&lt;common_data_entry&gt;</span>
+        <span class="nt">&lt;binary_data&gt;</span>dkhWUEdJQWVQVktJbW15VlFDWElxRllIVkJtQ0FYSVRXaWJYQ1hDeVVTUEpkbFZVeUdtc0NkdmlLVm1Md2FKS1FpQVVXVUhzT2JmWWdralJDTm9hR214dVp5Y3BUSHZTTFpnSw==<span class="nt">&lt;/binary_data&gt;</span>
+        <span class="nt">&lt;name&gt;</span>UElEPTIwMDE=<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;common_data_id&gt;</span>2<span class="nt">&lt;/common_data_id&gt;</span>
+        <span class="nt">&lt;principal_id&gt;</span>2001<span class="nt">&lt;/principal_id&gt;</span>
+        <span class="nt">&lt;date&gt;</span>2015-06-15T01:26:49Z<span class="nt">&lt;/date&gt;</span>
+        <span class="nt">&lt;unique_id&gt;</span>0<span class="nt">&lt;/unique_id&gt;</span>
+      <span class="nt">&lt;/common_data_entry&gt;</span>
+    <span class="nt">&lt;/common_data_entries&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id22">
+<h3>11.3.5.2. Uploading Common User Data</h3>
+<p>Uploads common user data. You cannot specify a common user data ID manually. A unique value is automatically assigned. To modify the data associated with a particular common user data ID, delete that common user data and then upload it again.</p>
+<dl class="put">
+<dt id="put--nex-ranking2-v1-common_data_entries">
+<code class="descname">PUT </code><code class="descname">/nex/ranking2/v1/common_data_entries</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-common_data_entries-put">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/common_data_entries/put</code></dt>
+<dd><p>Uploads common user data.</p>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%"/>
+<col width="16%"/>
+<col width="66%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>change</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>common_<wbr/>data_<wbr/>entries</strong></td>
+<td>change</td>
+<td><strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>common_<wbr/>data_<wbr/>entry</strong></td>
+<td>common_<wbr/>data_<wbr/>entries</td>
+<td>Use multiple instances of this element to upload multiple sets of common user data at once. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>principal_<wbr/>id</strong></td>
+<td>common_<wbr/>data_<wbr/>entry</td>
+<td>Principal ID. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>unique_<wbr/>id</strong></td>
+<td>common_<wbr/>data_<wbr/>entry</td>
+<td>The NEX unique ID. If the NEX unique ID is not used, this is 0. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>name</strong></td>
+<td>common_<wbr/>data_<wbr/>entry</td>
+<td>The username associated with the common user data. URL-safe Base64-encoded value. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>binary_<wbr/>data</strong></td>
+<td>common_<wbr/>data_<wbr/>entry</td>
+<td>The binary data associated with the common user data. URL-safe Base64-encoded value. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Specify a principal ID and NEX unique ID to match the association when the NEX unique ID is associated with a target principal ID. Added common user data may not be correctly referenced when a combination of IDs that does not match the actual association is specified.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/ranking2/v1/common_data_entries</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;common_data_entries&gt;
+    &lt;common_data_entry&gt;
+     &lt;principal_id&gt;2000&lt;/principal_id&gt;
+     &lt;unique_id&gt;0&lt;/unique_id&gt;
+     &lt;name&gt;aG9nZQ==&lt;/name&gt;
+     &lt;binary_data&gt;AAECAwQF&lt;/binary_data&gt;
+    &lt;/common_data_entry&gt;
+  &lt;/common_data_entries&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;common_data_entries&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/common_data_entries&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of common user data sets that were uploaded.</p>
+</dd></dl>
+</div>
+<div class="section" id="id23">
+<h3>11.3.5.3. Deleting Common User Data</h3>
+<p>Deletes common user data.</p>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-common_data_entries-(common_data_id)">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/common_data_entries/</code><span class="sig-paren">(</span><em>common_data_id</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-common_data_entries-(common_data_id)-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/common_data_entries/</code><span class="sig-paren">(</span><em>common_data_id</em><span class="sig-paren">)</span><code class="descname">/delete</code></dt>
+<dd><p>Deletes the common user data for a single user.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>common_<wbr/>data_<wbr/>id</td>
+<td>The common user data ID of the common user data to delete. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/common_data_entries/2001</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;common_data_entries&gt;</span>
+      <span class="nt">&lt;deleted</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/common_data_entries&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of common user data sets that were deleted.</p>
+</dd></dl>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-common_data_entries">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/common_data_entries</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-common_data_entries-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/common_data_entries/delete</code></dt>
+<dd><p>Deletes all common user data.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/common_data_entries</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;common_data_entries&gt;</span>
+      <span class="nt">&lt;deleted</span> <span class="na">length=</span><span class="s">"100"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/common_data_entries&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of common user data sets that were deleted.</p>
+</dd></dl>
+</div>
+</div>
+<div class="section" id="id24">
+<h2>11.3.6. Invalid Scores API</h2>
+<p>Use this API to get and delete invalid scores. For more information about invalid scores, see <a class="reference internal" href="ranking2.html#ranking2-setting-valid-score"><span class="std std-ref">6.9.2.1. Minimum/Maximum Valid Score</span></a>.</p>
+<div class="section" id="id25">
+<h3>11.3.6.1. Getting Invalid Scores</h3>
+<p>This method gets invalid scores.</p>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-invalid_scores-(invalid_score_id)">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/invalid_scores/</code><span class="sig-paren">(</span><em>invalid_score_id</em><span class="sig-paren">)</span></dt>
+<dd><p>Gets a single invalid score.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%"/>
+<col width="84%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>invalid_<wbr/>score_<wbr/>id</td>
+<td>The invalid score ID. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p>The invalid score ID is a unique value automatically assigned to each invalid score. Use this ID to access, modify, or delete a specific invalid score. This value cannot be used from the game.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/invalid_scores/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-invalid_scores">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/invalid_scores</code></dt>
+<dd></dd></dl>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-categories-(category_id)-invalid_scores">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/categories/</code><span class="sig-paren">(</span><em>category_id</em><span class="sig-paren">)</span><code class="descname">/invalid_scores</code></dt>
+<dd><p>Gets the invalid scores that match the specified parameters.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%"/>
+<col width="84%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>category_<wbr/>id</td>
+<td>The number of the category that gets invalid scores. Only one can be specified. Cannot be used together with <code>categories</code>.</td>
+</tr>
+<tr class="row-odd"><td>invalid_<wbr/>score_<wbr/>ids</td>
+<td>The invalid score ID. You can specify multiple values, delimited by commas.</td>
+</tr>
+<tr class="row-even"><td>principal_<wbr/>ids</td>
+<td>Principal ID. You can specify multiple values, delimited by commas.</td>
+</tr>
+<tr class="row-odd"><td>unique_<wbr/>ids</td>
+<td>The NEX unique ID. You can specify multiple values, delimited by commas.</td>
+</tr>
+<tr class="row-even"><td>categories</td>
+<td>The category number. You can specify multiple values, delimited by commas.</td>
+</tr>
+<tr class="row-odd"><td>offset</td>
+<td>An offset from which to start getting scores. Starts from 0. If not specified, the default value is <code>0</code>.</td>
+</tr>
+<tr class="row-even"><td>limit</td>
+<td>The number of scores (length) to get. 1 to 1000. Defaults to limit=10 if unspecified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/invalid_scores?categories=1,2</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/categories/1/invalid_scores</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%"/>
+<col width="15%"/>
+<col width="70%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>invalid_<wbr/>scores</td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td>invalid_<wbr/>score</td>
+<td>invalid_<wbr/>scores</td>
+<td>A single invalid score.</td>
+</tr>
+<tr class="row-even"><td>invalid_<wbr/>score_<wbr/>id</td>
+<td>invalid_<wbr/>score</td>
+<td>The invalid score ID. Used to delete an invalid score.</td>
+</tr>
+<tr class="row-odd"><td>principal_<wbr/>id</td>
+<td>invalid_<wbr/>score</td>
+<td>Principal ID.</td>
+</tr>
+<tr class="row-even"><td>unique_<wbr/>id</td>
+<td>invalid_<wbr/>score</td>
+<td>The NEX unique ID. If the NEX unique ID is not used, this is 0.</td>
+</tr>
+<tr class="row-odd"><td>category</td>
+<td>invalid_<wbr/>score</td>
+<td>The category number.</td>
+</tr>
+<tr class="row-even"><td>score_<wbr/>value</td>
+<td>invalid_<wbr/>score</td>
+<td>The score.</td>
+</tr>
+<tr class="row-odd"><td>isolated_<wbr/>date</td>
+<td>invalid_<wbr/>score</td>
+<td>The date this score was marked as invalid and isolated from normal scores. The format is %Y-%m-%dT%H:%M:%SZ. UTC.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;invalid_scores</span> <span class="na">length=</span><span class="s">"2"</span> <span class="na">offset=</span><span class="s">"0"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;invalid_score&gt;</span>
+        <span class="nt">&lt;invalid_score_id&gt;</span>1<span class="nt">&lt;/invalid_score_id&gt;</span>
+        <span class="nt">&lt;principal_id&gt;</span>1001<span class="nt">&lt;/principal_id&gt;</span>
+        <span class="nt">&lt;unique_id&gt;</span>0<span class="nt">&lt;/unique_id&gt;</span>
+        <span class="nt">&lt;category&gt;</span>1<span class="nt">&lt;/category&gt;</span>
+        <span class="nt">&lt;score_value&gt;</span>34<span class="nt">&lt;/score_value&gt;</span>
+        <span class="nt">&lt;isolated_date&gt;</span>2015-06-15T01:26:49Z<span class="nt">&lt;/isolated_date&gt;</span>
+      <span class="nt">&lt;/invalid_score&gt;</span>
+      <span class="nt">&lt;invalid_score&gt;</span>
+        <span class="nt">&lt;invalid_score_id&gt;</span>3<span class="nt">&lt;/invalid_score_id&gt;</span>
+        <span class="nt">&lt;principal_id&gt;</span>1003<span class="nt">&lt;/principal_id&gt;</span>
+        <span class="nt">&lt;unique_id&gt;</span>0<span class="nt">&lt;/unique_id&gt;</span>
+        <span class="nt">&lt;category&gt;</span>2<span class="nt">&lt;/category&gt;</span>
+        <span class="nt">&lt;score_value&gt;</span>33<span class="nt">&lt;/score_value&gt;</span>
+        <span class="nt">&lt;isolated_date&gt;</span>2015-06-15T01:26:49Z<span class="nt">&lt;/isolated_date&gt;</span>
+      <span class="nt">&lt;/invalid_score&gt;</span>
+    <span class="nt">&lt;/invalid_scores&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id26">
+<h3>11.3.6.2. Uploading Invalid Scores</h3>
+<p>Uploads an invalid score.</p>
+<dl class="put">
+<dt id="put--nex-ranking2-v1-invalid_scores">
+<code class="descname">PUT </code><code class="descname">/nex/ranking2/v1/invalid_scores</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-invalid_scores-put">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/invalid_scores/put</code></dt>
+<dd><p>Uploads an invalid score. Specify an invalid score ID to overwrite an existing invalid score.</p>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%"/>
+<col width="16%"/>
+<col width="65%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>change</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>invalid_<wbr/>scores</strong></td>
+<td>change</td>
+<td><strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>invalid_<wbr/>score</strong></td>
+<td>invalid_<wbr/>scores</td>
+<td>Use multiple instances of this element to upload multiple invalid scores at the same time. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>invalid_<wbr/>score_<wbr/>id</td>
+<td>invalid_<wbr/>score</td>
+<td>The invalid score ID.</td>
+</tr>
+<tr class="row-even"><td><strong>principal_<wbr/>id</strong></td>
+<td>invalid_<wbr/>score</td>
+<td>Principal ID. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>unique_<wbr/>id</strong></td>
+<td>invalid_<wbr/>score</td>
+<td>The NEX unique ID. If the NEX unique ID is not used, this is 0. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td>category</td>
+<td>invalid_<wbr/>score</td>
+<td>The category number. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>score_<wbr/>value</strong></td>
+<td>invalid_<wbr/>score</td>
+<td>The score. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/ranking2/v1/invalid_scores</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;invalid_scores&gt;
+    &lt;invalid_score&gt;
+      &lt;principal_id&gt;2000&lt;/principal_id&gt;
+      &lt;unique_id&gt;0&lt;/unique_id&gt;
+      &lt;category&gt;3&lt;/category&gt;
+      &lt;score_value&gt;9999999&lt;/score_value&gt;
+    &lt;/invalid_score&gt;
+  &lt;/invalid_scores&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;invalid_scores&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/invalid_scores&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of invalid scores that were uploaded.</p>
+</dd></dl>
+</div>
+<div class="section" id="id27">
+<h3>11.3.6.3. Deleting Invalid Scores</h3>
+<p>These methods delete invalid scores.</p>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-invalid_scores-(invalid_score_id)">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/invalid_scores/</code><span class="sig-paren">(</span><em>invalid_score_id</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-invalid_scores-(invalid_score_id)-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/invalid_scores/</code><span class="sig-paren">(</span><em>invalid_score_id</em><span class="sig-paren">)</span><code class="descname">/delete</code></dt>
+<dd><p>Deletes a single invalid score.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>invalid_<wbr/>score_<wbr/>id</td>
+<td>The invalid score ID of the invalid score to delete. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/invalid_scores/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;invalid_scores&gt;</span>
+      <span class="nt">&lt;deleted</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/invalid_scores&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of invalid scores that were deleted.</p>
+</dd></dl>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-categories-(category_id)-invalid_scores">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/categories/</code><span class="sig-paren">(</span><em>category_id</em><span class="sig-paren">)</span><code class="descname">/invalid_scores</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-categories-(category_id)-invalid_scores-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/categories/</code><span class="sig-paren">(</span><em>category_id</em><span class="sig-paren">)</span><code class="descname">/invalid_scores/delete</code></dt>
+<dd><p>Deletes all invalid score data in the specified category.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>category_<wbr/>id</td>
+<td>The category ID that deletes the score. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/categories/0/invalid_scores</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;invalid_scores&gt;</span>
+      <span class="nt">&lt;deleted</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/invalid_scores&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of invalid scores that were deleted.</p>
+</dd></dl>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-invalid_scores">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/invalid_scores</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-invalid_scores-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/invalid_scores/delete</code></dt>
+<dd><p>Deletes all invalid scores.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/invalid_scores</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;invalid_scores&gt;</span>
+      <span class="nt">&lt;deleted</span> <span class="na">length=</span><span class="s">"100"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/invalid_scores&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of invalid scores that were deleted.</p>
+</dd></dl>
+</div>
+</div>
+<div class="section" id="ranking2-chart-data-set-settings-section">
+<span id="id28"></span><h2>11.3.7. Ranking Chart Data Settings API</h2>
+<p>Uses these  functions to get and modify the ranking chart data settings.</p>
+<div class="section" id="id29">
+<h3>11.3.7.1. Getting Ranking Chart Data Settings</h3>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-chart_settings-(chart_index)">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/chart_settings/</code><span class="sig-paren">(</span><em>chart_index</em><span class="sig-paren">)</span></dt>
+<dd><p>Gets the data settings for one ranking chart.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>chart_<wbr/>index</td>
+<td>Index number of the retrieved ranking chart data. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/chart_settings/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-chart_settings">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/chart_settings</code></dt>
+<dd><p>Gets the settings for multiple category types.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%"/>
+<col width="87%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>chart_<wbr/>indexes</td>
+<td>Index number of the retrieved ranking chart data. You can specify multiple values, delimited by commas. If no category type numbers are specified, the season data for all category types is retrieved.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/chart_settings?chart_indexes=1,3</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;chart_settings</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;chart_setting&gt;</span>
+        <span class="nt">&lt;chart_index&gt;</span>1<span class="nt">&lt;/chart_index&gt;</span>
+        <span class="nt">&lt;category&gt;</span>100<span class="nt">&lt;/category&gt;</span>
+        <span class="nt">&lt;bins_size&gt;</span>10<span class="nt">&lt;/bins_size&gt;</span>
+        <span class="nt">&lt;highest_score&gt;&lt;/highest_score&gt;</span>
+        <span class="nt">&lt;lowest_score&gt;&lt;/lowest_score&gt;</span>
+        <span class="nt">&lt;highest_bins_score&gt;&lt;/highest_bins_score&gt;</span>
+        <span class="nt">&lt;lowest_bins_score&gt;&lt;/lowest_bins_score&gt;</span>
+        <span class="nt">&lt;is_median_adjustment&gt;</span>0<span class="nt">&lt;/is_median_adjustment&gt;</span>
+        <span class="nt">&lt;attribute1&gt;</span>0<span class="nt">&lt;/attribute1&gt;</span>
+        <span class="nt">&lt;attribute2&gt;</span>0<span class="nt">&lt;/attribute2&gt;</span>
+        <span class="nt">&lt;note&gt;&lt;/note&gt;</span>
+      <span class="nt">&lt;/chart_setting&gt;</span>
+    <span class="nt">&lt;/chart_settings&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="ranking2-chart-data-set-settings">
+<span id="id30"></span><h3>11.3.7.2. Changing Ranking Chart Data Settings</h3>
+<p>Changes the ranking chart data settings.</p>
+<p>For more information about each configure, see <span class="std std-ref"><a class="reference internal" href="ranking2.html#ranking2-chart-data-server-setting">6.10.1. Server Settings</a></span>.</p>
+<dl class="put">
+<dt id="put--nex-ranking2-v1-chart_settings">
+<code class="descname">PUT </code><code class="descname">/nex/ranking2/v1/chart_settings</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-chart_settings-put">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/chart_settings/put</code></dt>
+<dd><p>Changes the data settings for multiple ranking charts. Settings for which a new value is not specified are not changed.</p>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%"/>
+<col width="10%"/>
+<col width="80%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>nex</strong></td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>ranking2</strong></td>
+<td>nex</td>
+<td><strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>chart_<wbr/>settings</strong></td>
+<td>ranking2</td>
+<td><strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>chart_<wbr/>setting</strong></td>
+<td>chart_<wbr/>settings</td>
+<td>Use multiple instances of this element to change the data settings for multiple ranking charts. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>chart_<wbr/>index</strong></td>
+<td>chart_<wbr/>setting</td>
+<td>Index number of the ranking chart data. 0 to 4,294,967,295. <strong>Required</strong></td>
+</tr>
+<tr class="row-odd"><td>category</td>
+<td>chart_<wbr/>setting</td>
+<td>Categories that can be specified in Ranking2. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>bins_<wbr/>size</strong></td>
+<td>chart_<wbr/>setting</td>
+<td>Number of partition segments in ranking chart data. Maximum value is 255. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>highest_<wbr/>score</td>
+<td>chart_<wbr/>setting</td>
+<td>Scores higher than this score are not tabulated. When not specified, the highest score of the ranking on which generation is based is used.</td>
+</tr>
+<tr class="row-even"><td>lowest_<wbr/>score</td>
+<td>chart_<wbr/>setting</td>
+<td>The lowest score. Scores lower than this score are not tabulated. When not specified, the (estimated) lowest score of the ranking on which generation is based is used.</td>
+</tr>
+<tr class="row-odd"><td>highest_<wbr/>bins_<wbr/>score</td>
+<td>chart_<wbr/>setting</td>
+<td>Highest segment score. Specified when you want to fix the value of the highest score at which to end a distribution chart segment. If this value is not included, values will be tabulated up to the 1 lower value. Automatically adjusts when not specified (explanation follows).</td>
+</tr>
+<tr class="row-even"><td>lowest_<wbr/>bins_<wbr/>score</td>
+<td>chart_<wbr/>setting</td>
+<td>Lowest segment score. Specified when you want to fix the value of the lowest score at which to start a distribution chart segment. Automatically adjusts when not specified (explanation follows).</td>
+</tr>
+<tr class="row-odd"><td>is_<wbr/>median_<wbr/>adjustment</td>
+<td>chart_<wbr/>setting</td>
+<td>Adjust to the median value. Specify 1 to automatically adjust the highest segment score and lowest segment score. This is so that the median score value is at the center of the segment range. Specify 0 to disable this feature. Observed as 0 when not specified.</td>
+</tr>
+<tr class="row-even"><td>attribute1</td>
+<td>chart_<wbr/>setting</td>
+<td>Number 1 of the optional setting values. Use this when a setting is required by the application. A value in the range of 0 to 4,294,967,295 can be specified. Observed as 0 when not specified.</td>
+</tr>
+<tr class="row-odd"><td>attribute2</td>
+<td>chart_<wbr/>setting</td>
+<td>Number 2 of the optional setting values. Use this when a setting is required by the application. A value in the range of 0 to 4,294,967,295 can be specified. Observed as 0 when not specified.</td>
+</tr>
+<tr class="row-even"><td>note</td>
+<td>chart_<wbr/>setting</td>
+<td>Text string that can be retrieved from WebAPI or can be displayed on NMAS. Cannot be retrieved from the application. Becomes a null string when not specified. Up to 255 characters in UTF-8.</td>
+</tr>
+</tbody>
+</table>
+<p>Ranking chart data corresponding to a <code>chart_index</code>, for which the category that has been changed will be deleted, and the ranking chart data will be updated at the time of the periodic update. Otherwise, ranking chart data are updated at the time of the periodic update.</p>
+<p>This can also be done with &lt;<code>change</code>&gt;&lt;<code>chart_settings</code>&gt; instead of &lt;<code>nex</code>&gt;&lt;<code>ranking2</code>&gt;&lt;<code>chart_settings</code>&gt;.</p>
+<p>When you want to use the CSV format to manage settings, you can use the <a class="reference external" href="../webapi/ChartSettingsXMLCSVConverter.html">ChartSettings XML Setting CSV Converter</a> to convert back and forth between the CSV and XML formats.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/ranking2/v1/chart_settings</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;nex&gt;
+  &lt;ranking2&gt;
+    &lt;chart_settings length="1"&gt;
+      &lt;chart_setting&gt;
+        &lt;chart_index&gt;1&lt;/chart_index&gt;
+        &lt;category&gt;100&lt;/category&gt;
+        &lt;bins_size&gt;10&lt;/bins_size&gt;
+        &lt;highest_score&gt;&lt;/highest_score&gt;
+        &lt;lowest_score&gt;&lt;/lowest_score&gt;
+        &lt;highest_bins_score&gt;&lt;/highest_bins_score&gt;
+        &lt;lowest_bins_score&gt;&lt;/lowest_bins_score&gt;
+        &lt;is_median_adjustment&gt;0&lt;/is_median_adjustment&gt;
+        &lt;attribute1&gt;0&lt;/attribute1&gt;
+        &lt;attribute2&gt;0&lt;/attribute2&gt;
+        &lt;note&gt;&lt;/note&gt;
+      &lt;/chart_setting&gt;
+    &lt;/chart_settings&gt;
+  &lt;/ranking2&gt;
+&lt;/nex&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;chart_settings&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/chart_settings&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of category types to which changes were made.</p>
+</dd></dl>
+</div>
+<div class="section" id="id31">
+<h3>11.3.7.3. Batch Setting Ranking Chart Data</h3>
+<p>Sets the ranking chart data, all in one batch.</p>
+<p>For more information about each configure, see <span class="std std-ref"><a class="reference internal" href="ranking2.html#ranking2-chart-data-server-setting">6.10.1. Server Settings</a></span>.</p>
+<dl class="put">
+<dt id="put--nex-ranking2-v1-chart_settings-sync">
+<code class="descname">PUT </code><code class="descname">/nex/ranking2/v1/chart_settings/sync</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-chart_settings-sync-put">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/chart_settings/sync/put</code></dt>
+<dd><p>Sets all of the ranking chart data settings in one batch. Settings corresponding to any unspecified ranking chart data index number will be deleted.</p>
+<p><strong>Request Body:</strong></p>
+<p>Similar to <a class="reference internal" href="#ranking2-chart-data-set-settings"><span class="std std-ref">11.3.7.2. Changing Ranking Chart Data Settings</span></a>.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/ranking2/v1/chart_settings/sync</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;nex&gt;
+  &lt;ranking2&gt;
+    &lt;chart_settings length="1"&gt;
+      &lt;chart_setting&gt;
+        &lt;chart_index&gt;1&lt;/chart_index&gt;
+        &lt;category&gt;100&lt;/category&gt;
+        &lt;bins_size&gt;10&lt;/bins_size&gt;
+        &lt;highest_score&gt;&lt;/highest_score&gt;
+        &lt;lowest_score&gt;&lt;/lowest_score&gt;
+        &lt;highest_bins_score&gt;&lt;/highest_bins_score&gt;
+        &lt;lowest_bins_score&gt;&lt;/lowest_bins_score&gt;
+        &lt;is_median_adjustment&gt;0&lt;/is_median_adjustment&gt;
+        &lt;attribute1&gt;0&lt;/attribute1&gt;
+        &lt;attribute2&gt;0&lt;/attribute2&gt;
+        &lt;note&gt;&lt;/note&gt;
+      &lt;/chart_setting&gt;
+    &lt;/chart_settings&gt;
+  &lt;/ranking2&gt;
+&lt;/nex&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;chart_settings&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/chart_settings&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of category types to which changes were made. This does not include the number deleted.</p>
+</dd></dl>
+</div>
+<div class="section" id="id32">
+<h3>11.3.7.4. Deleting Ranking Chart Data Settings</h3>
+<p>Deletes the ranking chart data settings. Deletes the settings and the corresponding ranking chart data.</p>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-chart_settings-(chart_index)">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/chart_settings/</code><span class="sig-paren">(</span><em>chart_index</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-chart_settings-(chart_index)-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/chart_settings/</code><span class="sig-paren">(</span><em>chart_index</em><span class="sig-paren">)</span><code class="descname">/delete</code></dt>
+<dd><p>Deletes the data settings for one ranking chart.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="85%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>chart_<wbr/>index</td>
+<td>Index number of the ranking chart data to be deleted. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/chart_settings/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;chart_settings&gt;</span>
+      <span class="nt">&lt;initialized</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/chart_settings&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of ranking chart data settings that were deleted.</p>
+</dd></dl>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-chart_settings">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/chart_settings</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-chart_settings-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/chart_settings/delete</code></dt>
+<dd><p>Deletes the data settings for all ranking charts.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/chart_settings</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;chart_settings&gt;</span>
+      <span class="nt">&lt;initialized</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/chart_settings&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of ranking chart data settings that were deleted.</p>
+</dd></dl>
+</div>
+</div>
+<div class="section" id="ranking2-chart-data-api">
+<span id="id33"></span><h2>11.3.8. Ranking Chart Data API</h2>
+<p>Uses these functions to perform ranking chart data operations.</p>
+<div class="section" id="id34">
+<h3>11.3.8.1. Getting Ranking Chart Data</h3>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-charts-(chart_index)-(num_seasons_to_go_back)">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/charts/</code><span class="sig-paren">(</span><em>chart_index</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em>num_seasons_to_go_back</em><span class="sig-paren">)</span></dt>
+<dd><p>Gets the data for one ranking chart.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%"/>
+<col width="83%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>chart_<wbr/>index</td>
+<td>Index number of the retrieved ranking chart data. Only one can be specified.</td>
+</tr>
+<tr class="row-odd"><td>num_<wbr/>seasons_<wbr/>to_<wbr/>go_<wbr/>back</td>
+<td>Specifies the number of seasons to go back. Only one can be specified. If omitted, 0 is specified by default.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/charts/1/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-ranking2-v1-charts">
+<code class="descname">GET </code><code class="descname">/nex/ranking2/v1/charts</code></dt>
+<dd><p>Gets data for multiple ranking charts.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%"/>
+<col width="88%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>indexes</td>
+<td>Index numbers of the ranking chart data to be retrieved. Specify delimited by colons. Can be omitted by specifying :0. You can specify multiple values, delimited by commas.</td>
+</tr>
+</tbody>
+</table>
+<p>Up to 20 items can be retrieved.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/ranking2/v1/charts?indexes=1:0,2,3:1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;charts</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;chart&gt;</span>
+        <span class="nt">&lt;create_time&gt;</span>2017-10-23T04:13:13Z<span class="nt">&lt;/create_time&gt;</span>
+        <span class="nt">&lt;index&gt;</span>1<span class="nt">&lt;/index&gt;</span>
+        <span class="nt">&lt;category&gt;</span>1<span class="nt">&lt;/category&gt;</span>
+        <span class="nt">&lt;season&gt;</span>1<span class="nt">&lt;/season&gt;</span>
+        <span class="nt">&lt;bins_size&gt;</span>5<span class="nt">&lt;/bins_size&gt;</span>
+        <span class="nt">&lt;sampling_rate&gt;</span>0<span class="nt">&lt;/sampling_rate&gt;</span>
+        <span class="nt">&lt;score_order&gt;</span>True<span class="nt">&lt;/score_order&gt;</span>
+        <span class="nt">&lt;estimate_length&gt;</span>3<span class="nt">&lt;/estimate_length&gt;</span>
+        <span class="nt">&lt;estimate_highest_score&gt;</span>100<span class="nt">&lt;/estimate_highest_score&gt;</span>
+        <span class="nt">&lt;estimate_lowest_score&gt;</span>96<span class="nt">&lt;/estimate_lowest_score&gt;</span>
+        <span class="nt">&lt;estimate_median_score&gt;</span>99<span class="nt">&lt;/estimate_median_score&gt;</span>
+        <span class="nt">&lt;estimate_average_score&gt;</span>98<span class="nt">&lt;/estimate_average_score&gt;</span>
+        <span class="nt">&lt;highest_bins_score&gt;</span>101<span class="nt">&lt;/highest_bins_score&gt;</span>
+        <span class="nt">&lt;lowest_bins_score&gt;</span>96<span class="nt">&lt;/lowest_bins_score&gt;</span>
+        <span class="nt">&lt;bins_width&gt;</span>1<span class="nt">&lt;/bins_width&gt;</span>
+        <span class="nt">&lt;attribute1&gt;</span>0<span class="nt">&lt;/attribute1&gt;</span>
+        <span class="nt">&lt;attribute2&gt;</span>0<span class="nt">&lt;/attribute2&gt;</span>
+        <span class="nt">&lt;quantities&gt;</span>
+          <span class="nt">&lt;quantity&gt;</span>1<span class="nt">&lt;/quantity&gt;&lt;quantity&gt;</span>1<span class="nt">&lt;/quantity&gt;&lt;quantity&gt;</span>0<span class="nt">&lt;/quantity&gt;&lt;quantity&gt;</span>0<span class="nt">&lt;/quantity&gt;&lt;quantity&gt;</span>1<span class="nt">&lt;/quantity&gt;</span>
+        <span class="nt">&lt;/quantities&gt;</span>
+      <span class="nt">&lt;/chart&gt;</span>
+    <span class="nt">&lt;/charts&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id35">
+<h3>11.3.8.2. Forced Update of Ranking Chart Data</h3>
+<p>Targets ranking chart data for forced updating. Will be generated at the time of the next periodic check.</p>
+<dl class="put">
+<dt id="put--nex-ranking2-v1-charts">
+<code class="descname">PUT </code><code class="descname">/nex/ranking2/v1/charts</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-charts-put">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/charts/put</code></dt>
+<dd><p>Targets all ranking chart data for forced updating.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/ranking2/v1/charts</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;force_chart_update&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/force_chart_update&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of forced update targets.</p>
+</dd></dl>
+<dl class="put">
+<dt id="put--nex-ranking2-v1-charts-(chart_index)-all">
+<code class="descname">PUT </code><code class="descname">/nex/ranking2/v1/charts/</code><span class="sig-paren">(</span><em>chart_index</em><span class="sig-paren">)</span><code class="descname">/all</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-charts-(chart_index)-all-put">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/charts/</code><span class="sig-paren">(</span><em>chart_index</em><span class="sig-paren">)</span><code class="descname">/all/put</code></dt>
+<dd><p>Charts generated from an index of the specified ranking chart data are targeted for forced updating.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%"/>
+<col width="83%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>chart_<wbr/>index</td>
+<td>Index number of the ranking chart data targeted for forced updating. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/ranking2/v1/charts/10/all</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;force_chart_update&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/force_chart_update&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of forced update targets.</p>
+</dd></dl>
+</div>
+<div class="section" id="id36">
+<h3>11.3.8.3. Deleting Ranking Chart Data</h3>
+<p>Deletes ranking chart data. As long as settings remain, will be generated at the time of the next periodic check.</p>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-charts">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/charts</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-charts-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/charts/delete</code></dt>
+<dd><p>Deletes all ranking chart data.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/charts</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;chart_delete&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/chart_delete&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of items deleted.</p>
+</dd></dl>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-charts-(chart_index)-all">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/charts/</code><span class="sig-paren">(</span><em>chart_index</em><span class="sig-paren">)</span><code class="descname">/all</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-charts-(chart_index)-all-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/charts/</code><span class="sig-paren">(</span><em>chart_index</em><span class="sig-paren">)</span><code class="descname">/all/delete</code></dt>
+<dd><p>Deletes charts generated from an index of the specified ranking chart data.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%"/>
+<col width="83%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>chart_<wbr/>index</td>
+<td>Index numbers of the ranking chart data targeted for deletion. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/charts/10/all</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;chart_delete&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/chart_delete&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of ranking chart data deleted.</p>
+</dd></dl>
+<dl class="delete">
+<dt id="delete--nex-ranking2-v1-charts-(chart_index)-(num_season_to_go_back)">
+<code class="descname">DELETE </code><code class="descname">/nex/ranking2/v1/charts/</code><span class="sig-paren">(</span><em>chart_index</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em>num_season_to_go_back</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-charts-(chart_index)-(num_season_to_go_back)-delete">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/charts/</code><span class="sig-paren">(</span><em>chart_index</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em>num_season_to_go_back</em><span class="sig-paren">)</span><code class="descname">/delete</code></dt>
+<dd><p>Deletes the data for one ranking chart.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%"/>
+<col width="84%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>chart_<wbr/>index</td>
+<td>Index number of the ranking chart data to be deleted. Only one can be specified.</td>
+</tr>
+<tr class="row-odd"><td>num_<wbr/>season_<wbr/>to_<wbr/>go_<wbr/>back</td>
+<td>Specifies the number of seasons to go back. Only one can be specified.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/ranking2/v1/charts/0/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;chart_delete&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/chart_delete&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of ranking chart data deleted.</p>
+</dd></dl>
+</div>
+</div>
+<div class="section" id="id37">
+<h2>11.3.9. Population API</h2>
+<p>Use this API to populate ranking categories/category types with test data for debugging purposes.</p>
+<div class="section" id="ranking2-population">
+<span id="id38"></span><h3>11.3.9.1. Data Population</h3>
+<p>These methods allow you to populate ranking categories/category types with scores and common user data. This feature is intended for use in application debugging. Specify a category and a range of scores to populate the category with data.</p>
+<p>If called when scores have already been added, existing scores are overwritten and updated.</p>
+<p>For each user, data is uploaded to every category from <code><var>min_category</var></code> to <code><var>max_category</var></code>. However, you cannot specify a range of greater than 10,000 categories. Specifying a <code><var>category_id</var></code> results in population of only that category.</p>
+<p>The score values and miscellaneous data are generated randomly within the specified range of values. The principal ID is used to generate a name for the associated common user data. For example, if the principal ID is <code>18354450593889115336</code>, <code>PID=feb81b91b037dcc8</code> in lowercase hexadecimal. For the binary data of the common user data, a random string of the specified length is generated.</p>
+<p>If uploaded, invalid scores will not be isolated from the regular scores and are saved in the same location as the regular scores.</p>
+<p>Also, scores lower than the <a class="reference internal" href="ranking2.html#ranking2-lowest-rank"><span class="std std-ref">last place</span></a> score are always uploaded during the data population process. These scores are deleted as part of a periodic deletion process.</p>
+<dl class="put">
+<dt id="put--nex-ranking2-v1-scores-population">
+<code class="descname">PUT </code><code class="descname">/nex/ranking2/v1/scores/population</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-scores-population-put">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/scores/population/put</code></dt>
+<dd></dd></dl>
+<dl class="put">
+<dt id="put--nex-ranking2-v1-categories-(category_id)-scores-population">
+<code class="descname">PUT </code><code class="descname">/nex/ranking2/v1/categories/</code><span class="sig-paren">(</span><em>category_id</em><span class="sig-paren">)</span><code class="descname">/scores/population</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-ranking2-v1-categories-(category_id)-scores-population-put">
+<code class="descname">POST </code><code class="descname">/nex/ranking2/v1/categories/</code><span class="sig-paren">(</span><em>category_id</em><span class="sig-paren">)</span><code class="descname">/scores/population/put</code></dt>
+<dd><p>Uploads data according to the specified parameters.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>category_<wbr/>id</td>
+<td>The category number of the category to which to upload data.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%"/>
+<col width="7%"/>
+<col width="77%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>populate</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>param</td>
+<td>populate</td>
+<td><strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td>num</td>
+<td>param</td>
+<td>The number of dummy users for which to upload data (per category). Maximum value is 20,000. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>min_<wbr/>category</td>
+<td>param</td>
+<td>The minimum category number of a category to which to upload data. <code>0</code> if unspecified. Cannot be used in combination with <code>category_<wbr/>id</code>.</td>
+</tr>
+<tr class="row-even"><td>max_<wbr/>category</td>
+<td>param</td>
+<td>The maximum category number of a category to which to upload data. <code>0</code> if unspecified. Cannot be used in combination with <code>category_<wbr/>id</code>.</td>
+</tr>
+<tr class="row-odd"><td>min_<wbr/>score</td>
+<td>param</td>
+<td>The minimum score to upload. If unspecified, the default value is <code>0</code>.</td>
+</tr>
+<tr class="row-even"><td>max_<wbr/>score</td>
+<td>param</td>
+<td>The maximum score to upload. If unspecified, the default value is <code>4294967295</code>.</td>
+</tr>
+<tr class="row-odd"><td>min_<wbr/>misc</td>
+<td>param</td>
+<td>Minimum miscellaneous data to register. If unspecified, the default value is <code>0</code>.</td>
+</tr>
+<tr class="row-even"><td>max_<wbr/>misc</td>
+<td>param</td>
+<td>Maximum miscellaneous data to register. If unspecified, the default value is <code>0xFFFFFFFFFFFFFFFF</code>.</td>
+</tr>
+<tr class="row-odd"><td>common_<wbr/>data_<wbr/>binary_<wbr/>size</td>
+<td>param</td>
+<td>The size to use when uploading the binary data portion of common user data. If unspecified, the default value is <code>Ranking2Constants::<wbr/>MAX_<wbr/>BINARY_<wbr/>DATA_<wbr/>LENGTH</code>.</td>
+</tr>
+<tr class="row-even"><td>dist_<wbr/>name</td>
+<td>param</td>
+<td>Random number distribution name. <code>uniform</code> (uniform distribution), <code>normal</code> (normal distribution), <code>lognormal</code> (logarithmic normal distribution). <code>uniform</code> if unspecified.</td>
+</tr>
+<tr class="row-odd"><td>dist_<wbr/>param1</td>
+<td>param</td>
+<td>Parameter number 1. If <code>normal</code>, the mean (numerical mean) at mu. If <code>lognormal</code>, the median (median value).</td>
+</tr>
+<tr class="row-even"><td>dist_<wbr/>param2</td>
+<td>param</td>
+<td>Parameter number 2. If <code>normal</code>, the standard deviation at sigma. If <code>lognormal</code>, the sigma.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/ranking2/v1/scores/population</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;populate&gt;
+  &lt;param&gt;
+    &lt;num&gt;100&lt;/num&gt;
+  &lt;/param&gt;
+&lt;/populate&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;ranking2&gt;</span>
+    <span class="nt">&lt;scores&gt;</span>
+      <span class="nt">&lt;populated</span> <span class="na">length=</span><span class="s">"100"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/scores&gt;</span>
+  <span class="nt">&lt;/ranking2&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of scores that were uploaded.</p>
+</dd></dl>
+<blockquote id="ranking2-population-distribution">
+<div><p><strong>Random number distribution</strong>:</p>
+<p>When <code><var>dist_name</var></code> is <code>uniform</code></p>
+<ul class="simple">
+<li>Generates a uniform distribution of random numbers from <code><var>min_score</var></code> to <code><var>max_score</var></code>.</li>
+<li><code><var>dist_param1</var></code> and <code><var>dist_param2</var></code> are ignored.</li>
+</ul>
+<p>When <code><var>dist_name</var></code> is <code>normal</code></p>
+<ul class="simple">
+<li>Generates a normal distribution of random numbers, appropriate for a normal descending sequence of scores.</li>
+<li>The probability density function is defined as <code>f(<var>x</var>) = 1 / (sqrt(2 × pi) × sigma) × exp( –((<var>x</var> – mu)² / (2 × sigma²)))</code>.</li>
+<li><code><var>dist_param1</var></code> is the mean of random numbers corresponding to mu. If <code><var>dist_param1</var></code> is omitted, this is <code>3 × <var>min_score</var> / 4 + <var>max_score</var> / 4</code>.</li>
+<li><code><var>dist_param2</var></code> is the standard deviation of random numbers corresponding to sigma. If <code><var>dist_param2</var></code> is omitted, this is <code>(<var>max_score</var> – <var>min_score</var>) / 8</code>.</li>
+<li>The random numbers are regenerated if they exceed <code><var>min_score</var></code> or <code><var>max_score</var></code>.</li>
+</ul>
+<p>When <code><var>dist_name</var></code> is <code>lognormal</code></p>
+<ul class="simple">
+<li>Generates a logarithmic normal distribution of random numbers, appropriate for an ascending sequence of scores, such as for Time Attack.</li>
+<li>The probability density function for a logarithmic normal distribution is normally defined as <code>f(<var>x</var>) = 1 / (sqrt(2 × pi) × sigma) × <var>x</var>) × exp( –((log <var>x</var> – mu)² / (2 × sigma²)))</code>. However, when shifted by the <code><var>min_score</var></code>, it is defined as<code> f(<var>x</var>) = 1 / (sqrt(2 × pi) × sigma × (<var>x</var> – <var>min_score</var>)) × exp( –((log (<var>x</var> – <var>min_score</var>) – mu)² / (2 × sigma²)))</code>.</li>
+<li><code><var>dist_param1</var></code> is the mean of random numbers, and corresponds to mu = log (<code><var>dist_param1</var></code> – <code><var>min_score</var></code>). If <code><var>dist_param1</var></code> is omitted, this is 3 × <code><var>min_score</var></code> / 4 + <code><var>max_score</var></code> / 4.</li>
+<li><code><var>dist_param2</var></code> corresponds to sigma, and is 0.5 when omitted.</li>
+<li>The random numbers are regenerated if they exceed <code><var>max_score</var></code>. <code><var>min_score</var></code> is not generated based on the characteristics of the random numbers.</li>
+</ul>
+<p>You can use <a class="reference external" href="../webapi/Ranking2PopulationDistribution.xlsx">Ranking2PopulationDistribution.xlsx</a> to check the probability distribution when <code><var>dist_name</var></code> is <code>normal</code> or <code>lognormal</code>.</p>
+</div></blockquote>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

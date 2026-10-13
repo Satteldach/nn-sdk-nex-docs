@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>6. Ranking2 — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="ranking2-top">
+<span id="id1"></span><h1>6. Ranking2</h1>
+<div class="section" id="ranking2-first-of-all">
+<span id="id2"></span><h2>6.1. Introduction</h2>
+<p>Ranking2 is a feature for generating rankings based on the scores registered by users. The scores registered by users are tallied by the server, and users can then obtain their ranking in the game.</p>
+<p>A user can have, and register, many types of scores, and these scores can be handled individually to generate separate rankings, and to register data related to the scores. For example, a game where the time it took to clear a level, and the number of coins that were collected, are registered as scores. These two scores can be ranked separately, and a data ID for the replay data can be associated with the scores.</p>
+<p>Different kinds of rankings can be obtained, such as the top rankings, the rankings of other players near one's own ranking, and the rankings of friends. You can also get rankings for a specific period of time, such as rankings for today or rankings for this month.</p>
+<p>Ranking2 is separate from the existing rankings feature. Ranking2 and the existing ranking feature use different databases and cannot access data from each other's databases. Ranking2 does not have the extensive filtering features provided by the existing ranking feature; however, limitations on API function call frequency are more lenient in Ranking2.</p>
+<p>Follow the existing rankings guidelines when using Ranking2.</p>
+</div>
+<div class="section" id="ranking2-concept">
+<span id="id3"></span><h2>6.2. Basic Overview of Ranking2</h2>
+<p>Ranking2 keeps track of scores both on a per-user and per-category basis and updates the rankings accordingly.</p>
+<p>Scores and rankings are reset after a prescribed period of time.</p>
+<p>Ranking2 saves the types of data shown in <a class="reference internal" href="#ranking2-fig-serverdata"><span class="std std-ref">Figure 6.1</span></a> for each user.</p>
+<div class="figure" id="id56">
+<span id="ranking2-fig-serverdata"></span><img alt="../_images/Fig_Ranking2_ServerData.png" src="../_images/Fig_Ranking2_ServerData.png"/>
+<p class="caption"><span class="caption-text">Figure 6.1. Information Saved on the Game Server</span></p>
+</div>
+<div class="section" id="ranking2-score">
+<span id="id4"></span><h3>6.2.1. Scores</h3>
+<p>Ranking2 uses 32-bit, non-negative, integers (0 through 4,294,967,295) to represent scores.</p>
+<p>You can configure whether to rank scores in ascending or descending order for each type of ranking.</p>
+<p>You can also configure what ranges of scores are valid. Out-of-range scores are treated as invalid scores (achieved by unfair play and so on) and are saved in a separate location where they will not appear in rankings.</p>
+</div>
+<div class="section" id="ranking2-category">
+<span id="id5"></span><h3>6.2.2. Categories</h3>
+<p>In Ranking2, categories are used to provide various types of rankings. Scores are maintained for each category and can be retrieved from those categories to create the corresponding rankings.</p>
+<p>A single user can only post a single score in each category. When a user posts multiple scores to the same category, only the highest score is kept.</p>
+<p>Ranking2 uses 32-bit, non-negative integers, to represent categories. The values used for categories do not need to be consecutive or continuous.</p>
+<p>Each category must belong to a single category type.</p>
+<p>For more information, see <a class="reference internal" href="#ranking2-setting-category"><span class="std std-ref">Category Settings</span></a>.</p>
+</div>
+<div class="section" id="ranking2-category-type">
+<span id="id6"></span><h3>6.2.3. Category Types</h3>
+<p>Category types represent groups of categories that work the same way. Up to 256 category types can be defined. Category types are non-negative integers from 0 through 255.</p>
+<p>Each category type maintains its own settings, and categories inherit the settings of the category type to which they belong.</p>
+<p>The following settings can be configured for each category type.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Minimum/maximum possible score.</li>
+<li>Score order.</li>
+<li>Last place (in the rankings).</li>
+<li>Number of past seasons to save.</li>
+<li>Periodic reset mode.</li>
+<li>Periodic reset time/day/month.</li>
+</ul>
+</div></blockquote>
+<p>For more information, see <a class="reference internal" href="#ranking2-setting-category-type"><span class="std std-ref">Category Type Settings</span></a>.</p>
+</div>
+<div class="section" id="ranking2-user">
+<span id="id7"></span><h3>6.2.4. Users</h3>
+<p>Ranking2 manages <em>users</em> who post scores using principal IDs or <a class="reference internal" href="utility.html#utility-uniqueid"><span class="std std-ref">NEX unique IDs</span></a>.</p>
+<p>Users are usually managed using principal IDs.</p>
+<p>Users can only be managed using NEX unique IDs if those NEX unique IDs are issued and associated with the corresponding principal IDs in advance. For more information about NEX unique IDs, see <a class="reference internal" href="utility.html#utility-uniqueid-with-password"><span class="std std-ref">Using Password-Protecting NEX Unique IDs</span></a>.</p>
+<p>Each API function allows you to specify a principal ID and a NEX unique ID. <a class="reference internal" href="#ranking2-table-user"><span class="std std-ref">Table 6.1</span></a> shows the ID that Ranking2 users ultimately use in each case. API functions that do not take a principal ID as a parameter, automatically use the principal ID of the client that called the API function.</p>
+<span id="ranking2-table-user"></span><table border="1" class="colwidths-given docutils" id="id57">
+<caption><span class="caption-text">Table 6.1. User IDs in Ranking2</span></caption>
+<colgroup>
+<col width="10%"/>
+<col width="10%"/>
+<col width="80%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Principal ID</th>
+<th class="head">NEX Unique ID</th>
+<th class="head">ID Used</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Not specified</td>
+<td>Not specified</td>
+<td><div class="first last line-block">
+<div class="line">The primary NEX unique ID associated with the principal ID of the user that called the API function.</div>
+<div class="line">If no NEX unique ID is associated with the principal ID, the principal ID is used.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td>Specified</td>
+<td>Not specified</td>
+<td><div class="first last line-block">
+<div class="line">The primary NEX unique ID associated with the specified principal ID.</div>
+<div class="line">If no NEX unique ID is associated with the principal ID, the specified principal ID is used.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td>Not specified</td>
+<td>Specified</td>
+<td>Not allowed</td>
+</tr>
+<tr class="row-odd"><td>Specified</td>
+<td>Specified</td>
+<td><div class="first last line-block">
+<div class="line">The specified NEX unique ID.</div>
+<div class="line"><code>QERROR(Ranking2, InvalidArgument)</code> is generated when a specified NEX unique ID is not a NEX unique ID that is related to the specified principal ID.</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id-nex-id">
+<h4>6.2.4.1. Cases Where Different NEX Unique IDs Are Used With the Same Principal ID</h4>
+<blockquote>
+<div><p>When associating NEX unique IDs with a principal ID, association will be canceled for NEX unique IDs that are not specified. For this reason, you must consider cases where multiple systems are being used.</p>
+<p>In some cases, <code>QERROR(Ranking2, InvalidArgument)</code> is generated when a call is made where NEX unique IDs are saved and used for save data and other purposes. This happens because the server only keeps the NEX unique IDs that were associated with the principal ID last.</p>
+<p>Because the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_utility_client.html#adf228629d6ff2784edd67727aca23937">UtilityClient::GetAssociatedNexUniqueIdWithMyPrincipalId</a>()</code> function gets the NEX unique IDs associated with the same principal ID, use this method to check whether there are NEX unique IDs associated with a principal ID before using them with Ranking2.</p>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="ranking2-common-data">
+<span id="id8"></span><h3>6.2.5. Common User Data</h3>
+<p>A name and binary data can be configured for each user. These pieces of information are known as common user data.</p>
+<p>Only a single set of common user data can be associated with a single user. Common user data is never associated with scores.</p>
+</div>
+<div class="section" id="ranking2-reset">
+<span id="id9"></span><h3>6.2.6. Periodic Resets and Seasons</h3>
+<p>Ranking2 periodically resets ranking data. This event is known as a <em>periodic reset</em>. After reset, ranking data returns to an empty state, and the number of users who have posted a score to that ranking returns to 0.</p>
+<p>The period of time between periodic resets is known as a season. The initial season is 'season 0'. Each time a periodic reset occurs, the season number is incremented by 1. Season numbers go up to 2,147,483,647.</p>
+<p>The ranking data associated with a given season is saved as past season data when a reset occurs and can be accessed at a later time.</p>
+<p>The interval at which each ranking is reset, as well as the interval of time for which past season data is saved, must be configured in advance for each category type.</p>
+<p>For more information about periodic resets, see <a class="reference internal" href="#ranking2-setting-reset"><span class="std std-ref">Periodic Reset Settings</span></a>.</p>
+</div>
+</div>
+<div class="section" id="ranking2-overview">
+<span id="id10"></span><h2>6.3. Ranking2 Workflow</h2>
+<p>This is the basic workflow when you use Ranking2.</p>
+<ol class="arabic simple">
+<li>Log in to the game server.</li>
+<li>Initialize a service client. For more information, see <a class="reference internal" href="#ranking2-initialize"><span class="std std-ref">6.4</span></a>.</li>
+<li>Use the desired Ranking2 features.<ul>
+<li>Upload scores. For more information, see <a class="reference internal" href="#ranking2-put-score"><span class="std std-ref">6.5</span></a>.</li>
+<li>Get rankings. For more information, see <a class="reference internal" href="#ranking2-get-ranking"><span class="std std-ref">6.6</span></a>.</li>
+<li>Call other API functions as needed.</li>
+</ul>
+</li>
+<li>Finalize the service client, and log out from the game server.</li>
+</ol>
+</div>
+<div class="section" id="ranking2-initialize">
+<span id="id11"></span><h2>6.4. Initializing and Finalizing a Service Client</h2>
+<p>Initializing and finalizing a Ranking2 service client (<a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html">Ranking2Client</a>) involves the same processes as in matchmaking. For more information, see <a class="reference internal" href="matchmake.html#matchmake-initialize"><span class="std std-ref">4.3</span></a>.</p>
+</div>
+<div class="section" id="ranking2-put-score">
+<span id="id12"></span><h2>6.5. Uploading Scores</h2>
+<p>You can use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#aa4d7dae40bd359b7d301b65f6c5d0faa">Ranking2Client::PutScore</a>()</code> function to register and change scores.</p>
+<p><a class="reference internal" href="#ranking2-table-scoredata"><span class="std std-ref">Table 6.2</span></a> shows the score attributes that you can set to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_score_data.html">Ranking2ScoreData</a></code> object.</p>
+<span id="ranking2-table-scoredata"></span><table border="1" class="colwidths-given docutils" id="id58">
+<caption><span class="caption-text">Table 6.2. Ranking2ScoreData Attribute Values</span></caption>
+<colgroup>
+<col width="11%"/>
+<col width="55%"/>
+<col width="15%"/>
+<col width="8%"/>
+<col width="11%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Description</th>
+<th class="head">Values Allowed</th>
+<th class="head">Initial Value</th>
+<th class="head">Function Used</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Category</td>
+<td>Specifies the category number of the category to which to upload the score.</td>
+<td>32-bit, non-negative, integer</td>
+<td>0</td>
+<td>SetCategory()</td>
+</tr>
+<tr class="row-odd"><td>Score</td>
+<td>Specifies the score.</td>
+<td>32-bit, non-negative, integer</td>
+<td>0</td>
+<td>SetScore()</td>
+</tr>
+<tr class="row-even"><td>Other data</td>
+<td>Specifies data to associate with each score.</td>
+<td>64-bit, non-negative, integer</td>
+<td>0</td>
+<td>SetMisc()</td>
+</tr>
+</tbody>
+</table>
+<p>Any 32-bit, non-negative, integer between 0 and 4,294,967,295 can be specified for the score, but it is also possible to set upper and lower limits so that invalid scores do not get registered. For more information, see <a class="reference internal" href="#ranking2-setting-valid-score"><span class="std std-ref">Minimum/Maximum Valid Score</span></a>.</p>
+<p>The other data can contain any 64-bit value. Unlike common user data, this value is associated with a score. When a single user posts scores to several categories, this value can be different for each category. For example, this other data can be used to store the data ID of replay data associated with the score that is saved in a data store.</p>
+<p>This function can only be used to register scores associated with the principal ID of the local user.</p>
+<div class="section" id="ranking2-lowest-rank">
+<span id="id13"></span><h3>6.5.1. Last Place</h3>
+<p>In Ranking2, set the last place to remain in the ranking for each category type. Scores lower than the score of the user in last place are not saved if uploaded. In addition, when a new user takes first place in the rankings, the score associated with last place is updated, and data associated with lower scores is periodically deleted. As a result, not all users who post scores will appear in the rankings when the rankings are later retrieved.</p>
+<p>Last place is not necessarily equal to the total number of ranked scores due to the following. Up to 100 users can be tied for last place, so the total possible number of ranked scores is last place + 100. If last place is one thousandth, for example, up to 1100 scores can be ranked. Therefore, if the user with the lowest score is currently ranked nine hundred ninety-fifth and a large number of other users get the same score, there could be up to 106 users tied for nine hundred ninety-fifth.</p>
+</div>
+</div>
+<div class="section" id="ranking2-get-ranking">
+<span id="id14"></span><h2>6.6. Getting Rankings</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#a66838f790c04b82304e840209c06030b">Ranking2Client::GetRanking</a>()</code> function to get rankings.</p>
+<p>You can choose to get a variety of different kinds of rankings, including top rankings, nearby rankings, or friend rankings.</p>
+<div class="section" id="ranking2-kinds-of-ranking">
+<span id="id15"></span><h3>6.6.1. Ranking Types</h3>
+<p>The ranking type (mode) is specified by <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_get_param.html">Ranking2GetParam</a></code>, which is passed to the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#a66838f790c04b82304e840209c06030b">Ranking2Client::GetRanking</a>()</code> function as a parameter. <a class="reference internal" href="#ranking2-table-ranking2-mode"><span class="std std-ref">Table 6.3</span></a> shows the kinds of rankings you can retrieve.</p>
+<span id="ranking2-table-ranking2-mode"></span><table border="1" class="colwidths-given docutils" id="id59">
+<caption><span class="caption-text">Table 6.3. Ranking Types</span></caption>
+<colgroup>
+<col width="25%"/>
+<col width="15%"/>
+<col width="60%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Type (Mode)</th>
+<th class="head">Value</th>
+<th class="head">Overview</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>User ranking</td>
+<td>Ranking2Mode::<wbr/>USER_<wbr/>RANKING</td>
+<td>Gets the ranking data for the specified user.</td>
+</tr>
+<tr class="row-odd"><td>Range ranking</td>
+<td>Ranking2Mode::<wbr/>RANGE_<wbr/>RANKING</td>
+<td>Gets rankings in the range of the specified starting position and length.</td>
+</tr>
+<tr class="row-even"><td>Nearby rankings</td>
+<td>Ranking2Mode::<wbr/>NEAR_<wbr/>RANKING</td>
+<td>Gets rankings near the specified user.</td>
+</tr>
+<tr class="row-odd"><td>Friend rankings</td>
+<td>Ranking2Mode::<wbr/>FRIEND_<wbr/>RANKING</td>
+<td>Gets the rankings of friends of the local host.</td>
+</tr>
+<tr class="row-even"><td>Principal ID rankings</td>
+<td>&nbsp;</td>
+<td>Gets the rankings for the specified list of principal IDs.</td>
+</tr>
+</tbody>
+</table>
+<p>User ranking mode gets rankings for the specified user. If no NEX unique ID is specified and multiple NEX unique IDs are associated with the user in question, the data for all of those NEX unique IDs is retrieved.</p>
+<p>Range ranking mode gets the specified number of scores starting from the specified place in the ranking.</p>
+<p>In nearby ranking mode, the ranking of the specified user is in the middle of the list. If the specified user ranks near the top or the bottom, this might not be the case. The specified number of scores are retrieved unless there are fewer than that many scores currently in the ranking. For example, if the specified user is in third place and you specify to get 10 scores, the data for first through tenth will be retrieved. If the specified user is not ranked, empty rankings are retrieved.</p>
+<p>Friend ranking mode gets rankings that include only the local user and friends of the local user. If a player does not have any friends, this gets only that player's data. If one or more NEX unique IDs is associated with the principal IDs of the local user and the local user's friends, the data for all of those NEX unique IDs is retrieved.</p>
+<p>Principal ID ranking mode allows you to directly specify a list of principal IDs for which to get rankings. This mode uses an overload of the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#a66838f790c04b82304e840209c06030b">Ranking2Client::GetRanking</a>()</code> function that takes both the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_get_by_list_param.html">Ranking2GetByListParam</a></code> parameter and a list of principal IDs. If one or more NEX unique IDs are associated with the specified principal IDs, the data for all of those NEX unique IDs is retrieved.</p>
+<p>You can get up to <code>Ranking2Constants::MAX_FRIEND_RANKING_LENGTH</code> friend rankings and up to <code>Ranking2Constants::MAX_RANKING_LENGTH</code> other rankings.</p>
+</div>
+<div class="section" id="ranking2-get-param">
+<span id="id16"></span><h3>6.6.2. Ranking Retrieval Parameters</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_get_param.html">Ranking2GetParam</a></code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_get_by_list_param.html">Ranking2GetByListParam</a></code> ranking retrieval parameters to specify conditions for ranking retrieval. For more information, see <a class="reference internal" href="#ranking2-table-get-param"><span class="std std-ref">Table 6.4</span></a>.</p>
+<span id="ranking2-table-get-param"></span><table border="1" class="colwidths-given docutils" id="id60">
+<caption><span class="caption-text">Table 6.4. Ranking2GetParam and Ranking2GetByListParam Parameters</span></caption>
+<colgroup>
+<col width="15%"/>
+<col width="50%"/>
+<col width="20%"/>
+<col width="15%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Overview</th>
+<th class="head">Initial Value</th>
+<th class="head">Function Used</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Ranking type (mode)</td>
+<td>Specifies the ranking retrieval mode. For more information, see <a class="reference internal" href="#ranking2-kinds-of-ranking"><span class="std std-ref">6.6.1</span></a>. (For <code>Ranking2GetParam</code> only.)</td>
+<td>Ranking2Mode::<wbr/>USER_<wbr/>RANKING</td>
+<td>SetMode()</td>
+</tr>
+<tr class="row-odd"><td>Category</td>
+<td>Specifies the <a class="reference internal" href="#ranking2-category"><span class="std std-ref">category</span></a> from which to get rankings.</td>
+<td>0</td>
+<td>SetCategory()</td>
+</tr>
+<tr class="row-even"><td>Past Seasons</td>
+<td>Specifies whether to get rankings for a past season. For more information, see <a class="reference internal" href="#ranking2-reset"><span class="std std-ref">6.2.6.</span></a>. Specify <code>0</code> for the current season, <code>1</code> for the most recent past season, <code>2</code> or larger for the season before that, and so on.</td>
+<td>0</td>
+<td>SetNumSeasonsToGoBack()</td>
+</tr>
+<tr class="row-odd"><td>Sort flags</td>
+<td>Specifies sort option flags.</td>
+<td>Ranking2SortFlags::<wbr/>NOTHING</td>
+<td>SetSortFlags()</td>
+</tr>
+<tr class="row-even"><td>Option flags</td>
+<td>Specifies option flags.</td>
+<td>Ranking2GetOptionFlags::<wbr/>NOTHING</td>
+<td>SetOptionFlags()</td>
+</tr>
+<tr class="row-odd"><td>Start position</td>
+<td>Specifies the position in rankings at which to start retrieving scores. This specification is ignored in user ranking mode and nearby ranking mode.</td>
+<td>0</td>
+<td>SetOffset()</td>
+</tr>
+<tr class="row-even"><td>Length (number of scores)</td>
+<td>Specifies ranking length (the number of scores to get). For friend rankings, you must specify a value between <code>1</code> and <code>Ranking2Constants::<wbr/>MAX_<wbr/>FRIEND_<wbr/>RANKING_<wbr/>LENGTH</code>. For other rankings, you must specify a value between <code>1</code> and <code>Ranking2Constants::<wbr/>MAX_<wbr/>RANKING_<wbr/>LENGTH</code>. This specification is ignored in user ranking mode.</td>
+<td>10</td>
+<td>SetLength()</td>
+</tr>
+<tr class="row-odd"><td>Principal ID</td>
+<td>Specifies the principal ID for which to get rankings. (For <code>Ranking2GetParam</code> only.)</td>
+<td>INVALID_<wbr/>PRINCIPALID</td>
+<td>SetPrincipalId()</td>
+</tr>
+<tr class="row-even"><td>NEX Unique ID</td>
+<td>Specifies the NEX unique ID for which to get rankings. (For <code>Ranking2GetParam</code> only.)</td>
+<td>INVALID_<wbr/>UNIQUEID</td>
+<td>SetNexUniqueId()</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id17">
+<h4>6.6.2.1. Start Position</h4>
+<p>Start position is not a ranked place in the rankings.</p>
+<p>In range ranking mode, specifying a start position allows you to get rankings starting from the specified position, where the first score in the rankings is in position <code>0</code>. In rankings where two users are tied for first place and a third user is in third place, for example, specifying a start position of <code>1</code> would get the rankings starting from the second user who was tied for first place.</p>
+<p>In friend ranking mode and principal ID ranking mode, specifying a start position allows you to get rankings starting from the specified position, where the first user in the list of users for which to retrieve rankings is in position <code>0</code>. This list is a friend list or a list of principal IDs. However, if each user has a NEX unique ID, it can be a list of all of those NEX unique IDs. If the list is greater than Ranking2Constants::MAX_RANKING_LENGTH entries in length, only the rankings for the specified start position to Ranking2Constants::MAX_RANKING_LENGTH are included. However, you can get the rankings multiple times by changing the start position as appropriate each time to get a larger number of rankings.</p>
+</div>
+<div class="section" id="ranking2-old-season">
+<span id="id18"></span><h4>6.6.2.2. Past Seasons</h4>
+<p>This parameter specifies to get rankings for a past season. For example, you can specify to get yesterday's rankings or the rankings for two weeks ago.</p>
+<p>Ranking data from a season older than the "number of past seasons to save" setting in category type settings is deleted, so <code>QERROR(Ranking2, InvalidArgument)</code> occurs and this data cannot be retrieved.</p>
+<p>If a larger value is specified than the current season, the season value of the ranking acquisition results is negative. The equation is as follows: (current season value) - (past season value specified when getting rankings). For example, suppose that the "number of past seasons to save" is high enough, and the current season is 3. If 11 is specified as the past season, the season value in the ranking acquisition results is -8. The acquired rankings are also blank.</p>
+<p>This value cannot be specified when working with rankings that are not periodically reset.</p>
+</div>
+<div class="section" id="ranking2-sort-flags">
+<span id="id19"></span><h4>6.6.2.3. Sort Flags</h4>
+<p>Sort flags allow you to specify how ranked scores are sorted. <a class="reference internal" href="#ranking2-table-sort-flags"><span class="std std-ref">Table 6.5</span></a> shows the available sort flags. Basic sorting settings (ascending order or descending order) are configured by category type and cannot be specified when getting rankings.</p>
+<span id="ranking2-table-sort-flags"></span><table border="1" class="colwidths-given docutils" id="id61">
+<caption><span class="caption-text">Table 6.5. Ranking2SortFlags List</span></caption>
+<colgroup>
+<col width="20%"/>
+<col width="80%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Ranking2SortFlags::<wbr/>MOVE_<wbr/>TO_<wbr/>TOP_<wbr/>IN_<wbr/>TIE</td>
+<td>Prioritizes the user that called the function in the event of a tie.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="ranking2-result">
+<span id="ranking2-get-option-flags"></span><span id="id20"></span><h3>6.6.3. Ranking Retrieval Results</h3>
+<p>Ranking results are stored in a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_info.html">Ranking2Info</a></code> object. The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_info.html">Ranking2Info</a></code> object includes the following members.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Ranking data list (<code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_vector.html">qVector</a>&lt;<a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_rank_data.html">Ranking2RankData</a>&gt;</code>)<ul>
+<li>The function returns an empty list if there is no ranking data matching the specified parameters.</li>
+<li>When getting friend rankings for a particular user, only the users that have been ranked are included in the returned list.</li>
+</ul>
+</li>
+<li>Setting for the <a class="reference internal" href="#ranking2-lowest-rank"><span class="std std-ref">last place in the rankings</span></a>.<ul>
+<li>The value in <a class="reference internal" href="#ranking2-setting-category-type"><span class="std std-ref">category type settings</span></a> that represents how many places are ranked.</li>
+<li>The last place rank may not necessarily be present in the retrieved ranking data list.</li>
+<li>If several users are tied for last place, the effective last place may be different than the last place rank specified in category type settings.<ul>
+<li>Example: Last place was set to one hundredth, but three users are tied for ninety-eighth. The effective last place is ninety-eighth, not one hundredth.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Number of scores in the applicable ranking category.<ul>
+<li>The number of currently ranked scores. Scores lower than the current last place score are not included.</li>
+<li>This number is not equal to the length of the retrieved ranking data list.</li>
+<li>If several users are tied for a certain place, the total number of ranked scores may be greater than the last place value specified in category type settings.<ul>
+<li>Example: Last place was set to one hundredth, but five users are tied for one hundredth. Therefore, there are a total of 104 ranked scores.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Season number<ul>
+<li>The season number of the season for which the ranking data was retrieved. This is not the number of the current season.</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p><a class="reference internal" href="#ranking2-table-ranking2-data"><span class="std std-ref">Table 6.6</span></a> shows the items than you can get from <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_rank_data.html">Ranking2RankData</a></code>.</p>
+<span id="ranking2-table-ranking2-data"></span><table border="1" class="docutils" id="id62">
+<caption><span class="caption-text">Table 6.6. Items Available From Ranking2RankData</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Get Function</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Rank</td>
+<td>GetRank()</td>
+</tr>
+<tr class="row-odd"><td>Score</td>
+<td>GetScore()</td>
+</tr>
+<tr class="row-even"><td>Principal ID</td>
+<td>GetPrincipalId()</td>
+</tr>
+<tr class="row-odd"><td>NEX Unique ID</td>
+<td>GetNexUniqueId()</td>
+</tr>
+<tr class="row-even"><td>Common user data</td>
+<td>GetCommonData()</td>
+</tr>
+<tr class="row-odd"><td>Other data</td>
+<td>GetMisc()</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="ranking2-tie-score">
+<span id="id21"></span><h3>6.6.4. Tied Scores</h3>
+<p>In Ranking2, equal scores are treated as ties.</p>
+<p>In the retrieved ranking data list, (<code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_vector.html">qVector</a>&lt;<a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_rank_data.html">Ranking2RankData</a>&gt;</code>), tied scores are not ordered in any specific way.</p>
+<p>However, you can specify <a class="reference internal" href="#ranking2-sort-flags"><span class="std std-ref">sort flags</span></a> when getting the ranking data to partially specify how tied scores are ordered.</p>
+<p>If you want to use some other sort order, consider using a different type of score format when initially creating the ranking. For example, you could use the lower bits of a score value for date information and the upper bits of the score value for the score itself to sort tied scores by date.</p>
+</div>
+</div>
+<div class="section" id="raking2-estimate-score-rank">
+<span id="id22"></span><h2>6.7. Ranking Approximation</h2>
+<p>The ranking of the specified score can be estimated with the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#a05b3c7aedd5f3d723854ff1f6e04ec7b">Ranking2Client::GetEstimateScoreRank</a>() function. In the ranking, the correct order can be determined when the rank is above the lowest rank, and the estimated order is determined when the rank is lower. Sampled score data is used for approximation. For more information about sampled score data, see <a class="reference internal" href="#ranking2-chart-data-about-sampling"><span class="std std-ref">About Sampling</span></a>.</p>
+</div>
+<div class="section" id="ranking2-put-get-common-data">
+<span id="id23"></span><h2>6.8. Common User Data</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#a9c88e6a4c2f435b468d0372b1b5a6266">Ranking2Client::PutCommonData</a>()</code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#a0f2db42509f45ab6ce997e7ffbe2c9fc">Ranking2Client::DeleteCommonData</a>()</code> functions to upload, modify, and delete <a class="reference internal" href="#ranking2-common-data"><span class="std std-ref">common user data</span></a> for the local user.</p>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#a8087f722aad4b3d92ddc0f59415f347f">Ranking2Client::GetCommonData</a>()</code> function to get common user data for the local user or other users. You can also get common user data from the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_rank_data.html">Ranking2RankData</a></code> object returned when getting ranking data.</p>
+<p>The maximum characters allowed in a user name is defined by <code>Ranking2Constants::MAX_USERNAME_LENGTH</code>.</p>
+<p>The maximum length (in bytes) of binary data is defined by <code>Ranking2Constants::MAX_BINARY_DATA_LENGTH</code>.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">Follow the UGC guidelines when registering common user data that includes UGC. Common user data can also be deleted using WebAPI.</p>
+</div>
+</div>
+<div class="section" id="ranking2-setting">
+<span id="id24"></span><h2>6.9. Settings</h2>
+<p>Ranking2 provides settings for configuring ranking categories and ranking category types.</p>
+<p>Use WebAPI (see <a class="reference internal" href="webapi_ranking2.html#webapi-ranking2-top"><span class="std std-ref">11.3</span></a>) to configure these settings.</p>
+<p>Only clients can get these settings.</p>
+<div class="section" id="ranking2-setting-category">
+<span id="id25"></span><h3>6.9.1. Category Settings</h3>
+<p>In <a class="reference internal" href="#ranking2-category"><span class="std std-ref">category</span></a> settings, you can specify the category type to which each category belongs. If left unspecified, the default category type is 0.</p>
+<p>You can also configure the minimum and maximum valid scores. This setting is included in category type settings, but it can be configured individually for each category if necessary. If left unspecified, the category inherits the setting configured for the corresponding category type. For more information, see <a class="reference internal" href="#ranking2-setting-valid-score"><span class="std std-ref">Minimum/Maximum Valid Score</span></a>.</p>
+</div>
+<div class="section" id="ranking2-setting-category-type">
+<span id="id26"></span><h3>6.9.2. Category Type Settings</h3>
+<p><a class="reference internal" href="#ranking2-table-category-type-setting"><span class="std std-ref">Table 6.7</span></a> shows the <a class="reference internal" href="#ranking2-category-type"><span class="std std-ref">category type</span></a> settings that are currently available.</p>
+<span id="ranking2-table-category-type-setting"></span><table border="1" class="colwidths-given docutils" id="id63">
+<caption><span class="caption-text">Table 6.7. Category Type Settings</span></caption>
+<colgroup>
+<col width="15%"/>
+<col width="35%"/>
+<col width="30%"/>
+<col width="20%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Description</th>
+<th class="head">Values Allowed</th>
+<th class="head">Initial Value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Minimum valid score</td>
+<td>Specifies the minimum valid score.</td>
+<td>32-bit, non-negative, integer</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>Maximum valid score</td>
+<td>Specifies the maximum valid score.</td>
+<td>32-bit, non-negative, integer</td>
+<td>4294967295</td>
+</tr>
+<tr class="row-even"><td>Score order</td>
+<td>Specifies the score order (ascending or descending).</td>
+<td>0 (ascending), 1 (descending)</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>Last place (in the rankings).</td>
+<td>Specifies the last ranked place. For more information, see <a class="reference internal" href="#ranking2-lowest-rank"><span class="std std-ref">6.5.1</span></a>.</td>
+<td>1 to 10000.</td>
+<td>10000</td>
+</tr>
+<tr class="row-even"><td>Number of past seasons to save.</td>
+<td>Specifies the number of past seasons to save. For more information, see <a class="reference internal" href="#ranking2-reset"><span class="std std-ref">6.2.6.</span></a>.</td>
+<td>0 to 100.</td>
+<td>5</td>
+</tr>
+<tr class="row-odd"><td>Periodic reset mode</td>
+<td>Specifies the periodic reset mode.</td>
+<td>Ranking2ResetMode</td>
+<td>Ranking2ResetMode::<wbr/>NOTHING</td>
+</tr>
+<tr class="row-even"><td>Periodic reset time</td>
+<td>Specifies a time of day at which to reset rankings.</td>
+<td>0 to 23.</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>Periodic reset day</td>
+<td>Specifies a day of the month or day of the week on which to reset rankings.</td>
+<td>1 to 28 (for days of the month) or 0 to 6 (for days of the week).</td>
+<td>1</td>
+</tr>
+<tr class="row-even"><td>Periodic reset month</td>
+<td>Specifies a month in which to reset rankings.</td>
+<td>1 to 4095.</td>
+<td>4095</td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference internal" href="#ranking2-fig-category-setting"><span class="std std-ref">Figure 6.2</span></a> shows an example category type setting configuration.</p>
+<div class="figure" id="id64">
+<span id="ranking2-fig-category-setting"></span><img alt="../_images/Fig_Ranking2_Category.png" src="../_images/Fig_Ranking2_Category.png"/>
+<p class="caption"><span class="caption-text">Figure 6.2. Category Settings Example</span></p>
+</div>
+<div class="section" id="ranking2-setting-valid-score">
+<span id="id27"></span><h4>6.9.2.1. Minimum and Maximum Valid Score</h4>
+<p>Specifying a minimum score and a maximum score ensures that scores that are not within the specified range or scores that are invalid because they are achieved by unfair play or similar do not appear in rankings. Invalid scores are saved in a location separate from normal ranking data where they cannot be accessed by clients. Use WebAPI (see <a class="reference internal" href="webapi_ranking2.html#webapi-ranking2-top"><span class="std std-ref">11.3.</span></a>) to access or delete invalid scores.</p>
+<p>Minimum and maximum valid scores can be configured both for category types as well as for individual categories. If minimum and maximum valid scores are set for an individual category, those settings are prioritized over the settings configured for the corresponding category type.</p>
+<p>For example, this makes it possible to have rankings for stage clear time for each stage in a game. In the example shown in <a class="reference internal" href="#ranking2-fig-category-setting"><span class="std std-ref">Figure 6.2</span></a>, category type 10 is for handling stage clear time (in seconds). The score order is ascending (faster times are ranked higher). This category type includes a category for each stage in the game, and the valid clear times for each stage are set individually. Category 101 is for stage 1, which cannot be cleared in less than 30 seconds. Category 102 is for stage 2, which cannot be cleared in less than 40 seconds. The valid assumed range of scores is configured for each category. In this way, clear times can be ranked separately for each stage, using the valid score ranges configured for each.</p>
+<p>When the range of valid scores for a category is changed, Ranking2 immediately checks the scores for all categories and immediately moves any invalid scores as needed. After a score is marked as invalid, it remains in the location for invalid scores. Even if a change to the range of valid scores makes that score valid again, it does not return to the normal rankings.</p>
+</div>
+<div class="section" id="ranking2-setting-reset">
+<span id="id28"></span><h4>6.9.2.2. Periodic Reset Settings</h4>
+<p><a class="reference internal" href="#ranking2-table-reset-setting"><span class="std std-ref">Table 6.8</span></a> shows the periodic reset settings (modes) that are currently available.</p>
+<span id="ranking2-table-reset-setting"></span><table border="1" class="colwidths-given docutils" id="id65">
+<caption><span class="caption-text">Table 6.8. Periodic Reset Modes</span></caption>
+<colgroup>
+<col width="18%"/>
+<col width="30%"/>
+<col width="40%"/>
+<col width="12%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Type (Mode)</th>
+<th class="head">Value</th>
+<th class="head">Overview</th>
+<th class="head">Required Parameters</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>None</td>
+<td>Ranking2ResetMode::<wbr/>NOTHING</td>
+<td>Rankings are not periodically reset.</td>
+<td>Not specified</td>
+</tr>
+<tr class="row-odd"><td>Every day</td>
+<td>Ranking2ResetMode::<wbr/>EVERYDAY</td>
+<td>Rankings are reset every day at the specified time of day.</td>
+<td>Time of day (hour)</td>
+</tr>
+<tr class="row-even"><td>Every week</td>
+<td>Ranking2ResetMode::<wbr/>EVERYWEEK</td>
+<td>Rankings are reset every week at the specified time of day, on the specified day of the week.</td>
+<td>Day of week, time of day (hour)</td>
+</tr>
+<tr class="row-odd"><td>Specified months</td>
+<td>Ranking2ResetMode::<wbr/>MULTI_<wbr/>MONTH</td>
+<td>Rankings are reset at the specified time of day, on the specified day, of the specified months.</td>
+<td>Months, day of month, time of day (hour)</td>
+</tr>
+<tr class="row-even"><td>Specified months (weekday)</td>
+<td>Ranking2ResetMode::<wbr/>MULTI_<wbr/>MONTH_<wbr/>WEEKDAY</td>
+<td>Rankings are reset at the specified time of day on the first specified day of the week of the specified months.</td>
+<td>Number of months, day of week, time of day (hour)</td>
+</tr>
+</tbody>
+</table>
+<p>Time and date settings occur in UTC.</p>
+<p>The months in which to reset rankings are specified as a 12-bit binary value, where each bit represents one month. The lowest bit is January, the next bit is February, and so on. Periodic resets are performed in the months corresponding to the bits that are set to 1.</p>
+<p>The days on which to reset rankings are specified differently depending on the periodic reset mode. Specify a value from 1 to 28 for modes that require a day of the month. Specify a value from 0 (Monday) to 6 (Sunday) for modes that require a day of the week.</p>
+<p>By uploading the same scores to several different category types that each have different periodic reset settings, you can create rankings for different periods of time (daily, weekly, monthly, and so on.). In the example shown in <a class="reference internal" href="#ranking2-fig-category-setting"><span class="std std-ref">Figure 6.2</span></a>, the category types 0 and 1 differ only in terms of the periodic reset setting. The same scores are uploaded to both category 0 and category 2. However, the scores in category 0 are reset every day, while the scores in category 2 are only reset every Monday. This allows you to easily create daily and weekly rankings.</p>
+<p>To reduce processing costs, Ranking2 does not reset rankings at exactly the specified time of day. The reset process is started at a random time within one minute of the specified time. Be aware of this when using Ranking2 in your application.</p>
+<p>When using periodic resets, you can use a different category type for each region to specify a different reset time for each. This allows you to choose a time at which the number of users logged in is small, or a time that is convenient for users or the game itself, in each region.</p>
+</div>
+</div>
+<div class="section" id="ranking2-get-setting">
+<span id="id29"></span><h3>6.9.3. Getting Settings From the Client</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#a3da9cba20420a7d60f96c7cf5b132efc">Ranking2Client::GetCategorySetting</a>()</code> function to get category settings on a client device.</p>
+<p>This function gets the settings for both the specified category and the category type to which the specified category belongs. For settings that are present in both the category configuration and the category type configuration, the category settings are prioritized.</p>
+<p>These settings cannot be modified from the client side.</p>
+</div>
+</div>
+<div class="section" id="ranking2-chart">
+<span id="id30"></span><h2>6.10. Ranking Charts</h2>
+<p>Ranking charts are a feature to create a score histogram for each category. A histograms is extrapolated from sampled score data, and also includes the distribution of scores below the lowest ranking. The data expressing this histogram is referred to as ranking chart data.</p>
+<div class="section" id="ranking2-chart-data-server-setting">
+<span id="id31"></span><h3>6.10.1. Server Settings</h3>
+<p>The category and number of partition segments of the ranking that you wish to create must be set in advance. Configure the settings using WebAPI (<a class="reference internal" href="webapi_ranking2.html#ranking2-chart-data-set-settings-section"><span class="std std-ref">11.3.7.</span></a>) and the like.</p>
+<span id="ranking2-table-ranking2-chart-data-setting"></span><table border="1" class="docutils" id="id66">
+<caption><span class="caption-text">Table 6.9 Ranking Chart Data Server Settings</span></caption>
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Index number</td>
+<td>Ranking chart data identifier. Can be specified with <code>uint32_<wbr/>t</code> values. Required.</td>
+</tr>
+<tr class="row-odd"><td>Category</td>
+<td>Ranking2 category on which ranking chart data generation is based. Required.</td>
+</tr>
+<tr class="row-even"><td>Partition segment count</td>
+<td>Number of partition segments in ranking chart data. Maximum value is 255. Required.</td>
+</tr>
+<tr class="row-odd"><td>Highest score</td>
+<td>Scores higher than this score are not tabulated. When not specified, the highest score of the ranking on which generation is based is used.</td>
+</tr>
+<tr class="row-even"><td>Minimum score</td>
+<td>Scores lower than this score are not tabulated. When not specified, the (estimated) lowest score of the ranking on which generation is based is used.</td>
+</tr>
+<tr class="row-odd"><td>Highest segment score</td>
+<td>Specified when you want to fix the value of the highest score at which to end a distribution chart segment. If this value is not included, values will be tabulated up to one lower value. Automatically adjusts when not specified (explanation follows).</td>
+</tr>
+<tr class="row-even"><td>Lowest segment score</td>
+<td>Specified when you want to fix the value of the lowest score at which to start a distribution chart segment. Automatically adjusts when not specified (explanation follows).</td>
+</tr>
+<tr class="row-odd"><td>Adjust to median value</td>
+<td>Specify 1 to automatically adjust the highest segment score and lowest segment score so that the median score value is at the center of the segment range. Specify 0 to disable this feature. Observed as 0 when not specified.</td>
+</tr>
+<tr class="row-even"><td>Optional setting 1</td>
+<td>Use when a setting is required by the application. Can be specified with <code>uint32_<wbr/>t</code> values. Observed as 0 when not specified.</td>
+</tr>
+<tr class="row-odd"><td>Optional setting 2</td>
+<td>Use when a setting is required by the application. Can be specified with <code>uint32_<wbr/>t</code> values. Observed as 0 when not specified.</td>
+</tr>
+<tr class="row-even"><td>Comments</td>
+<td>Text string that can be retrieved from WebAPI or can be displayed on NMAS. Cannot be retrieved from the application. Becomes a null string when not specified.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id32">
+<h4>6.10.1.1. Segment Width</h4>
+<p>The segment width is automatically set to the smallest integer at which the partition segment count * segment width is greater than the score range. If the score range is small, the segment width may be adjusted so that there are segments without any scores. For example, if the partition count is 200 and the scores acquired by the user are in the range of 0 to 300, the actual distribution chart will be created in the range of 0 to 400 because the width of the segment width is 2. To avoid this, make the range of scores larger. For example, if multiplying the scores by 100 to make the range 0 to 30000, the distribution chart will be for 0 to 30000.</p>
+</div>
+<div class="section" id="id33">
+<h4>6.10.1.2. When the Segment Range is Fixed</h4>
+<p>Specify both the highest segment score and lowest segment score if you want to specify the segment range regardless of the score distribution. In this case, the median adjustment setting is ignored.</p>
+</div>
+<div class="section" id="ranking2-autoadjust-binssize">
+<span id="id34"></span><h4>6.10.1.3 Segment Auto-Adjustment</h4>
+<p>The segment will be adjusted based on the highest score and the lowest score. The segment will be shifted and scores tabulated so that the minimum segment score (for ascending order) or the maximum segment score (for descending order) is 0 or greater.</p>
+<p>If median value adjustment is enabled, the segment range, from the median of the scores to the lowest score, is determined based on the segment range from the highest score to the median of the scores. If the distribution of the rankings is concentrated on the high side, the lower scores are truncated. If the distribution of the rankings is concentrated on the low side, the segment in which there are no lower scores will also be included.</p>
+</div>
+<div class="section" id="ranking2-fix-binssize">
+<span id="id35"></span><h4>6.10.1.4. When the Segment Range is Fixed</h4>
+<p>In each segment the lower scores are included in the range and the higher scores are not included in the range. The value of the maximum segment score is not included.</p>
+<p>If you want to get descending order ranking chart data from 100 points to 0 points, in 10-point increments, you must set up an 11-partition chart with the lowest segment score set to 0, the highest segment score to 110, and the partition segment count to 11. After getting this, total the number of <code>[90, 100)</code> segments and the number of <code>[100, 110)</code> segments. ([90, 100) means 90 or higher and less than 100.)</p>
+<p>For ascending order, the maximum ranked score of 0 cannot be included in the end point. If you want to include 0, you will need to employ a technique such as shifting the values recorded, or the like.</p>
+</div>
+<div class="section" id="ranking2-chart-data-about-sampling">
+<span id="id36"></span><h4>6.10.1.5 About Sampling</h4>
+<p>Ranking chart data for portions of each category that are below the lowest rank, are created based on sampled score data. Sampled score data is created by extracting a random sampling from the population of all scores recorded up to the present (systemic sampling based on the principal ID and NEX unique ID), regardless of the minimum ranking. Ranking chart data are automatically generated for each category, even if they have not been set. The probability of being selected as a sample is automatically adjusted to keep the number of samples within a set range.</p>
+</div>
+</div>
+<div class="section" id="ranking2-chart-data-client">
+<span id="id37"></span><h3>6.10.2 Get Ranking Chart Data</h3>
+<p>The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#a99dc6ff95029358b2801dbc59a93206e">Ranking2Client::GetRankingChart</a>()</code> function can be used to get specified ranking chart data.</p>
+<p>For more information about ranking chart data, see <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_chart_info.html">Ranking2ChartInfo</a>.</p>
+<p>As an example of the use of the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_chart_info.html#abcdec8dc9b0661ef9b25d99a4b19f53c">Ranking2ChartInfo::GetQuantities</a>()</code> function with the ranking chart data obtained in descending order, if for example <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_chart_info.html#ae125dc12dc09dc8dcde5cb2e9ee9ef15">Ranking2ChartInfo::GetHighestBinsScore</a>()</code> is <code>100</code>, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_chart_info.html#acfb98eaa5914f64c38e8781bf31cbdb3">Ranking2ChartInfo::GetLowestBinsScore</a>()</code> is <code>0</code>, and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_chart_info.html#a82f011ad4b3d7f0df20a347dd838ee92">Ranking2ChartInfo::GetBinsSize</a>()</code> is <code>5</code>, then the function will include five bins in the order [80, 100), [60, 80), [40, 60), [20, 40), and [0, 20). ([80, 100) means 80 or higher and less than 100.) If the data is obtained in ascending order, then if for example <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_chart_info.html#ae125dc12dc09dc8dcde5cb2e9ee9ef15">Ranking2ChartInfo::GetHighestBinsScore</a>()</code> is <code>1000</code>, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_chart_info.html#acfb98eaa5914f64c38e8781bf31cbdb3">Ranking2ChartInfo::GetLowestBinsScore</a>()</code> is <code>2000</code>, and<code> <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_chart_info.html#a82f011ad4b3d7f0df20a347dd838ee92">Ranking2ChartInfo::GetBinsSize</a>()</code> is <code>5</code>, then  the function will include five bins in the order [1000, 1200), [1200, 1400), [1400, 1600), [1600, 1800), and [1800, 2000). ((1000, 1200] means greater than 1000 and less than or equal to 1200.)</p>
+</div>
+<div class="section" id="ranking2-chart-data-update">
+<span id="id38"></span><h3>6.10.3 Update Timing</h3>
+<p>Checks whether it is necessary to periodically create ranking chart data at 10 minute intervals.</p>
+<p>When there has been an update to the ranking data, the data is updated at from 1-hour to 24-hour intervals, from the previous update, according to the data volume.</p>
+</div>
+</div>
+<div class="section" id="ranking2-diff-ranking">
+<span id="id39"></span><h2>6.11. Differences With the Existing Ranking Features</h2>
+<p>Ranking2 includes several modifications and omissions to the existing ranking feature set, to enhance convenience and usability.</p>
+<div class="section" id="id40">
+<h3>6.11.1. Modified Features</h3>
+<p>Getting Past Rankings</p>
+<hr class="docutils"/>
+<p>You can specify a past season when getting rankings. For more information, see <a class="reference internal" href="#ranking2-old-season"><span class="std std-ref">6.6.2.2</span></a>. </p>
+<div class="section" id="id41">
+<h4>6.11.1.1. Last Place Score</h4>
+<p>With the existing ranking features, the amount of score data continued to increase until it became problematic. In Ranking2, scores less than the specified last place score are automatically deleted. For more information, see <a class="reference internal" href="#ranking2-lowest-rank"><span class="std std-ref">6.5.1</span></a>. </p>
+<p>Accordingly, the concept of a threshold position in the rankings after which rankings were no longer accurate (<code>RankingConstants::MAX_ACCURATE_ORDER</code>) was removed entirely.</p>
+<p>Finally, there is no rank prediction feature or first place caching feature because all positions in the rankings, down to last place, can be retrieved normally at all times.</p>
+</div>
+<div class="section" id="id42">
+<h4>6.11.1.2. Common User Data</h4>
+<p>Unlike the common user data for the existing ranking features, the user name and associated binary data can be saved separately. For more information, see <a class="reference internal" href="#ranking2-common-data"><span class="std std-ref">6.2.5</span></a>.</p>
+</div>
+<div class="section" id="id43">
+<h4>6.11.1.3. Sorting Tied Scores</h4>
+<p>Specifying the sort flag when getting rankings makes it possible to prioritize the user that retrieved the rankings in the event of a tie. For more information, see <a class="reference internal" href="#ranking2-sort-flags"><span class="std std-ref">6.6.2.3.</span></a>.</p>
+</div>
+</div>
+<div class="section" id="id44">
+<h3>6.11.2. Omitted Features</h3>
+<div class="section" id="id45">
+<h4>6.11.2.1. Filtering by Groups</h4>
+<p>Ranking2 does not include a feature for filtered scores by groups associated with those scores. All of the scores in a given category are retrieved when retrieving rankings.</p>
+<p>However, you can create multiple different categories to which the same scores are uploaded and use those categories to filter scores as they are uploaded. To do this, use the overload of the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#aa4d7dae40bd359b7d301b65f6c5d0faa">Ranking2Client::PutScore</a>()</code> function that can upload multiple scores at the same time.</p>
+<p>For example, with the existing ranking features you might do the following.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Assign a group value between 0 and 3 to each score when the score is uploaded.</li>
+<li>Filter scores by those that are only in group 0 or only in group 1 when retrieving rankings.</li>
+</ul>
+</div></blockquote>
+<p>To perform the same action in Ranking2, you would do the following.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Create a common category that will contain scores for all of groups 0 through 3.</li>
+<li>Create dedicated categories for groups 0 through 3.</li>
+<li>When uploading a score, upload that score both to the corresponding group category and to the common category.</li>
+<li>To filter for scores in a certain group when getting scores, retrieve the scores from the dedicated category created for that group.</li>
+<li>When you do not want to filter scores, get the scores from the common category.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="id46">
+<h4>6.11.2.2. Filtering by Update Time (Time Scope)</h4>
+<p>Ranking2 does not include a feature for filtering scores by the time they were uploaded. All of the scores in a given category are retrieved when retrieving rankings.</p>
+<p>Instead, you can create several category types with different periodic reset modes, along with some associated categories, and upload the same scores to each category.</p>
+<p>In the following configuration, for example, the same scores are uploaded to category 0 and category 1, and the same scores are uploaded to category 10 and category 11. However, the period of time those scores remain in each category differs.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Category type 0: Reset scores every day.</li>
+<li>Category type 1: Reset scores every month.</li>
+<li>Category 0: Scores uploaded when a certain item is collected. Belongs to category type 0.</li>
+<li>Category 1: Scores uploaded when a certain item is collected. Belongs to category type 1.</li>
+<li>Category 10: Scores uploaded when an enemy is defeated. Belongs to category type 0.</li>
+<li>Category 11: Scores uploaded when an enemy is defeated. Belongs to category type 1.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="id47">
+<h4>6.11.2.3. Calculation of Ties</h4>
+<p>Equal scores are always treated as ties. For more information, see <a class="reference internal" href="#ranking2-tie-score"><span class="std std-ref">6.6.4</span></a>. You cannot specify a certain tie calculation method like <code>RankingConstants::ORDER_CALCULATION_123</code> in the existing ranking features.</p>
+<p>If you want to eliminate ties, increase the number of digits used for scores and use the lower bits to store additional information (such as dates), for example.</p>
+</div>
+<div class="section" id="id48">
+<h4>6.11.2.4. Score Statistics</h4>
+<p>Ranking2 does not provide any score statistics (total score, maximum or minimum score, average score, and so on).</p>
+<p>You can use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_info.html#ad12854576878656aad6ca7f3f71c9934">Ranking2Info::GetNumRankedIn</a>()</code> function to get the current number of ranked scores in a ranking category. This number will be different from the total number of scores ever uploaded to that category due to deletion of scores lower than the last place score.</p>
+</div>
+<div class="section" id="id49">
+<h4>6.11.2.5. Score Deletion</h4>
+<p>Uploaded scores cannot be deleted from client devices.</p>
+</div>
+<div class="section" id="id50">
+<h4>6.11.2.6. Score Update Mode</h4>
+<p>Ranking2 does not have a feature equivalent to the <code>RankingConstants::UPDATE_MODE_DELETE_OLD</code> mode in the existing ranking features, which always uploads new scores even if they are lower than an existing score.</p>
+</div>
+</div>
+</div>
+<div class="section" id="ranking2-error-handling">
+<span id="id51"></span><h2>6.12. Error Handling</h2>
+<div class="section" id="api">
+<span id="ranking2-error-api-call"></span><h3>6.12.1. Errors During Function Calls</h3>
+<p>If you call a function and it returns an error without starting asynchronous processing, your code may contain one or more bugs. Check whether the NEX library has been successfully initialized, and whether you have logged in to the game server.</p>
+</div>
+<div class="section" id="ranking2-error-async">
+<span id="id52"></span><h3>6.12.2. Asynchronous Processing Errors</h3>
+<p>Error handling is the same as for matchmaking. See <a class="reference internal" href="matchmake.html#matchmake-error-handling"><span class="std std-ref">4.24. Error Handling</span></a>.</p>
+<p><a class="reference internal" href="#ranking2-table-errors"><span class="std std-ref">Table 6.10</span></a> lists the errors that can occur in Ranking2. This table excludes NEX communication errors and other processes. For more information about NEX asynchronous processing and error handling, see <a class="reference internal" href="../common/overall.html#overall-async-job"><span class="std std-ref">Asynchronous Processing</span></a>.</p>
+<span id="ranking2-table-errors"></span><table border="1" class="colwidths-given docutils" id="id67">
+<caption><span class="caption-text">Table 6.10. Ranking Errors</span></caption>
+<colgroup>
+<col width="25%"/>
+<col width="75%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">ReturnCode Value</th>
+<th class="head">Overview</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>QERROR(Ranking2, InvalidArgument)</td>
+<td>An invalid argument was specified. This is an implementation error, fix your implementation.</td>
+</tr>
+<tr class="row-odd"><td>QERROR(Ranking2, Unknown)</td>
+<td>Unknown error occurred. Abnormal server configuration. Please contact Nintendo if this error occurs.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="nex-nmas">
+<span id="ranking2-nmas"></span><h2>6.13. NEX Game Server Management System (NMAS)</h2>
+<p>The Ranking2 management features of the NEX Server Management System (NMAS) provide ways to perform operations like viewing the scores registered in rankings, configuring categories and category types, and deleting all scores. The tool supports both the development environment and the actual production environment.</p>
+<div class="section" id="ranking2-nmas-access">
+<span id="id53"></span><h3>6.13.1. Accessing the Management Tool</h3>
+<p>Access this management tool from the following URL.</p>
+<p><a class="reference external" href="https://nmas.tool.n.mng.nintendo.net/">https://nmas.tool.n.mng.nintendo.net/</a></p>
+<p>Use the same login ID and password that you use for OMAS.</p>
+</div>
+</div>
+<div class="section" id="ranking2-notice">
+<span id="id54"></span><h2>6.14. Notes</h2>
+<div class="section" id="id55">
+<h3>6.14.1. Predicted Number of Scores</h3>
+<p>Ranking2 was designed on the assumption that most titles will use no more than 10,000,000 scores. Please contact Nintendo for titles that may exceed 10,000,000 scores.</p>
+<p>You can estimate the number of scores using the following formula. For ranking category or category type configurations in which last place or the number of past seasons of data to save are not equal in every category, use the following formula for each individual category and then calculate the sum of the resulting values.</p>
+<p><em>Estimated number of scores</em> = Number of categories × Last place (If using periodic resets, multiply this value by the number of past seasons of data that will be saved + 2).</p>
+<p>In Ranking2, the default last place is ten thousandth, and the default periodic reset mode is none. Therefore, up to 100 categories can be used with these default settings.</p>
+<p>Ranking2 automatically deletes scores lower than the last place score, so normally, the number of scores does not continue to increase over time. The following case is the only exception.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Dynamic generation of categories.<ul>
+<li>The number of scores increases as the number of categories increases.</li>
+<li>Dynamic generation of categories can result in an especially large amount of accumulated data if you do not use periodic resets, so configure your categories and category types while being aware of this issue.</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

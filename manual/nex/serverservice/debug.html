@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>9. Debug Assistance — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="debug-top">
+<span id="id1"></span><h1>9. Debug Assistance</h1>
+<div class="section" id="debug-overview">
+<span id="id2"></span><h2>9.1. Introduction</h2>
+<p>The following features are provided to assist you with debugging when you use NEX in the development of your application.</p>
+<ul class="simple">
+<li>Features to record and get the log of the function calls that are issued during communication with the game server. (For more information, see <a class="reference internal" href="#debug-api-recorder"><span class="std std-ref">9.2. Recording a Log of API Calls</span></a>.)</li>
+<li>Features to change the functionality of the game server. (For more information, see <a class="reference internal" href="#debug-server-setting"><span class="std std-ref">9.3. Changing Game Server Functionality</span></a>.)</li>
+<li>Features for error simulation. (For more information, see <a class="reference internal" href="#debug-error-simulation"><span class="std std-ref">9.4. Error Simulation</span></a>.)</li>
+</ul>
+<p>The features that can be used from the application to assist in debugging have been left in place only for the sake of compatibility with earlier versions.</p>
+<p>Do not use these features from your application. Instead, use them from NMAS (the web system for managing NEX servers).</p>
+<p>Following a future server update sometime after 2022-03-01, an error will be returned indicating failure when these features are used from the application. This update will be applied to all environments (development environments and production environments).</p>
+<p>The error simulation feature is the only feature available from WebAPI. For more information about WebAPI, see <a class="reference internal" href="webapi_debug.html#webapi-debug-top"><span class="std std-ref">11.6. Debug Assistance</span></a>.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">The package does not include the release build version of the <code>DebugClient</code> library.</p>
+</div>
+<div class="section" id="debug-initialize">
+<span id="id3"></span><h3>9.1.1. Initializing and Finalizing Service Clients</h3>
+<p>The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_debug_client.html">DebugClient</a></code> initialization and finalization processes are the same as the processes performed for service clients when matchmaking.</p>
+</div>
+</div>
+<div class="section" id="api">
+<span id="debug-api-recorder"></span><h2>9.2. Recording the API Call Log</h2>
+<p>The game server can record a log of the calls to functions that instigate communication with the game server, and by getting and checking that log you can check the behavior of the application. You can also use this log to check whether the application complies with the guidelines.</p>
+<p>The game server records the following information in the API call log.</p>
+<ul class="simple">
+<li>The principal ID of the user who called the function</li>
+<li>The name of the function that was called</li>
+<li>The time of the call (in UTC time)</li>
+</ul>
+<p>The function names recorded in the call log are the names used by the game server and are different from the names used by the application to call the functions. For more information about the correspondence between the function names in the call log and the names the application actually uses to call the functions, see <a class="reference internal" href="#debug-api-table"><span class="std std-ref">9.5. Function Name Correspondence Tables</span></a>.</p>
+<p>Note that the call log also includes the functions that were called automatically inside the library at times like when logging in to the game server and performing NAT traversal.</p>
+<div class="section" id="debug-enable-recorder">
+<span id="id4"></span><h3>9.2.1. Enabling and Disabling the Feature to Record API Calls</h3>
+<div class="literal-block-wrapper docutils container" id="id24">
+<div class="code-block-caption"><span class="caption-text">Code 9.1. Enabling and Disabling the Feature to Record API Calls</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// Enable recording.</span>
+<span class="kt">bool</span> <span class="nf">EnableApiRecorder</span><span class="p">(</span><span class="n">ProtocolCallContext</span><span class="o">*</span> <span class="n">pContext</span><span class="p">);</span>
+
+<span class="c1">// Disable recording.</span>
+<span class="kt">bool</span> <span class="nf">DisableApiRecorder</span><span class="p">(</span><span class="n">ProtocolCallContext</span><span class="o">*</span> <span class="n">pContext</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<p>The call to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_debug_client.html#a3f1df8af1bce505f80d3b0905a2da0bd">DebugClient::EnableApiRecorder()</a></code> enables the recording of API calls. When the feature to record API calls is enabled, the game server stores a log of up to 1,000 API calls using the first in, first out method. Each log is retained for up to 24 hours.</p>
+<p>The call to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_debug_client.html#a41ac565adda16961dced77cf2fc51e5f">DebugClient::DisableApiRecorder()</a></code> disables the recording of API calls.</p>
+<p>API call logging is disabled by default. Even when API call logging is enabled, it is automatically disabled after 24 hours have elapsed with no API calls to the game server. When the feature is disabled, the log maintained up to that time is invalidated.</p>
+<p>Note that the feature to record API calls is a setting that is applied to the whole game server, so the operations of other users can change whether it is enabled.</p>
+</div>
+<div class="section" id="debug-get-api-calls">
+<span id="id5"></span><h3>9.2.2. Getting the API Call Log</h3>
+<p>To get the API call log recorded in the game server, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_debug_client.html#a131a1cd6d1b4893bf76d11f1a45d4bfe">DebugClient::GetApiCalls()</a></code> function.</p>
+<div class="literal-block-wrapper docutils container" id="id25">
+<div class="code-block-caption"><span class="caption-text">Code 9.2. Getting the API Call Log</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// Get the recording.</span>
+<span class="kt">bool</span> <span class="nf">GetApiCalls</span><span class="p">(</span><span class="n">ProtocolCallContext</span> <span class="o">*</span><span class="n">pContext</span><span class="p">,</span>
+                  <span class="n">qList</span><span class="o">&lt;</span><span class="n">ApiCallData</span><span class="o">&gt;*</span> <span class="n">pApiCallDatas</span><span class="p">,</span>
+                  <span class="n">qList</span><span class="o">&lt;</span><span class="n">PrincipalID</span><span class="o">&gt;&amp;</span> <span class="n">principalIds</span><span class="p">,</span>
+                  <span class="n">DateTime</span> <span class="n">sinceTime</span> <span class="o">=</span> <span class="n">DateTime</span><span class="o">::</span><span class="n">Never</span><span class="p">,</span>
+                  <span class="n">DateTime</span> <span class="n">untilTime</span> <span class="o">=</span> <span class="n">DateTime</span><span class="o">::</span><span class="n">Never</span>
+                  <span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<p>You can get the API call log for all users by passing an empty list in the <code><em>principalIds</em></code> parameter. To get the log for a particular user, specify the principal ID of the user whose log you want to get.</p>
+<p>To get the log for a specific period of time, specify values for the <code><em>sinceTime</em></code> and <code><em>untilTime</em></code> parameters. Use <code><em>sinceTime</em></code> to specify the start of the period you are getting a summary for. If you specify <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_date_time.html#af10bac27ed95d89573cee5195b8aa832">DateTime::Never</a></code> for <code><em>sinceTime</em></code>, you get a log of all API calls recorded in the game server until the time set for <code><em>untilTime</em></code>). Use <code><var>untilTime</var></code> to specify the end of the period you are getting a summary for. If you specify <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_date_time.html#af10bac27ed95d89573cee5195b8aa832">DateTime::Never</a></code> for <code><var>untilTime</var></code>, you get a log of all API calls recorded by the server until the current time (rounded to the millisecond).</p>
+<p>Note that the log <strong>does not include</strong> the times set for <code><var>sinceTime</var></code> and <code><var>untilTime</var></code>. For example, if you specified 2012-04-27 13:00:30 for <code><var>sinceTime</var></code>, you would get log entries starting from 2012-04-27 13:00:31.</p>
+<p>If the asynchronous process is successful, the log is stored in <code><var>pApiCallDatas</var></code>. The log is sorted according to the order in which calls were made.</p>
+</div>
+<div class="section" id="debug-get-api-call-summary">
+<span id="id6"></span><h3>9.2.3. API Call Log Summary</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_debug_client.html#ac13ccc3a37510cb8b9e13ad7ace63da1">DebugClient::GetApiCallSummary()</a></code> function to summarize the call log and check whether the frequency of API calls exceeds the frequency stipulated in the guidelines. For more information, see the Nintendo Switch Guidelines.</p>
+<div class="section" id="debug-get-summary">
+<span id="id7"></span><h4>9.2.3.1. Getting the API Call Summary</h4>
+<p>To get a summary of the API calls logged in the game server, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_debug_client.html#ac13ccc3a37510cb8b9e13ad7ace63da1">DebugClient::GetApiCallSummary()</a></code> function. To get a log summary, the recording of API calls must be enabled, as described in <a class="reference internal" href="#debug-enable-recorder"><span class="std std-ref">9.2.1. Enabling and Disabling the Feature to Record API Calls</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="id26">
+<div class="code-block-caption"><span class="caption-text">Code 9.3. Getting an API Call Summary</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// Get the recording.</span>
+<span class="kt">bool</span> <span class="nf">GetApiCallSummary</span><span class="p">(</span><span class="n">ProtocolCallContext</span> <span class="o">*</span><span class="n">pContext</span><span class="p">,</span>
+                        <span class="n">qList</span><span class="o">&lt;</span><span class="n">ApiCallSummary</span><span class="o">&gt;*</span> <span class="n">pApiCallSummaryList</span><span class="p">,</span>
+                        <span class="n">PrincipalID</span> <span class="n">principalId</span><span class="p">,</span>
+                        <span class="n">DateTime</span> <span class="n">sinceTime</span> <span class="o">=</span> <span class="n">DateTime</span><span class="o">::</span><span class="n">Never</span><span class="p">,</span>
+                        <span class="n">DateTime</span> <span class="n">untilTime</span> <span class="o">=</span> <span class="n">DateTime</span><span class="o">::</span><span class="n">Never</span><span class="p">,</span>
+                        <span class="kt">bool</span> <span class="n">isLimitOverOnly</span> <span class="o">=</span> <span class="nb">true</span>
+                        <span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<p>To get the summary for a specific period of time, specify the <code><var>sinceTime</var></code> and <code><var>untilTime</var></code> parameters. The summary period specified using <code><var>sinceTime</var></code> and <code><var>untilTime</var></code> works the same as the period specified by those parameters in the <code>GetApiCalls()</code> function.</p>
+<p>If you only want to get summaries for API calls that exceed the call frequency limit in the guidelines, specify the <code><var>isLimitOverOnly</var></code> parameter. Specify <code>true</code> for this parameter to get summaries only for API calls that are called more frequently than the limit stipulated in the guidelines. Specify <code>false</code> to get summaries for all API calls, including those that do not exceed the limit in guidelines.</p>
+<p>If the asynchronous process is successful, the summary is stored in <code><var>pApiCallSummaryList</var></code>.</p>
+</div>
+<div class="section" id="debug-check-summary">
+<span id="id8"></span><h4>9.2.3.2. Checking the API Call Summary</h4>
+<p>The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_api_call_summary.html">ApiCallSummary</a></code> with the summarized results includes the following information.</p>
+<ul class="simple">
+<li>The name of the function for which the call count has been summarized</li>
+<li>Whether the limit has been exceeded</li>
+<li>The standard number of calls stipulated in the limit</li>
+<li>The standard period stipulated in the limit</li>
+<li>The time when the period exceeding the limit started</li>
+<li>The number of calls during the period exceeding the limit</li>
+<li>The total number of all function calls for the entire time period</li>
+</ul>
+<div class="figure" id="id27">
+<span id="debug-fig-apicallsummary"></span><img alt="../_images/Fig_Debug_ApiCallSummary.png" src="../_images/Fig_Debug_ApiCallSummary.png"/>
+<p class="caption"><span class="caption-text">Figure 9.1. Information Included in the API Call Summary</span></p>
+</div>
+<p>The function name obtained by <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_api_call_summary.html#ac2c3ec5ac3e4cd1a7e1a38606bc890b0">ApiCallSummary::GetMethodName()</a></code> is the name as used internally by the game server. For more information about the correspondence with the names of functions called by the application, see <a class="reference internal" href="#debug-api-table"><span class="std std-ref">9.5. Function Name Correspondence Tables</span></a>.</p>
+<p>Use <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_api_call_summary.html#ad9c330656e935790266dd27bd4132a7f">ApiCallSummary::GetLimit()</a></code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_api_call_summary.html#a9b9652a67d6156a2432121e0765180d0">ApiCallSummary::GetPeriod()</a></code> to get the standard number of calls and the standard period that together describe the call frequency limit for the API function for which you have the call count summary.</p>
+<p>As reference information, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_api_call_summary.html">ApiCallSummary</a></code> also stores data as a time series showing the period when the limit was first exceeded and the number of calls to the function during that period. To get the start time of the period during which API functions were called in excess of the guideline frequency, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_api_call_summary.html#a1ca99e2bcbe80e2c9e7e8b41432488eb">ApiCallSummary::GetCallStartTime</a>()</code> function. To get the number of API calls over a standard time period starting from that time, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_api_call_summary.html#a70af62bf0cbd3cf5b5ec5a41237307a7">ApiCallSummary::GetCount</a>()</code> function.</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">If you specify <code>false</code> for the <code><em>isLimitOverOnly</em></code> parameter when you call <code>GetApiCallSummary</code>, the summary you get includes summaries of functions that do not exceed the API call frequency limit. For summaries of functions that do not exceed the API call frequency limit, the return value of the <code>ApiCallSummary::GetResult()</code> function is <code>DebugConstants::ApiCallSummaryResult_Normal</code>. In this case, the information obtained by the <code>ApiCallSummary::GetCallStartTime(),ApiCallSummary::GetCount()</code> function is the start time of the period when calls to the function were most frequent (as opposed to the period when the limit was exceeded), and the number of function calls during that period.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="debug-server-setting">
+<span id="id9"></span><h2>9.3. Changing Game Server Functionality</h2>
+<p>You can change the behavior of the game server to use it for debugging purposes.</p>
+<div class="section" id="id10">
+<h3>9.3.1. Changing the Setting to Exclude Specific Matchmaking Sessions When Auto-Matchmaking</h3>
+<p>When the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a8fb60f3d80bc0aac4218111be9262c05">MatchmakeExtensionClient::AutoMatchmake</a>()</code> function is used for auto-matchmaking, there is problem where the user may end up joining the same matchmaking session over and over because the P2P connection could not be established for a reason such as a failure of NAT transversal that causes the auto-matchmaking process to repeat. To avoid this problem, the game server excludes the matchmaking sessions that the user joined in the past from the auto-matchmaking target for the user. Specifically, the game server checks the last three matchmaking sessions where the user participated using auto-matchmaking, and excludes the matchmaking sessions that the user participated in within the last hour from the auto-matchmaking target. This feature is enabled by default.</p>
+<p>The participation record used by this feature does not include the matchmaking sessions created by the user and joined by the user.</p>
+<p>If you want to use auto-matchmaking and join the same matchmaking session multiple times for application debugging purposes, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_debug_client.html#a1ee878f52413bc026d683e07f0a8b3ca">DebugClient::SetExcludeJoinedMatchmakeSession()</a></code> function to change this exclusion setting. This setting can also be configured using NMAS.</p>
+<p>The exclusion setting is applied to the whole game server. Note that when you change the setting, it can affect other developers connected to the same game server. Also note that you cannot change this setting in the production environment game server. (The exclusion setting is always enabled, restricting redundant participation in the same matchmaking session.) For this reason, do not develop your application on the assumption that the exclusion setting will be disabled.</p>
+</div>
+</div>
+<div class="section" id="debug-error-simulation">
+<span id="id11"></span><h2>9.4. Error Simulation</h2>
+<p>Features for error simulation are provided for debugging purposes. With this error simulation feature you can intentionally generate errors when the user calls functions that instigate communication with the game server. Use it o check whether you application is properly handling the errors of the NEX API.</p>
+<p>With this error simulation feature, you can specify the principal ID of the user and the name of the function that generates the error, and register the number times the error will occur. You can also register the error simulation settings for numerous API functions for a single principal ID.</p>
+<p>The following are examples of error simulation settings.</p>
+<ul class="simple">
+<li>Return <code>QERROR(DataStore, InvalidArgument)</code> every time <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#add817538c1616d7104e559252d7dad26">DataStoreClient::SearchObject()</a></code> is called.</li>
+<li>Set so the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a5976c36a85bc45f9e39f3e4f27369d67">MatchmakeExtensionClient::BrowseMatchmakeSession</a>()</code> function returns <code>QERROR(Core, Unknown)</code> the first time it is called, returns <code>QERROR(Core, InvalidArgument)</code> the second time, and works normally on the third and subsequent calls.</li>
+</ul>
+<div class="section" id="id12">
+<h3>9.4.1. Error Simulation Settings</h3>
+<p>The following items can be configured for the error simulation settings.</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Principal ID</dt>
+<dd>The principal ID of the user that is the target of error simulation.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Function name</dt>
+<dd>The name of the function that is the target of error simulation. Note that function name specified for error simulation is the name used by the game server, and it differs from the name used by the application for the function. For more information about the correspondence between the function names used by the game server and the function names used by the application, see <a class="reference internal" href="#debug-api-table"><span class="std std-ref">9.5. Function Name Correspondence Tables</span></a>.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Validity period</dt>
+<dd>The period during which the error simulation settings remain valid. When the validity period expires, the error simulation settings are automatically deleted from the game server. The default validity period is one hour.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Result</dt>
+<dd>Specifies the result to return to the user. If a result indicating an error has been specified, the game server returns the error to the user and does not execute the process of the function. If a result indicating success has been specified, or if nothing has been specified for this setting, the game server executes the process of the function in the normal way. But even in this case, an error might be returned if the process does not end normally.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Number of times</dt>
+<dd>Specifies the number of times to return the specified result. If you want to continue to return the same error every time the function is called, specify a large value for this setting. If you want to change the error after a function has been called a certain number of times, set that number here.</dd>
+</dl>
+</li>
+</ul>
+<p>You can specify multiple combinations of <strong>Result</strong> and <strong>Number of times</strong> settings. If you want to switch the error that is returned to the user depending on the number times that the function has been called, configure the combinations to fit the error sequence that you have in mind.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">When you configure error simulation, be careful not to set combinations of functions and results that would never actually arise. If you specify a result indicating an error, that error is generated regardless of whether it would ever actually occur.</p>
+</div>
+</div>
+<div class="section" id="id13">
+<h3>9.4.2. Error Simulation Execution Log</h3>
+<p>The game server keeps an error simulation execution log that records when errors are simulated when users call specific API functions. This log contains the following information.</p>
+<ul class="simple">
+<li>The name of the function for which an error was simulated.</li>
+<li>The time when the error was simulated.</li>
+<li>The result that was returned to the user.</li>
+</ul>
+<p>The error simulation execution log is valid for 24 hours from the time of recording. When the validity period expires, the execution log is deleted from the game server.</p>
+</div>
+</div>
+<div class="section" id="debug-api-table">
+<span id="id14"></span><h2>9.5. Function Name Correspondence Tables</h2>
+<p>These tables show the correspondence between the names of the functions in the NEX library API and the names of the functions processed by the game server.</p>
+<p>These correspondence tables are used for the features described in <a class="reference internal" href="#debug-api-recorder"><span class="std std-ref">9.2. Recording a Log of API Calls</span></a> and <a class="reference internal" href="#debug-error-simulation"><span class="std std-ref">9.4. Error Simulation</span></a>.</p>
+<p>The table has the following columns.</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Library Function</dt>
+<dd>The NEX library function called by the application when it uses NEX. Depending on the overload being used, the server might call different functions even though the library function name is the same. Coding describes the conditions for functions that are called on the server independent of any particular function call by the application.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Recorded Library Function Name</dt>
+<dd>The name used with the API call log feature to display the NEX library function corresponding to the logged server function name. This name is sometimes shown when you use the API call logs with WebAPI or NMAS.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Server Function Name</dt>
+<dd>The name of the function that is actually called by the game server when the application calls a library function. To use the error simulation feature, you must specify this function name to simulate an error for a specific function.</dd>
+</dl>
+</li>
+</ul>
+<div class="section" id="id15">
+<h3>9.5.1. Facade</h3>
+<table border="1" class="docutils" id="id28">
+<caption><span class="caption-text">Table 9.1. Correspondence Table for Facade API Functions</span></caption>
+<colgroup>
+<col width="33%"/>
+<col width="33%"/>
+<col width="33%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Library Function</th>
+<th class="head">Recorded Library Function Name</th>
+<th class="head">Server Function Name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">NgsFacade::<wbr/>Login()</div>
+<div class="line">Login ①</div>
+</div>
+</td>
+<td>NgsFacade::<wbr/>Login(1) See note 1.</td>
+<td>SecureConnectionInternalProtocol::<wbr/>GetConnectionID</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">NgsFacade::<wbr/>Login()</div>
+<div class="line">Login ②</div>
+</div>
+</td>
+<td>NgsFacade::<wbr/>Login(2) See note 1.</td>
+<td>SecureConnectionInternalProtocol::<wbr/>InsertConnectionProperties</td>
+</tr>
+<tr class="row-even"><td>NgsFacade::<wbr/>Logout()</td>
+<td>NgsFacade::<wbr/>Logout</td>
+<td>DummyProtocol::<wbr/>LogoutNormally See note 2.</td>
+</tr>
+<tr class="row-odd"><td>When automatically logging out due to a communication or power interruption.</td>
+<td>[Logout Faultily]</td>
+<td>DummyProtocol::<wbr/>LogoutFaultily See note 2.</td>
+</tr>
+<tr class="row-even"><td>NgsFacade::<wbr/>TestConnectivity()</td>
+<td>NgsFacade::<wbr/>TestConnectivity</td>
+<td>SecureConnectionInternalProtocol::<wbr/>TestConnectivity</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>Note 1:</strong> Each call to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html#a88027e43cd2641ffbb0497a04352e406">NgsFacade::Login()</a></code> invokes one call each to (1) and (2).</li>
+<li><strong>Note 2:</strong> The <code>DummyProtocol</code> server functions are dummies for logging by the game server. They cannot be used for error simulation.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">To set a simulated error for the <code>NgsFacade::Login()</code> function, you can specify "Login" as the name of the server function. This is the same as specifying <code>SecureConnectionInternalProtocol::GetConnectionID</code> for the setting.</p>
+</div>
+</div>
+<div class="section" id="id16">
+<h3>9.5.2. Matchmaking</h3>
+<table border="1" class="docutils" id="id29">
+<caption><span class="caption-text">Table 9.2. Correspondence Table for Matchmaking Functions</span></caption>
+<colgroup>
+<col width="33%"/>
+<col width="33%"/>
+<col width="33%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Library Function</th>
+<th class="head">Recorded Library Function Name</th>
+<th class="head">Server Function Name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>MatchmakeExtensionClient::<wbr/>AutoMatchmake()</td>
+<td>MatchmakeExtensionClient::<wbr/>AutoMatchmake</td>
+<td>MatchmakeExtensionProtocol::<wbr/>AutoMatchmakeWithParam_<wbr/>Postpone</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">MatchmakeExtensionClient::<wbr/>BrowseMatchmakeSession()</div>
+<div class="line">Without host URLs.</div>
+</div>
+</td>
+<td>MatchmakeExtensionClient::<wbr/>BrowseMatchmakeSession(WithoutHostUrls)</td>
+<td>MatchmakeExtensionProtocol::<wbr/>BrowseMatchmakeSessionNoHolderNoResultRange</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">MatchmakeExtensionClient::<wbr/>BrowseMatchmakeSession()</div>
+<div class="line">With host URLs.</div>
+</div>
+</td>
+<td>MatchmakeExtensionClient::<wbr/>BrowseMatchmakeSession(WithHostUrls)</td>
+<td>MatchmakeExtensionProtocol::<wbr/>BrowseMatchmakeSessionWithHostUrlsNoHolderNoResultRange</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeExtensionClient::<wbr/>ClearMatchmakeSessionSystemPassword()</td>
+<td>MatchmakeExtensionClient::<wbr/>ClearMatchmakeSessionSystemPassword</td>
+<td>MatchmakeExtensionProtocol::<wbr/>ClearMatchmakeSessionSystemPassword</td>
+</tr>
+<tr class="row-even"><td>MatchmakeExtensionClient::<wbr/>CloseParticipation()</td>
+<td>MatchmakeExtensionClient::<wbr/>CloseParticipation</td>
+<td>MatchmakeExtensionProtocol::<wbr/>CloseParticipation</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeExtensionClient::<wbr/>CreateMatchmakeSession()</td>
+<td>MatchmakeExtensionClient::<wbr/>CreateMatchmakeSession</td>
+<td>MatchmakeExtensionProtocol::<wbr/>CreateMatchmakeSessionWithParam</td>
+</tr>
+<tr class="row-even"><td>MatchmakeExtensionClient::<wbr/>CreatePersistentGathering()</td>
+<td>MatchmakeExtensionClient::<wbr/>CreatePersistentGathering</td>
+<td>MatchmakeExtensionProtocol::<wbr/>CreateCommunity</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeExtensionClient::<wbr/>DebugNotifyEvent()</td>
+<td>MatchmakeExtensionClient::<wbr/>DebugNotifyEvent</td>
+<td>MatchmakeExtensionProtocol::<wbr/>DebugNotifyEvent</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">MatchmakeExtensionClient::<wbr/>FindMatchmakeSessionByGatheringId()</div>
+<div class="line">One specified.</div>
+</div>
+</td>
+<td>MatchmakeExtensionClient::<wbr/>FindMatchmakeSessionByGatheringId(Single)</td>
+<td>MatchmakeExtensionProtocol::<wbr/>FindMatchmakeSessionBySingleGatheringId</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">MatchmakeExtensionClient::<wbr/>FindMatchmakeSessionByGatheringId()</div>
+<div class="line">Multiple specified.</div>
+</div>
+</td>
+<td>MatchmakeExtensionClient::<wbr/>FindMatchmakeSessionByGatheringId(Multiple)</td>
+<td>MatchmakeExtensionProtocol::<wbr/>FindMatchmakeSessionByGatheringId</td>
+</tr>
+<tr class="row-even"><td>MatchmakeExtensionClient::<wbr/>FindMatchmakeSessionByGatheringIdDetail()</td>
+<td>MatchmakeExtensionClient::<wbr/>FindMatchmakeSessionByGatheringIdDetail</td>
+<td>MatchmakeExtensionProtocol::<wbr/>FindMatchmakeSessionByGatheringIdDetail</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeExtensionClient::<wbr/>FindMatchmakeSessionByOwner()</td>
+<td>MatchmakeExtensionClient::<wbr/>FindMatchmakeSessionByOwner</td>
+<td>MatchmakeExtensionProtocol::<wbr/>FindMatchmakeSessionByOwner</td>
+</tr>
+<tr class="row-even"><td>MatchmakeExtensionClient::<wbr/>FindMatchmakeSessionByParticipant()</td>
+<td>MatchmakeExtensionClient::<wbr/>FindMatchmakeSessionByParticipant</td>
+<td>MatchmakeExtensionProtocol::<wbr/>FindMatchmakeSessionByParticipant</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeExtensionClient::<wbr/>FindOfficialPersistentGathering()</td>
+<td>MatchmakeExtensionClient::<wbr/>FindOfficialPersistentGathering</td>
+<td>MatchmakeExtensionProtocol::<wbr/>FindOfficialCommunity</td>
+</tr>
+<tr class="row-even"><td>MatchmakeExtensionClient::<wbr/>FindPersistentGatheringByGatheringId()</td>
+<td>MatchmakeExtensionClient::<wbr/>FindPersistentGatheringByGatheringId</td>
+<td>MatchmakeExtensionProtocol::<wbr/>FindCommunityByGatheringId</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeExtensionClient::<wbr/>FindPersistentGatheringByOwner()</td>
+<td>MatchmakeExtensionClient::<wbr/>FindPersistentGatheringByOwner</td>
+<td>MatchmakeExtensionProtocol::<wbr/>FindCommunityByOwner</td>
+</tr>
+<tr class="row-even"><td>MatchmakeExtensionClient::<wbr/>FindPersistentGatheringByParticipant()</td>
+<td>MatchmakeExtensionClient::<wbr/>FindPersistentGatheringByParticipant</td>
+<td>MatchmakeExtensionProtocol::<wbr/>FindCommunityByParticipant</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeExtensionClient::<wbr/>GenerateMatchmakeSessionSystemPassword()</td>
+<td>MatchmakeExtensionClient::<wbr/>GenerateMatchmakeSessionSystemPassword</td>
+<td>MatchmakeExtensionProtocol::<wbr/>GenerateMatchmakeSessionSystemPassword</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">MatchmakeExtensionClient::<wbr/>GetFriendNotificationData()</div>
+<div class="line">One specified.</div>
+</div>
+</td>
+<td>MatchmakeExtensionClient::<wbr/>GetFriendNotificationData(Single)</td>
+<td>MatchmakeExtensionProtocol::<wbr/>GetFriendNotificationData</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">MatchmakeExtensionClient::<wbr/>GetFriendNotificationData()</div>
+<div class="line">Multiple specified.</div>
+</div>
+</td>
+<td>MatchmakeExtensionClient::<wbr/>GetFriendNotificationData(Multiple)</td>
+<td>MatchmakeExtensionProtocol::<wbr/>GetlstFriendNotificationData</td>
+</tr>
+<tr class="row-even"><td>MatchmakeExtensionClient::<wbr/>JoinMatchmakeSession()</td>
+<td>MatchmakeExtensionClient::<wbr/>JoinMatchmakeSession</td>
+<td>MatchmakeExtensionProtocol::<wbr/>JoinMatchmakeSessionWithParam</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeExtensionClient::<wbr/>JoinPersistentGathering()</td>
+<td>MatchmakeExtensionClient::<wbr/>JoinPersistentGathering</td>
+<td>MatchmakeExtensionProtocol::<wbr/>JoinCommunity</td>
+</tr>
+<tr class="row-even"><td>MatchmakeExtensionClient::<wbr/>ModifyMatchmakeSessionAttribute()</td>
+<td>MatchmakeExtensionClient::<wbr/>ModifyMatchmakeSessionAttribute</td>
+<td>MatchmakeExtensionProtocol::<wbr/>ModifyCurrentGameAttribute</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeExtensionClient::<wbr/>OpenParticipation()</td>
+<td>MatchmakeExtensionClient::<wbr/>OpenParticipation</td>
+<td>MatchmakeExtensionProtocol::<wbr/>OpenParticipation</td>
+</tr>
+<tr class="row-even"><td>MatchmakeExtensionClient::<wbr/>UpdateApplicationBuffer()</td>
+<td>MatchmakeExtensionClient::<wbr/>UpdateApplicationBuffer</td>
+<td>MatchmakeExtensionProtocol::<wbr/>UpdateApplicationBuffer</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeExtensionClient::<wbr/>UpdateMatchmakeSession()</td>
+<td>MatchmakeExtensionClient::<wbr/>UpdateMatchmakeSession</td>
+<td>MatchmakeExtensionProtocol::<wbr/>UpdateMatchmakeSessionPart</td>
+</tr>
+<tr class="row-even"><td>MatchmakeExtensionClient::<wbr/>UpdateMatchmakeSessionAttribute()</td>
+<td>MatchmakeExtensionClient::<wbr/>UpdateMatchmakeSessionAttribute</td>
+<td>MatchmakeExtensionProtocol::<wbr/>UpdateMatchmakeSessionAttribute</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeExtensionClient::<wbr/>UpdateNotificationData()</td>
+<td>MatchmakeExtensionClient::<wbr/>UpdateNotificationData</td>
+<td>MatchmakeExtensionProtocol::<wbr/>UpdateNotificationData</td>
+</tr>
+<tr class="row-even"><td>MatchmakeExtensionClient::<wbr/>UpdatePersistentGathering()</td>
+<td>MatchmakeExtensionClient::<wbr/>UpdatePersistentGathering</td>
+<td>MatchmakeExtensionProtocol::<wbr/>UpdateCommunity</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeExtensionClient::<wbr/>UpdateProgressScore()</td>
+<td>MatchmakeExtensionClient::<wbr/>UpdateProgressScore</td>
+<td>MatchmakeExtensionProtocol::<wbr/>UpdateProgressScore</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">MatchMakingClient::<wbr/>GetDetailedParticipants()</div>
+<div class="line">True specified for <code><em>bOnlyActive</em></code>.</div>
+</div>
+</td>
+<td>MatchMakingClient::<wbr/>GetDetailedParticipants(bOnlyActiveIsTrue)</td>
+<td>MatchMakingProtocol::<wbr/>GetDetailedParticipants</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">MatchMakingClient::<wbr/>GetDetailedParticipants()</div>
+<div class="line">False specified for <code><em>bOnlyActive</em></code>.</div>
+</div>
+</td>
+<td>MatchMakingClient::<wbr/>GetDetailedParticipants(bOnlyActiveIsFalse)</td>
+<td>MatchMakingProtocolExt::<wbr/>GetDetailedParticipants</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">MatchMakingClient::<wbr/>GetParticipantsURLs()</div>
+<div class="line">Single gathering ID specified.</div>
+</div>
+</td>
+<td>MatchMakingClient::<wbr/>GetParticipantsURLs(SingleGatheringID)</td>
+<td>MatchMakingProtocol::<wbr/>GetParticipantsURLs</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">MatchMakingClient::<wbr/>GetParticipantsURLs()</div>
+<div class="line">Multiple gathering IDs specified.</div>
+</div>
+</td>
+<td>MatchMakingClient::<wbr/>GetParticipantsURLs(MultipleGatheringID)</td>
+<td>MatchMakingProtocolExt::<wbr/>GetParticipantsURLs</td>
+</tr>
+<tr class="row-even"><td>MatchMakingClient::<wbr/>GetSessionURLs()</td>
+<td>MatchMakingClient::<wbr/>GetSessionURLs</td>
+<td>MatchMakingProtocol::<wbr/>GetSessionURLs</td>
+</tr>
+<tr class="row-odd"><td>MatchMakingClient::<wbr/>MigrateGatheringOwnership()</td>
+<td>MatchMakingClient::<wbr/>MigrateGatheringOwnership</td>
+<td>MatchMakingProtocol::<wbr/>MigrateGatheringOwnership</td>
+</tr>
+<tr class="row-even"><td>MatchMakingClient::<wbr/>UnregisterGathering()</td>
+<td>MatchMakingClient::<wbr/>UnregisterGathering</td>
+<td>MatchMakingProtocol::<wbr/>UnregisterGathering</td>
+</tr>
+<tr class="row-odd"><td>MatchMakingClient::<wbr/>UpdateGatheringOwnership()</td>
+<td>MatchMakingClient::<wbr/>UpdateGatheringOwnership</td>
+<td>MatchMakingProtocol::<wbr/>UpdateSessionHost</td>
+</tr>
+<tr class="row-even"><td>MatchMakingClient::<wbr/>UpdateSessionHost()</td>
+<td>MatchMakingClient::<wbr/>UpdateSessionHost</td>
+<td>MatchMakingProtocol::<wbr/>UpdateSessionHost</td>
+</tr>
+<tr class="row-odd"><td>MatchMakingClient::<wbr/>EndParticipation()</td>
+<td>MatchMakingClient::<wbr/>EndParticipation</td>
+<td>MatchMakingProtocolExt::<wbr/>EndParticipation</td>
+</tr>
+<tr class="row-even"><td>MatchmakeRefereeClient::<wbr/>CreateStats()</td>
+<td>MatchmakeRefereeClient::<wbr/>CreateStats</td>
+<td>MatchmakeRefereeProtocol::<wbr/>CreateStats</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeRefereeClient::<wbr/>EndRound()</td>
+<td>MatchmakeRefereeClient::<wbr/>EndRound</td>
+<td>MatchmakeRefereeProtocol::<wbr/>EndRound</td>
+</tr>
+<tr class="row-even"><td>MatchmakeRefereeClient::<wbr/>EndRoundWithoutReport()</td>
+<td>MatchmakeRefereeClient::<wbr/>EndRoundWithoutReport</td>
+<td>MatchmakeRefereeProtocol::<wbr/>EndRoundWithoutReport</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeRefereeClient::<wbr/>GetNotSummarizedRound()</td>
+<td>MatchmakeRefereeClient::<wbr/>GetNotSummarizedRound</td>
+<td>MatchmakeRefereeProtocol::<wbr/>GetNotSummarizedRound</td>
+</tr>
+<tr class="row-even"><td>MatchmakeRefereeClient::<wbr/>GetOrCreateStats()</td>
+<td>MatchmakeRefereeClient::<wbr/>GetOrCreateStats</td>
+<td>MatchmakeRefereeProtocol::<wbr/>GetOrCreateStats</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeRefereeClient::<wbr/>GetRound()</td>
+<td>MatchmakeRefereeClient::<wbr/>GetRound</td>
+<td>MatchmakeRefereeProtocol::<wbr/>GetRound</td>
+</tr>
+<tr class="row-even"><td>MatchmakeRefereeClient::<wbr/>GetRoundParticipants()</td>
+<td>MatchmakeRefereeClient::<wbr/>GetRoundParticipants</td>
+<td>MatchmakeRefereeProtocol::<wbr/>GetRoundParticipants</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeRefereeClient::<wbr/>GetStartRoundParam()</td>
+<td>MatchmakeRefereeClient::<wbr/>GetStartRoundParam</td>
+<td>MatchmakeRefereeProtocol::<wbr/>GetStartRoundParam</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">MatchmakeExtensionClient::<wbr/>GetStats()</div>
+<div class="line">Personal statistics for one principal ID.</div>
+</div>
+</td>
+<td>MatchmakeRefereeClient::<wbr/>GetStats(PrincipalId)</td>
+<td>MatchmakeRefereeProtocol::<wbr/>GetStatsPrimary</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">MatchmakeExtensionClient::<wbr/>GetStats()</div>
+<div class="line">Personal statistics for multiple primary associated NEX unique IDs associated with principal IDs.</div>
+</div>
+</td>
+<td>MatchmakeRefereeClient::<wbr/>GetStats(MultiplePrimaryNexUniqueIds)</td>
+<td>MatchmakeRefereeProtocol::<wbr/>GetStatsPrimaries</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">MatchmakeExtensionClient::<wbr/>GetStats()</div>
+<div class="line">Personal statistics for all NEX unique IDs associated with principal IDs.</div>
+</div>
+</td>
+<td>MatchmakeRefereeClient::<wbr/>GetStats(AllNexUniqueIds)</td>
+<td>MatchmakeRefereeProtocol::<wbr/>GetStatsAll</td>
+</tr>
+<tr class="row-odd"><td>MatchmakeRefereeClient::<wbr/>ResetStats()</td>
+<td>MatchmakeRefereeClient::<wbr/>ResetStats</td>
+<td>MatchmakeRefereeProtocol::<wbr/>ResetStats</td>
+</tr>
+<tr class="row-even"><td>MatchmakeRefereeClient::<wbr/>StartRound()</td>
+<td>MatchmakeRefereeClient::<wbr/>StartRound</td>
+<td>MatchmakeRefereeProtocol::<wbr/>StartRound</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id17">
+<h3>9.5.3. Messaging</h3>
+<table border="1" class="docutils" id="id30">
+<caption><span class="caption-text">Table 9.3. Correspondence Table for Messaging Functions</span></caption>
+<colgroup>
+<col width="33%"/>
+<col width="33%"/>
+<col width="33%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Library Function</th>
+<th class="head">Recorded Library Function Name</th>
+<th class="head">Server Function Name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>MessagingClient::<wbr/>SendChat()</td>
+<td>MessagingClient::<wbr/>SendInstant or SendChat</td>
+<td>MessagingProtocol::<wbr/>DeliverMessage</td>
+</tr>
+<tr class="row-odd"><td>MessagingClient::<wbr/>SendInstant()</td>
+<td>MessagingClient::<wbr/>SendInstant or SendChat</td>
+<td>MessagingProtocol::<wbr/>DeliverMessage</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">Error simulation cannot be used with the <code>MessagingClient::SendInstant()</code> and <code>MessagingClient::SendChat()</code> functions. Any error simulation settings registered for these functions are ignored.</p>
+</div>
+</div>
+<div class="section" id="nat">
+<h3>9.5.4. NAT Traversal</h3>
+<table border="1" class="docutils" id="id31">
+<caption><span class="caption-text">Table 9.4. Correspondence Table for NAT Transversal Functions</span></caption>
+<colgroup>
+<col width="33%"/>
+<col width="33%"/>
+<col width="33%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Library Function</th>
+<th class="head">Recorded Library Function Name</th>
+<th class="head">Server Function Name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>When using NAT traversal</td>
+<td>[NAT Traversal]</td>
+<td>SecureConnectionInternalProtocol::<wbr/>UpdateConnectionProperties</td>
+</tr>
+<tr class="row-odd"><td>When using NAT traversal</td>
+<td>[NAT Traversal]</td>
+<td>SecureConnectionInternalProtocol::<wbr/>ReplaceConnectionProperties</td>
+</tr>
+<tr class="row-even"><td>When using NAT traversal</td>
+<td>[NAT Traversal]</td>
+<td>NATTraversalReportInternalProtocol::<wbr/>ReportNATTraversalResult</td>
+</tr>
+<tr class="row-odd"><td>When using NAT traversal</td>
+<td>[NAT Traversal]</td>
+<td>NATTraversalReportInternalProtocol::<wbr/>ReportNATTraversalResultDetail</td>
+</tr>
+<tr class="row-even"><td>ConnectivityManager::<wbr/>StartNATSession()</td>
+<td>ConnectivityManager::<wbr/>StartNATSession</td>
+<td>NATTraversalReportInternalProtocol::<wbr/>ReportNATProperties See note 1.</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>Note 1:</strong> Only called the first time <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_connectivity_manager.html#ad90552d393fe63e009e5a20327c0cea7">ConnectivityManager::StartNATSession()</a></code> is called after logging in.</li>
+</ul>
+</div>
+<div class="section" id="id18">
+<h3>9.5.5. Ranking</h3>
+<table border="1" class="docutils" id="id32">
+<caption><span class="caption-text">Table 9.5. Correspondence Table for Ranking Functions</span></caption>
+<colgroup>
+<col width="33%"/>
+<col width="33%"/>
+<col width="33%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Library Function</th>
+<th class="head">Recorded Library Function Name</th>
+<th class="head">Server Function Name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>RankingClient::<wbr/>UploadScore()</td>
+<td>RankingClient::<wbr/>UploadScore</td>
+<td>RankingProtocol::<wbr/>UploadScore</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">RankingClient::<wbr/>DeleteScore()</div>
+<div class="line">Category specified.</div>
+</div>
+</td>
+<td>RankingClient::<wbr/>DeleteScore(SingleCategory)</td>
+<td>RankingProtocol::<wbr/>DeleteScore</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">RankingClient::<wbr/>DeleteScore()</div>
+<div class="line">All categories.</div>
+</div>
+</td>
+<td>RankingClient::<wbr/>DeleteScores(AllCategory)</td>
+<td>RankingProtocol::<wbr/>DeleteAllScores</td>
+</tr>
+<tr class="row-odd"><td>RankingClient::<wbr/>UploadCommonData()</td>
+<td>RankingClient::<wbr/>UploadCommonData</td>
+<td>RankingProtocol::<wbr/>UploadCommonData</td>
+</tr>
+<tr class="row-even"><td>RankingClient::<wbr/>DeleteCommonData()</td>
+<td>RankingClient::<wbr/>DeleteCommonData</td>
+<td>RankingProtocol::<wbr/>DeleteCommonData</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">RankingClient::<wbr/>ChangeAttributes()</div>
+<div class="line">Category specified.</div>
+</div>
+</td>
+<td>RankingClient::<wbr/>ChangeAttributes(SingleCategory)</td>
+<td>RankingProtocol::<wbr/>ChangeAttributes</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">RankingClient::<wbr/>ChangeAttributes()</div>
+<div class="line">All categories.</div>
+</div>
+</td>
+<td>RankingClient::<wbr/>ChangeAttributes(AllCategory)</td>
+<td>RankingProtocol::<wbr/>ChangeAllAttributes</td>
+</tr>
+<tr class="row-odd"><td>RankingClient::<wbr/>GetCommonData()</td>
+<td>RankingClient::<wbr/>GetCommonData</td>
+<td>RankingProtocol::<wbr/>GetCommonData</td>
+</tr>
+<tr class="row-even"><td>RankingClient::<wbr/>GetRanking()</td>
+<td>RankingClient::<wbr/>GetRanking</td>
+<td>RankingProtocol::<wbr/>GetRanking</td>
+</tr>
+<tr class="row-odd"><td>RankingClient::<wbr/>GetCachedTopXRankings()</td>
+<td>RankingClient::<wbr/>GetCachedTopXRankings</td>
+<td>RankingProtocol::<wbr/>GetCachedTopXRankings</td>
+</tr>
+<tr class="row-even"><td>RankingClient::<wbr/>GetCachedTopXRanking()</td>
+<td>RankingClient::<wbr/>GetCachedTopXRanking</td>
+<td>RankingProtocol::<wbr/>GetCachedTopXRanking</td>
+</tr>
+<tr class="row-odd"><td>RankingClient::<wbr/>GetApproxOrder()</td>
+<td>RankingClient::<wbr/>GetApproxOrder</td>
+<td>RankingProtocol::<wbr/>GetApproxOrder</td>
+</tr>
+<tr class="row-even"><td>RankingClient::<wbr/>GetStats()</td>
+<td>RankingClient::<wbr/>GetStats</td>
+<td>RankingProtocol::<wbr/>GetStats</td>
+</tr>
+<tr class="row-odd"><td>RankingClient::<wbr/>GetRankingByPIDList()</td>
+<td>RankingClient::<wbr/>GetRankingByPIDList</td>
+<td>RankingProtocol::<wbr/>GetRankingByPIDList</td>
+</tr>
+<tr class="row-even"><td>RankingClient::<wbr/>GetRankingByUniqueIdList()</td>
+<td>RankingClient::<wbr/>GetRankingByUniqueIdList</td>
+<td>RankingProtocol::<wbr/>GetRankingByUniqueIdList</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id19">
+<h3>9.5.6. Ranking2</h3>
+<table border="1" class="docutils" id="id33">
+<caption><span class="caption-text">Table 9.6. Correspondence Table for Ranking2 Functions</span></caption>
+<colgroup>
+<col width="33%"/>
+<col width="33%"/>
+<col width="33%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Library Function</th>
+<th class="head">Recorded Library Function Name</th>
+<th class="head">Server Function Name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">Ranking2Client::<wbr/>PutScore()</div>
+<div class="line">One specified.</div>
+</div>
+</td>
+<td>Ranking2Client::<wbr/>PutScore</td>
+<td>Ranking2Protocol::<wbr/>PutScore</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">Ranking2Client::<wbr/>PutScore()</div>
+<div class="line">Multiple specified.</div>
+</div>
+</td>
+<td>Ranking2Client::<wbr/>PutScore(Multiple)</td>
+<td>Ranking2Protocol::<wbr/>PutScore</td>
+</tr>
+<tr class="row-even"><td>Ranking2Client::<wbr/>GetCommonData()</td>
+<td>Ranking2Client::<wbr/>GetCommonData</td>
+<td>Ranking2Protocol::<wbr/>GetCommonData</td>
+</tr>
+<tr class="row-odd"><td>Ranking2Client::<wbr/>PutCommonData()</td>
+<td>Ranking2Client::<wbr/>PutCommonData</td>
+<td>Ranking2Protocol::<wbr/>PutCommonData</td>
+</tr>
+<tr class="row-even"><td>Ranking2Client::<wbr/>DeleteCommonData()</td>
+<td>Ranking2Client::<wbr/>DeleteCommonData</td>
+<td>Ranking2Protocol::<wbr/>DeleteCommonData</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">Ranking2Client::<wbr/>GetRanking()</div>
+<div class="line">Ranking2GetParam specified.</div>
+</div>
+</td>
+<td>Ranking2Client::<wbr/>GetRanking(Ranking2GetParam)</td>
+<td>Ranking2Protocol::<wbr/>GetRanking</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">Ranking2Client::<wbr/>GetRanking()</div>
+<div class="line">Ranking2GetByListParam specified.</div>
+</div>
+</td>
+<td>Ranking2Client::<wbr/>GetRanking(Ranking2GetByListParam)</td>
+<td>Ranking2Protocol::<wbr/>GetRankingByPrincipalId</td>
+</tr>
+<tr class="row-odd"><td>Ranking2Client::<wbr/>GetCategorySetting()</td>
+<td>Ranking2Client::<wbr/>GetCategorySetting</td>
+<td>Ranking2Protocol::<wbr/>GetCategorySetting</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">Ranking2Client::<wbr/>GetRankingChart()</div>
+<div class="line">Single chart specified.</div>
+</div>
+</td>
+<td>Ranking2Client::<wbr/>GetRankingChart(Single)</td>
+<td>Ranking2Protocol::<wbr/>GetRankingChart</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">Ranking2Client::<wbr/>GetRankingChart()</div>
+<div class="line">Multiple charts specified.</div>
+</div>
+</td>
+<td>Ranking2Client::<wbr/>GetRankingChart(Multiple)</td>
+<td>Ranking2Protocol::<wbr/>GetRankingCharts</td>
+</tr>
+<tr class="row-even"><td>Ranking2Client::<wbr/>GetEstimateScoreRank()</td>
+<td>Ranking2Client::<wbr/>GetEstimateScoreRank</td>
+<td>Ranking2Protocol::<wbr/>GetEstimateScoreRank</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id20">
+<h3>9.5.7. DataStore</h3>
+<table border="1" class="docutils" id="id34">
+<caption><span class="caption-text">Table 9.7. Correspondence Table for Data Store Functions</span></caption>
+<colgroup>
+<col width="33%"/>
+<col width="33%"/>
+<col width="33%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Library Function</th>
+<th class="head">Recorded Library Function Name</th>
+<th class="head">Server Function Name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>ChangeMeta()</div>
+<div class="line">One specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>ChangeMeta(Single)</td>
+<td>DataStoreProtocol::<wbr/>ChangeMeta</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>ChangeMeta()</div>
+<div class="line">Multiple specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>ChangeMeta(Multiple)</td>
+<td>DataStoreProtocol::<wbr/>ChangeMetas</td>
+</tr>
+<tr class="row-even"><td>DataStoreClient::<wbr/>CompleteSuspendedPostObject()</td>
+<td>DataStoreClient::<wbr/>CompleteSuspendedPostObject</td>
+<td>DataStoreProtocol::<wbr/>CompletePostObjects</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>DeleteObject()</div>
+<div class="line">One specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>DeleteObject(Single)</td>
+<td>DataStoreProtocol::<wbr/>DeleteObject</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>DeleteObject()</div>
+<div class="line">Multiple specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>DeleteObject(Multiple)</td>
+<td>DataStoreProtocol::<wbr/>DeleteObjects</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>GetMeta()</div>
+<div class="line">One specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>GetMeta(Single)</td>
+<td>DataStoreProtocol::<wbr/>GetMeta</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>GetMeta()</div>
+<div class="line">Multiple data IDs specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>GetMeta(MultipleDataId)</td>
+<td>DataStoreProtocol::<wbr/>GetMetas</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>GetMeta()</div>
+<div class="line">Multiple <code>DataStoreGetMetaParam</code> specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>GetMeta(MultipleParam)</td>
+<td>DataStoreProtocol::<wbr/>GetMetasMultipleParam</td>
+</tr>
+<tr class="row-even"><td>DataStoreClient::<wbr/>GetObject()</td>
+<td>DataStoreClient::<wbr/>GetObject</td>
+<td>DataStoreProtocol::<wbr/>PrepareGetObject</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>GetPasswordInfo()</div>
+<div class="line">One specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>GetPasswordInfo(Single)</td>
+<td>DataStoreProtocol::<wbr/>GetPasswordInfo</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>GetPasswordInfo()</div>
+<div class="line">Multiple specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>GetPasswordInfo(Multiple)</td>
+<td>DataStoreProtocol::<wbr/>GetPasswordInfos</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>GetPersistenceInfo()</div>
+<div class="line">One specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>GetPersistenceInfo(Single)</td>
+<td>DataStoreProtocol::<wbr/>GetPersistenceInfo</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>GetPersistenceInfo()</div>
+<div class="line">Multiple specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>GetPersistenceInfo(Multiple)</td>
+<td>DataStoreProtocol::<wbr/>GetPersistenceInfos</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>GetRating()</div>
+<div class="line">One specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>GetRating(Single)</td>
+<td>DataStoreProtocol::<wbr/>GetRating</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>GetRating()</div>
+<div class="line">Multiple specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>GetRating(Multiple)</td>
+<td>DataStoreProtocol::<wbr/>GetRatings</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>GetRating()</div>
+<div class="line">One specified + ratings log.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>GetRating(WithLog)</td>
+<td>DataStoreProtocol::<wbr/>GetRatingWithLog</td>
+</tr>
+<tr class="row-even"><td>DataStoreClient::<wbr/>PerpetuateObject()</td>
+<td>DataStoreClient::<wbr/>PerpetuateObject</td>
+<td>DataStoreProtocol::<wbr/>PerpetuateObject</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>PostObject()</div>
+<div class="line">Meta only.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>PostObject(MetaOnly)</td>
+<td>DataStoreProtocol::<wbr/>PostMetaBinary</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>PostObject()</div>
+<div class="line">Data upload ①</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>PostObject(1) See note 1.</td>
+<td>DataStoreProtocol::<wbr/>PreparePostObject</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>PostObject()</div>
+<div class="line">Data upload ②</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>PostObject(2) See note 1.</td>
+<td>DataStoreProtocol::<wbr/>CompletePostObject</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>PostObject()</div>
+<div class="line">Single meta upload, with data ID specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>PostObject(SingleMetaWithDataId)</td>
+<td>DataStoreProtocol::<wbr/>PostMetaBinaryWithDataId</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>PostObject()</div>
+<div class="line">Multiple meta upload, with data ID specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>PostObject(MultipleMetaWithDataId)</td>
+<td>DataStoreProtocol::<wbr/>PostMetaBinariesWithDataId</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>RateObject()</div>
+<div class="line">One specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>RateObject(Single)</td>
+<td>DataStoreProtocol::<wbr/>RateObject</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>RateObject()</div>
+<div class="line">Multiple specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>RateObject(Multiple)</td>
+<td>DataStoreProtocol::<wbr/>RateObjects</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>RateObjectWithPosting()</div>
+<div class="line">One specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>RateObjectWithPosting(Single)</td>
+<td>DataStoreProtocol::<wbr/>RateObjectWithPosting</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>RateObjectWithPosting()</div>
+<div class="line">Multiple specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>RateObjectWithPosting(Multiple)</td>
+<td>DataStoreProtocol::<wbr/>RateObjectsWithPosting</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>ResetRating()</div>
+<div class="line">One specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>ResetRating(Single)</td>
+<td>DataStoreProtocol::<wbr/>ResetRating</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>ResetRating()</div>
+<div class="line">Multiple specified.</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>ResetRating(Multiple)</td>
+<td>DataStoreProtocol::<wbr/>ResetRatings</td>
+</tr>
+<tr class="row-even"><td>DataStoreClient::<wbr/>SearchObject()</td>
+<td>DataStoreClient::<wbr/>SearchObject</td>
+<td>DataStoreProtocol::<wbr/>SearchObject</td>
+</tr>
+<tr class="row-odd"><td>DataStoreClient::<wbr/>SearchObjectLight()</td>
+<td>DataStoreClient::<wbr/>SearchObjectLight</td>
+<td>DataStoreProtocol::<wbr/>SearchObjectLight</td>
+</tr>
+<tr class="row-even"><td>DataStoreClient::<wbr/>TouchObject()</td>
+<td>DataStoreClient::<wbr/>TouchObject</td>
+<td>DataStoreProtocol::<wbr/>TouchObject</td>
+</tr>
+<tr class="row-odd"><td>DataStoreClient::<wbr/>UnperpetuateObject()</td>
+<td>DataStoreClient::<wbr/>UnperpetuateObject</td>
+<td>DataStoreProtocol::<wbr/>UnperpetuateObject</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>UpdateObject()</div>
+<div class="line">Data update ①</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>UpdateObject(1) See note 2.</td>
+<td>DataStoreProtocol::<wbr/>PrepareUpdateObject</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">DataStoreClient::<wbr/>UpdateObject()</div>
+<div class="line">Data update ②</div>
+</div>
+</td>
+<td>DataStoreClient::<wbr/>UpdateObject(2) See note 2.</td>
+<td>DataStoreProtocol::<wbr/>CompleteUpdateObject</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>Note 1:</strong> Each call to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#a6572e177409bcd6eca95166339e1adf0">DataStoreClient::PostObject()</a></code> invokes one call each to (1) and (2).</li>
+<li><strong>Note 2:</strong> Each call to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#af1a6275ca310b2f4aa8dbf2111bc5f8a">DataStoreClient::UpdateObject()</a></code> invokes one call each to (1) and (2).</li>
+</ul>
+</div>
+<div class="section" id="id21">
+<h3>9.5.8. Subscribers</h3>
+<table border="1" class="docutils" id="id35">
+<caption><span class="caption-text">Table 9.8. Correspondence Table for Subscriber Functions</span></caption>
+<colgroup>
+<col width="33%"/>
+<col width="33%"/>
+<col width="33%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Library Function</th>
+<th class="head">Recorded Library Function Name</th>
+<th class="head">Server Function Name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>SubscriberClient::<wbr/>PostContent()</td>
+<td>SubscriberClient::<wbr/>PostContent</td>
+<td>SubscriberProtocol::<wbr/>PostContent</td>
+</tr>
+<tr class="row-odd"><td>SubscriberClient::<wbr/>DeleteContent()</td>
+<td>SubscriberClient::<wbr/>DeleteContent</td>
+<td>SubscriberProtocol::<wbr/>DeleteContent</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">SubscriberClient::<wbr/>GetContent()</div>
+<div class="line">Single topic specified.</div>
+</div>
+</td>
+<td>SubscriberClient::<wbr/>GetContent(Single)</td>
+<td>SubscriberProtocol::<wbr/>GetContent</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">SubscriberClient::<wbr/>GetContent()</div>
+<div class="line">Multiple topics specified.</div>
+</div>
+</td>
+<td>SubscriberClient::<wbr/>GetContent(Multiple)</td>
+<td>SubscriberProtocol::<wbr/>GetContentMulti</td>
+</tr>
+<tr class="row-even"><td>SubscriberClient::<wbr/>GetFriendUserStatuses()</td>
+<td>SubscriberClient::<wbr/>GetFriendUserStatuses See note 1.</td>
+<td>SubscriberProtocol::<wbr/>GetFriendUserStatuses</td>
+</tr>
+<tr class="row-odd"><td>SubscriberClient::<wbr/>GetUserStatuses()</td>
+<td>SubscriberClient::<wbr/>GetUserStatuses See note 1.</td>
+<td>SubscriberProtocol::<wbr/>GetUserStatuses</td>
+</tr>
+<tr class="row-even"><td>SubscriberClient::<wbr/>UpdateUserStatus()</td>
+<td>SubscriberClient::<wbr/>UpdateUserStatus See note 1.</td>
+<td>SubscriberProtocol::<wbr/>UpdateUserStatus</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><strong>Note 1:</strong> If caching is enabled, the function is automatically called by the library.</li>
+</ul>
+</div>
+<div class="section" id="id22">
+<h3>9.5.9. Utilities</h3>
+<table border="1" class="docutils" id="id36">
+<caption><span class="caption-text">Table 9.9. Correspondence Table for Utility Functions</span></caption>
+<colgroup>
+<col width="33%"/>
+<col width="33%"/>
+<col width="33%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Library Function</th>
+<th class="head">Recorded Library Function Name</th>
+<th class="head">Server Function Name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>UtilityClient::<wbr/>AcquireNexUniqueId()</td>
+<td>UtilityClient::<wbr/>AcquireNexUniqueId</td>
+<td>UtilityProtocol::<wbr/>AcquireNexUniqueId</td>
+</tr>
+<tr class="row-odd"><td>UtilityClient::<wbr/>AcquireNexUniqueIdWithPassword()</td>
+<td>UtilityClient::<wbr/>AcquireNexUniqueIdWithPassword</td>
+<td>UtilityProtocol::<wbr/>AcquireNexUniqueIdWithPassword</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">UtilityClient::<wbr/>AssociateNexUniqueIdWithMyPrincipalId()</div>
+<div class="line">Single NEX unique ID specified.</div>
+</div>
+</td>
+<td>UtilityClient::<wbr/>AssociateNexUniqueIdWithMyPrincipalId(Single)</td>
+<td>UtilityProtocol::<wbr/>AssociateNexUniqueIdWithMyPrincipalId</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">UtilityClient::<wbr/>AssociateNexUniqueIdWithMyPrincipalId()</div>
+<div class="line">Multiple NEX unique IDs specified.</div>
+</div>
+</td>
+<td>UtilityClient::<wbr/>AssociateNexUniqueIdWithMyPrincipalId(Multiple)</td>
+<td>UtilityProtocol::<wbr/>AssociateNexUniqueIdsWithMyPrincipalId</td>
+</tr>
+<tr class="row-even"><td><div class="first last line-block">
+<div class="line">UtilityClient::<wbr/>GetAssociatedNexUniqueIdWithMyPrincipalId()</div>
+<div class="line">Get the primary associated NEX unique ID.</div>
+</div>
+</td>
+<td>UtilityClient::<wbr/>GetAssociatedNexUniqueIdWithMyPrincipalId(Primary)</td>
+<td>UtilityProtocol::<wbr/>GetAssociatedNexUniqueIdWithMyPrincipalId</td>
+</tr>
+<tr class="row-odd"><td><div class="first last line-block">
+<div class="line">UtilityClient::<wbr/>GetAssociatedNexUniqueIdWithMyPrincipalId()</div>
+<div class="line">Get multiple associated NEX unique IDs.</div>
+</div>
+</td>
+<td>UtilityClient::<wbr/>GetAssociatedNexUniqueIdWithMyPrincipalId(All)</td>
+<td>UtilityProtocol::<wbr/>GetAssociatedNexUniqueIdsWithMyPrincipalId</td>
+</tr>
+<tr class="row-even"><td>UtilityClient::<wbr/>GetIntegerSettings()</td>
+<td>UtilityClient::<wbr/>GetIntegerSettings</td>
+<td>UtilityProtocol::<wbr/>GetIntegerSettings</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id23">
+<h3>9.5.10. Debug Assistance</h3>
+<table border="1" class="docutils" id="id37">
+<caption><span class="caption-text">Table 9.10. Correspondence Table for Debug Assistance Functions</span></caption>
+<colgroup>
+<col width="33%"/>
+<col width="33%"/>
+<col width="33%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Library Function</th>
+<th class="head">Recorded Library Function Name</th>
+<th class="head">Server Function Name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>DebugClient::<wbr/>DisableApiRecorder()</td>
+<td>DebugClient::<wbr/>DisableApiRecorder</td>
+<td>DebugProtocol::<wbr/>DisableApiRecorder</td>
+</tr>
+<tr class="row-odd"><td>DebugClient::<wbr/>EnableApiRecorder()</td>
+<td>DebugClient::<wbr/>EnableApiRecorder</td>
+<td>DebugProtocol::<wbr/>EnableApiRecorder</td>
+</tr>
+<tr class="row-even"><td>DebugClient::<wbr/>GetApiCalls()</td>
+<td>DebugClient::<wbr/>GetApiCalls</td>
+<td>DebugProtocol::<wbr/>GetApiCalls</td>
+</tr>
+<tr class="row-odd"><td>DebugClient::<wbr/>GetApiCallSummary()</td>
+<td>DebugClient::<wbr/>GetApiCallSummary</td>
+<td>DebugProtocol::<wbr/>GetApiCallSummary</td>
+</tr>
+<tr class="row-even"><td>DebugClient::<wbr/>IsApiRecorderEnabled()</td>
+<td>DebugClient::<wbr/>IsApiRecorderEnabled</td>
+<td>DebugProtocol::<wbr/>IsApiRecorderEnabled</td>
+</tr>
+<tr class="row-odd"><td>DebugClient::<wbr/>GetExcludeJoinedMatchmakeSession()</td>
+<td>DebugClient::<wbr/>GetExcludeJoinedMatchmakeSession</td>
+<td>DebugProtocol::<wbr/>GetExcludeJoinedMatchmakeSession</td>
+</tr>
+<tr class="row-even"><td>DebugClient::<wbr/>SetExcludeJoinedMatchmakeSession()</td>
+<td>DebugClient::<wbr/>SetExcludeJoinedMatchmakeSession</td>
+<td>DebugProtocol::<wbr/>SetExcludeJoinedMatchmakeSession</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

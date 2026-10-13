@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>4. Matchmaking — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="matchmake-top">
+<span id="id1"></span><h1>4. Matchmaking</h1>
+<div class="section" id="matchmake-brief">
+<span id="id2"></span><h2>4.1. What Is Matchmaking?</h2>
+<p>Matchmaking is a multiplayer introduction feature that finds partners on the Internet for a user to play with.</p>
+<p>With NEX, a group of users is called a <em>gathering</em>, and a gathering of users that are playing together or cooperating with each other through matchmaking is called a <em>matchmaking session</em>. This concept is independent of a P2P session.</p>
+<p>During matchmaking, you can search for and join matchmaking sessions that match conditions specified by the application. For example, you can search for matchmaking sessions created by a friend or search for matchmaking sessions that have attribute values that the application has independently specified. You can also search for matchmaking sessions by specifying a partner.</p>
+<p>Depending on the application, a single user can create and join multiple matchmaking sessions. For example, you could use one matchmaking session to manage P2P communications, another matchmaking session to manage teams, and yet another matchmaking session for messaging between friends. For more information about using matchmaking sessions to manage teams, see <a class="reference internal" href="#team-matchmake"><span class="std std-ref">4.10. Joining Multiple Users at the Same Time to a Matchmaking Session</span></a>.</p>
+<p>With NEX, the owner of the matchmaking session is called the owner, and the representative terminal that is receiving participation from other terminals with P2P communication is called the host.</p>
+<p>To group users on a broader basis than a single matchmaking session, use a persistent gathering. For more information, see <a class="reference internal" href="#matchmake-persistent-gathering"><span class="std std-ref">4.17</span></a>. With matchmaking sessions, users automatically leave the session when they log out from the server. With persistent gatherings, however, you can keep users grouped in the gathering even if they log out.</p>
+<p>Matchmaking includes support for PUSH event notifications through the game server, instant messaging, and a feature for impartially recording match results.</p>
+</div>
+<div class="section" id="matchmake-overview">
+<span id="id3"></span><h2>4.2. Overall Matchmaking Flow</h2>
+<p>The following steps show the overall flow of the matchmaking process.</p>
+<ol class="arabic simple">
+<li>Log in to the game server.</li>
+<li>Initialize a service client. For more information, see <a class="reference internal" href="#matchmake-initialize"><span class="std std-ref">4.3</span></a>.</li>
+<li>Register a matchmaking session. Alternatively, search for a matchmaking session to join. For more information, see <a class="reference internal" href="#matchmake-create"><span class="std std-ref">4.4</span></a>, <a class="reference internal" href="#matchmake-search"><span class="std std-ref">4.5</span></a>, and <a class="reference internal" href="#matchmake-join"><span class="std std-ref">4.6</span></a>.</li>
+<li>Establish mutual connections between the participants of the matchmaking session, using the P2P library.</li>
+<li>Leave the matchmaking session. Delete the session if it is unnecessary. For more information, see <a class="reference internal" href="#matchmake-end"><span class="std std-ref">4.7</span></a> and <a class="reference internal" href="#matchmake-update-unregister"><span class="std std-ref">4.15.7</span></a>.</li>
+<li>Finalize the service client, and log out from the game server. Alternatively, return to step 3.</li>
+</ol>
+</div>
+<div class="section" id="matchmake-initialize">
+<span id="id4"></span><h2>4.3. Initializing and Finalizing a Service Client</h2>
+<p>NEX communicates with game servers through service client APIs that support the services provided by the game servers, such as matchmaking, rankings, and instant messaging. To initialize each of the service clients, you must set a pointer to a valid <code>Credential</code> object in the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_service_client.html#a508e73b62eabce5933e66988331a4830">ServiceClient::Bind</a>()</code> function. The following three classes derived from <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_service_client.html">ServiceClient</a></code> are the service clients used for matchmaking.</p>
+<ul class="simple">
+<li><code><strong><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html">MatchmakeExtensionClient</a></strong></code>: Registers, searches for, joins, and handles other similar operations for matchmaking sessions.</li>
+<li><code><strong><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_n_a_t_traversal_client.html">NATTraversalClient</a></strong></code>: Performs NAT traversal. This class is automatically used within the library except during initialization and shutdown.</li>
+<li><code><strong><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_messaging_client.html">MessagingClient</a></strong></code>: Sends and receives instant messages. This class is not needed if instant messaging is not used.</li>
+</ul>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_back_end_services.html#a7d5de88a29fbc87dd954da59dbe716dc">NgsFacade::GetCredentials</a>()</code> function to get the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_credentials.html">Credentials</a></code> object after you log in to the game server. Before logging out from the game server, destroy the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_service_client.html">ServiceClient</a> object. For more information, see <a class="reference internal" href="#matchmake-code-initialize"><span class="std std-ref">Code 4.1</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="id54">
+<span id="matchmake-code-initialize"></span><div class="code-block-caption"><span class="caption-text">Code 4.1. Initializing and Finalizing Service Clients</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// Log in to the game server.</span>
+<span class="n">LoginGameServer</span><span class="p">(</span><span class="n">pNgsFacade</span><span class="p">);</span>
+<span class="n">Credentials</span><span class="o">*</span> <span class="n">pCredentials</span> <span class="o">=</span> <span class="n">pNgsFacade</span><span class="o">-&gt;</span><span class="n">GetCredentials</span><span class="p">();</span>
+
+<span class="c1">// Create a ServiceClient instance for each login attempt.</span>
+<span class="n">MatchmakeExtensionClient</span><span class="o">*</span> <span class="n">pClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MatchmakeExtensionClient</span><span class="p">();</span>
+<span class="n">pClient</span><span class="o">-&gt;</span><span class="n">Bind</span><span class="p">(</span><span class="n">pCredentials</span><span class="p">);</span>
+
+<span class="c1">// Do the processing.</span>
+<span class="n">pClient</span><span class="o">-&gt;</span><span class="n">DoSomething</span><span class="p">();</span>
+
+<span class="c1">// Destroy the object before logout.</span>
+<span class="k">delete</span> <span class="n">pClient</span><span class="p">;</span>
+
+<span class="c1">// Log out.</span>
+<span class="n">LogoutGameServer</span><span class="p">(</span><span class="n">pNgsFacade</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="matchmake-create">
+<span id="id5"></span><h2>4.4. Registering a Matchmaking Session</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#af971831a2fa90c7e2196a7ceb001ccae">MatchmakeExtensionClient::CreateMatchmakeSession()</a></code> function to register a matchmaking session on a game server. For more information, see <a class="reference internal" href="#matchmake-code-create"><span class="std std-ref">Code 4.2</span></a>. The client that calls the <code>CreateMatchmakeSession()</code> function automatically joins the matchmaking session as its owner and P2P communication host. The terminal that is not the matchmaking session owner must call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a94f4b05ed49a70b9fbf78286fb508172">MatchMakingClient::UpdateSessionHost</a>()</code> function to become the P2P communication host.</p>
+<p>After you have finished registering a matchmaking session, create a P2P session and wait for other participants to join it. For more information, see the P2P library documentation.</p>
+<div class="literal-block-wrapper docutils container" id="id55">
+<span id="matchmake-code-create"></span><div class="code-block-caption"><span class="caption-text">Code 4.2. Configuring and Registering a Matchmaking Session</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">s_gameMode</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="kt">uint16_t</span> <span class="n">s_MaxParticipations</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+
+<span class="n">MatchmakeExtensionClient</span> <span class="n">matchmakeClient</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">ExecuteCreateMatchmakeSession</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">// Set the conditions for the matchmaking session.</span>
+    <span class="n">MatchmakeSession</span> <span class="n">matchmakeSession</span><span class="p">;</span>
+    <span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetGameMode</span><span class="p">(</span><span class="n">s_gameMode</span><span class="p">);</span>
+    <span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetAttribute</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+    <span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetMatchmakeSystemType</span><span class="p">(</span><span class="n">MATCHMAKE_SYSTEM_TYPE_ANYBODY</span><span class="p">);</span>
+    <span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetMaxParticipants</span><span class="p">(</span><span class="n">s_MaxParticipations</span><span class="p">);</span>
+    <span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetFlag</span><span class="p">(</span><span class="n">GatheringFlags</span><span class="o">::</span><span class="n">MigrateOwner</span><span class="p">);</span>
+
+    <span class="n">qVector</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span> <span class="n">applicationBuffer</span><span class="p">;</span>
+    <span class="n">applicationBuffer</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetApplicationBuffer</span><span class="p">(</span><span class="n">applicationBuffer</span><span class="p">);</span>
+    <span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetDescription</span><span class="p">(</span><span class="n">NEX_T</span><span class="p">(</span><span class="s">"Description"</span><span class="p">));</span>
+    <span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetOpenParticipation</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
+
+    <span class="n">CreateMatchmakeSessionParam</span> <span class="n">createMatchmakeSessionParam</span><span class="p">;</span>
+    <span class="n">createMatchmakeSessionParam</span><span class="p">.</span><span class="n">SetSourceMatchmakeSession</span><span class="p">(</span><span class="n">matchmakeSession</span><span class="p">);</span>
+    <span class="n">createMatchmakeSessionParam</span><span class="p">.</span><span class="n">SetJoinMessage</span><span class="p">(</span><span class="n">NEX_T</span><span class="p">(</span><span class="s">"create matchmake session"</span><span class="p">));</span>
+    <span class="n">ProtocolCallContext</span> <span class="n">oContext</span><span class="p">;</span>
+
+    <span class="c1">// Register a matchmaking session with the server, and join a session.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="n">matchmakeClient</span><span class="p">.</span><span class="n">CreateMatchmakeSession</span><span class="p">(</span><span class="o">&amp;</span><span class="n">oContext</span><span class="p">,</span> <span class="n">createMatchmakeSessionParam</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">matchmakeClient</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="c1">// Error processing.</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">// Wait for the result of asynchronous processing.</span>
+    <span class="n">oContext</span><span class="p">.</span><span class="n">Wait</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">oContext</span><span class="p">.</span><span class="n">GetState</span><span class="p">()</span><span class="o">!=</span><span class="n">CallContext</span><span class="o">::</span><span class="n">CallSuccess</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// Error processing.</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="matchmake-search">
+<span id="id6"></span><h2>4.5. Searching for a Matchmaking Session</h2>
+<p>You can use the following functions to search for a matchmaking session.</p>
+<div class="literal-block-wrapper docutils container" id="id56">
+<span id="matchmake-code-search-function"></span><div class="code-block-caption"><span class="caption-text">Code 4.3. Matchmaking Session Search Functions</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// Searching on the specified criteria.</span>
+<span class="kt">bool</span> <span class="n">MatchmakeExtensionClient</span><span class="o">::</span><span class="n">BrowseMatchmakeSession</span><span class="p">(</span>
+            <span class="n">ProtocolCallContext</span> <span class="o">*</span><span class="n">pContext</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">MatchmakeSessionSearchCriteria</span><span class="o">&amp;</span> <span class="n">searchCriteria</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ResultRange</span><span class="o">&amp;</span> <span class="n">resultRange</span><span class="p">,</span>
+            <span class="n">qList</span><span class="o">&lt;</span><span class="n">MatchmakeSession</span><span class="o">&gt;*</span> <span class="n">lstGathering</span><span class="p">);</span>
+
+<span class="c1">// Also, get URLs of the P2P communication hosts that match the specified search conditions.</span>
+<span class="kt">bool</span> <span class="n">MatchmakeExtensionClient</span><span class="o">::</span><span class="n">BrowseMatchmakeSession</span><span class="p">(</span>
+            <span class="n">ProtocolCallContext</span> <span class="o">*</span><span class="n">pContext</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">MatchmakeSessionSearchCriteria</span><span class="o">&amp;</span> <span class="n">searchCriteria</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ResultRange</span><span class="o">&amp;</span> <span class="n">resultRange</span><span class="p">,</span>
+            <span class="n">qList</span><span class="o">&lt;</span><span class="n">MatchmakeSession</span><span class="o">&gt;*</span> <span class="n">lstGathering</span><span class="p">,</span>
+            <span class="n">qList</span><span class="o">&lt;</span><span class="n">GatheringURLs</span><span class="o">&gt;*</span> <span class="n">lstGatheringURLs</span><span class="p">);</span>
+
+<span class="c1">// Searching on a matchmaking session ID.</span>
+<span class="kt">bool</span> <span class="n">MatchmakeExtensionClient</span><span class="o">::</span><span class="n">FindMatchmakeSessionByGatheringId</span><span class="p">(</span>
+            <span class="n">ProtocolCallContext</span> <span class="o">*</span><span class="n">pContext</span><span class="p">,</span>
+            <span class="n">GatheringID</span> <span class="n">gid</span><span class="p">,</span>
+            <span class="n">MatchmakeSession</span><span class="o">*</span> <span class="n">matchmakeSession</span><span class="p">);</span>
+
+<span class="c1">// Search by the principal ID of the owner.</span>
+<span class="kt">bool</span> <span class="n">MatchmakeExtensionClient</span><span class="o">::</span><span class="n">FindMatchmakeSessionByOwner</span><span class="p">(</span>
+            <span class="n">ProtocolCallContext</span> <span class="o">*</span><span class="n">pContext</span><span class="p">,</span>
+            <span class="n">PrincipalID</span> <span class="n">pidOwner</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">ResultRange</span><span class="o">&amp;</span> <span class="n">resultRange</span><span class="p">,</span>
+            <span class="n">qList</span><span class="o">&lt;</span><span class="n">MatchmakeSession</span><span class="o">&gt;*</span> <span class="n">lstMatchmakeSession</span><span class="p">);</span>
+
+<span class="c1">// Searching on the principal IDs of participants.</span>
+<span class="kt">bool</span> <span class="n">MatchmakeExtensionClient</span><span class="o">::</span><span class="n">FindMatchmakeSessionByParticipant</span><span class="p">(</span>
+            <span class="n">ProtocolCallContext</span> <span class="o">*</span><span class="n">pContext</span><span class="p">,</span>
+            <span class="k">const</span> <span class="n">FindMatchmakeSessionByParticipantParam</span><span class="o">&amp;</span> <span class="n">param</span><span class="p">,</span>
+            <span class="n">qList</span><span class="o">&lt;</span><span class="n">FindMatchmakeSessionByParticipantResult</span><span class="o">&gt;*</span> <span class="n">pFindResultList</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<p>The following pointers are passed to the arguments of the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a5976c36a85bc45f9e39f3e4f27369d67">MatchmakeExtensionClient::BrowseMatchmakeSession()</a></code> function: a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> object, a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html">MatchmakeSessionSearchCriteria</a></code> class object, a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_result_range.html">ResultRange</a></code> class object, and a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_list.html">qList</a>&lt;<a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html">MatchmakeSession</a>&gt;</code> in which to store the search results. For more information about <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html">MatchmakeSessionSearchCriteria</a></code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_result_range.html">ResultRange</a></code>, see <a class="reference internal" href="#matchmake-search-condition"><span class="std std-ref">4.12 Setting the Search Criteria and Range</span></a>.</p>
+<p>There is an overload function in <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a5976c36a85bc45f9e39f3e4f27369d67">MatchmakeExtensionClient::BrowseMatchmakeSession</a>()</code> that also gets the URL of the matchmaking session's peer-to-peer communication host. This function is suited to applications in which the P2P communication host in a single matchmaking session does not change. Conversely, in a single matchmaking session, with applications that anticipate host migration in which the P2P host changes, get the URL of the P2P host with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a12aea48959686e801efb1cd05c350b06">MatchMakingClient::GetSessionURLs</a>()</code> function immediately prior to the P2P communication.</p>
+<p>In addition to searching with specified criteria, you can search with a matchmaking session ID, the principal IDs of participants, and the principal ID of the owner. However, note that you cannot check friend relationships or set any other conditions, such as whether a session is already full.</p>
+<p>Get the list of friends currently online using the device's friend presence functionality and use <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a4d4239193de656663034af8246e88aba">MatchmakeExtensionClient::FindMatchmakeSessionByParticipant</a>()</code> to search for matchmaking sessions in which your own friends are participating.</p>
+<p>Using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a6f3cc3cd79b0cea80e7ee5cc3c628b04">MatchMakingClient::GetDetailedParticipants</a>()</code> function, you can get the detailed information that was registered when participants joined. The principal ID of the participant and the detailed information registered when that participant joined are set in a <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_participant_details.html"><code>ParticipantDetails</code></a> class object.</p>
+<div class="literal-block-wrapper docutils container" id="id57">
+<span id="matchmake-code-search"></span><div class="code-block-caption"><span class="caption-text">Code 4.4. Using Criteria to Search for a Matchmaking Session</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">s_gameMode</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">MatchmakeExtensionClient</span> <span class="n">matchmakeClient</span><span class="p">;</span>
+<span class="kt">void</span> <span class="nf">ExecuteBrowseMatchmakeSession</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">// Set the search criteria.</span>
+    <span class="n">MatchmakeSessionSearchCriteria</span> <span class="n">criteria</span><span class="p">;</span>
+    <span class="n">criteria</span><span class="p">.</span><span class="n">SetGameMode</span><span class="p">(</span><span class="n">s_gameMode</span><span class="p">);</span>
+    <span class="n">criteria</span><span class="p">.</span><span class="n">SetAttribute</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+    <span class="n">criteria</span><span class="p">.</span><span class="n">SetMatchMakeSystemType</span><span class="p">(</span><span class="n">MATCHMAKE_SYSTEM_TYPE_ANYBODY</span><span class="p">);</span>
+    <span class="c1">// The search range. By default, this range has an offset of 0 and holds up to 100 items.</span>
+    <span class="n">ResultRange</span> <span class="n">range</span><span class="p">;</span>
+
+    <span class="c1">// Search for sessions.</span>
+    <span class="n">ProtocolCallContext</span>     <span class="n">oContext</span><span class="p">;</span>
+    <span class="n">qList</span><span class="o">&lt;</span><span class="n">MatchmakeSession</span><span class="o">&gt;</span> <span class="n">lstMatchmakeSession</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">pMatchMakingClient</span><span class="o">-&gt;</span><span class="n">BrowseMatchmakeSession</span><span class="p">(</span><span class="o">&amp;</span><span class="n">oContext</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">range</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">lstMatchmakeSession</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="c1">// Error processing.</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">oContext</span><span class="p">.</span><span class="n">Wait</span><span class="p">();</span>
+     <span class="k">if</span> <span class="p">(</span><span class="n">oContext</span><span class="p">.</span><span class="n">GetState</span><span class="p">()</span><span class="o">!=</span><span class="n">CallContext</span><span class="o">::</span><span class="n">CallSuccess</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// Error processing.</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">// Display the search results.</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">qList</span><span class="o">&lt;</span><span class="n">MatchmakeSession</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">itMatchmakeSession</span> <span class="o">=</span> <span class="n">lstMatchmakeSession</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+         <span class="n">itMatchmakeSession</span> <span class="o">!=</span> <span class="n">lstMatchmakeSession</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="n">itMatchmakeSession</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">NN_LOG</span><span class="p">(</span><span class="s">"GID:%u num of Participant:</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">itMatchmakeSession</span><span class="o">-&gt;</span><span class="n">GetID</span><span class="p">(),</span> <span class="n">itMatchmakeSession</span><span class="o">-&gt;</span><span class="n">GetParticipantCount</span><span class="p">());</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="matchmake-join">
+<span id="id7"></span><h2>4.6. Joining a Matchmaking Session</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a7ed086de4be4e00bdac7b1ab1eecbd8b">MatchmakeExtensionClient::JoinMatchmakeSession</a>()</code> function to join a matchmaking session.</p>
+<p>The game server that accepts the request also confirms the following content. The join process only continues if all conditions are met.</p>
+<ul>
+<li><p class="first">The maximum number of matchmaking session participants is not exceeded.</p>
+</li>
+<li><p class="first">The matchmaking session has not been closed to new participants.</p>
+</li>
+<li><p class="first">The other participants in the matchmaking session are not registered to the blocked-user list of the local system.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_block_list_param.html">MatchmakeBlockListParam</a></code> structure makes it possible for other participants to join matchmaking sessions even if the local system has those users registered on its blocked-user list.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">The local system is not registered to the blocked-user lists of any other participants in the matchmaking session.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_block_list_param.html">MatchmakeBlockListParam</a></code> structure makes it possible for other participants to join matchmaking sessions even if the local system is registered on their blocked-user lists.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>After you have finished joining a matchmaking session, you must join a P2P session separately to run P2P communication. For more information, see the P2P library documentation.</p>
+</div>
+<div class="section" id="matchmake-end">
+<span id="id8"></span><h2>4.7. Leaving a Matchmaking Session</h2>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a53174bea283308375a5c52e38ea33715">MatchMakingClient::EndParticipation</a>()</code> function to leave a matchmaking session. This function takes a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> object, the ID of the matchmaking session to leave, and detailed client information as arguments.</p>
+<p>By default, the matchmaking session is deleted when the owner leaves or logs out. When the <code>GatheringFlags::MigrateOwner</code> gathering flag is set, the ownership of the session is not deleted, and is migrated to another participant. The matchmaking session is deleted, however, if there are no other participants.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">If you have joined a P2P session, you must leave both the matchmaking session and, when necessary, the P2P session. For more information, see the P2P library documentation.</p>
+</div>
+</div>
+<div class="section" id="matchmake-automatch">
+<span id="id9"></span><h2>4.8. Using Automatic Matchmaking</h2>
+<p>When a client uses automatic matchmaking, it joins any matchmaking session that matches the search criteria, or it can register a matchmaking session with those criteria if one does not already exist. You can specify multiple search criteria using a list, and the game server searches by those criteria in order from the start of the list. (The search is halted when a joinable session is found.) A user cannot join the session if the user is registered on the blocked-user list of any of the participants, or if any of the participants is registered on the user's blocked-user list. Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_block_list_param.html">MatchmakeBlockListParam</a></code> structure to change whether the blocked-user list is checked.</p>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a8fb60f3d80bc0aac4218111be9262c05">MatchmakeExtensionClient::AutoMatchmake</a>()</code> function to perform automatic matchmaking. For more information about setting <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html">MatchmakeSession</a></code> conditions, see <a class="reference internal" href="#matchmake-condition"><span class="std std-ref">4.11. Setting Matchmaking Session Criteria</span></a>. For more information about <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html">MatchmakeSessionSearchCriteria</a></code>, see <a class="reference internal" href="#matchmake-search-condition"><span class="std std-ref">4.12. Setting the Search Criteria and Range</span></a>.</p>
+<p>If more than one matchmaking session meets the search criteria, the game server decides which session to join based on the selection method specified by the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html#a68beaf5dfa556090f9b870e3eca886dd">MatchmakeSessionSearchCriteria::SetSelectionMethod</a>()</code> function. The default is random. The <code>MatchmakeSelectionMethod</code> value can be set using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html#a68beaf5dfa556090f9b870e3eca886dd">MatchmakeSessionSearchCriteria::SetSelectionMethod</a>()</code> function. For more information about <code>MatchmakeSelectionMethod</code>, see <a class="reference internal" href="#matchmake-update-selectionmethod"><span class="std std-ref">4.8.1. Selecting the Matchmaking Session</span></a>.</p>
+<p>Session information for a joined or added matchmaking session is set to the <code>MatchmakeSession</code> object passed as a parameter when asynchronous processing succeeds. To determine whether a client registered a new matchmaking session or joined an existing matchmaking session, check whether the return value of the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_gathering.html#ac46e41d3a2df0f1c926b66323833f646">Gathering::GetOwnerPID</a>()</code> function is the same as the principal ID of the local host.</p>
+<div class="section" id="matchmake-update-selectionmethod">
+<span id="id10"></span><h3>4.8.1. Selecting the Matchmaking Session</h3>
+<p>When the auto-matchmaking feature is used, if more than one matchmaking session meets the search criteria, the game server decides which session to join based on the selection method specified by the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html#a68beaf5dfa556090f9b870e3eca886dd">MatchmakeSessionSearchCriteria::SetSelectionMethod</a>()</code> function. The default is random. The <code>MatchmakeSelectionMethod</code> value can be set using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html#a68beaf5dfa556090f9b870e3eca886dd">MatchmakeSessionSearchCriteria::SetSelectionMethod</a>()</code> function. If more than 50 matchmaking sessions meet the search criteria, you can apply the selection method specified by the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html#a68beaf5dfa556090f9b870e3eca886dd">MatchmakeSessionSearchCriteria::SetSelectionMethod</a>()</code> function to any 50 of the sessions.</p>
+<p>If <code>MATCHMAKE_SELECTION_METHOD_RANDOM</code> is specified, the sessions are selected randomly.</p>
+<p>If <code>MATCHMAKE_SELECTION_METHOD_NEAREST_NEIGHBOR</code> is specified, the matchmaking sessions with the closest attribute value to that in the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html">MatchmakeSession</a></code> object, passed as an argument to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a8fb60f3d80bc0aac4218111be9262c05">MatchmakeExtensionClient::AutoMatchmake</a>()</code>, are selected. The attribute value in the <code>MATCHMAKE_SESSION_NEAREST_NEIGHBOR_ATTRIBUTE_INDEX</code> index is used. If more than one matchmaking session has the same attribute value, the matchmaking sessions are selected in order of gathering ID. If more than 50 matchmaking sessions meet the search criteria, the matchmaking sessions with the closest attribute value are not always the ones to be selected.</p>
+<p>If <code>MATCHMAKE_SELECTION_METHOD_BROADEN_RANGE</code> is specified, the matchmaking session is selected using the range broadening method. A "range" refers one set of interger values from a sequence of integers divided into multiple levels based on threshold values. The default setting assumes the use of the Elo rating system, where integers from 0 to 10000 are divided into 12 different levels: 0-1100, 1101-1240, 1241-1400, 1401-1520, 1521-1620, 1621-1720, 1721-1815, 1816-1925, 1926-2040, 2041-2180, 2181-2300, and 2301-10000. Each level is a range. When using the range broadening method, a matchmaking session that has an attribute value within the same range as the attribute value of the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html">MatchmakeSession</a></code> object passed as an argument to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a8fb60f3d80bc0aac4218111be9262c05">MatchmakeExtensionClient::AutoMatchmake</a>()</code> is randomly selected from the matchmaking sessions that meet the search criteria. The attribute value in the <code>MATCHMAKE_SESSION_BROADEN_RANGE_ATTRIBUTE_INDEX</code> index is used. If a matchmaking session in the same range cannot be found, the scope can be expanded to any range adjacent to the current range. A matchmaking session is then randomly selected from the matchmaking sessions that meet the search criteria in the broader range and have the same attribute value in the <code>MATCHMAKE_SESSION_BROADEN_RANGE_ATTRIBUTE_INDEX</code> index. By default, the range is expanded to the two ranges before and after the current range. For example, based on these ranges, if a matchmaking session was not found in the 1401-1520 range, the range would be expanded to 1101-1720. This feature can be used to enable matchmaking with closely-ranked players in games that rank players based on a rating score by, for example, setting the attribute value in the <code>MATCHMAKE_SESSION_BROADEN_RANGE_ATTRIBUTE_INDEX</code> index to the rating score and setting the ranges based on the ranks. Also see <a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-broaden-range"><span class="std std-ref">11.2.2. Functions for the Range-Broadening Auto-Matchmaking Feature</span></a> in the WebAPI documentation.</p>
+<p>If <code>MATCHMAKE_SELECTION_METHOD_PROGRESS_SCORE</code> is specified, the matchmaking session with the closest game progress score to the value set using <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html#a24709765f07c484e847c9f9dc1ec0f1b">MatchmakeSession::SetProgressScore</a>()</code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a537ee191610f3414daad633e358d42a4">MatchmakeExtensionClient::UpdateProgressScore</a>()</code> is selected from the matchmaking sessions that meet the search criteria. This feature is useful when, for example, a game accepts new participants for the next match after the current match has already begun. It allows players to join a match that is almost over rather than one that has just begun, reducing the amount of wait time until the next match. To achieve this result, you would set the game progress score to 0 at the beginning of the match, and use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a537ee191610f3414daad633e358d42a4">MatchmakeExtensionClient::UpdateProgressScore</a>()</code> function to periodically update the game progress as the match progresses. Note that frequently calling <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a537ee191610f3414daad633e358d42a4">MatchmakeExtensionClient::UpdateProgressScore</a>()</code> increases the load on the server. Update the score at an interval of <code>UPDATE_PROGRESS_SCORE_MINIMUM_INTERVAL_TIME</code> seconds or longer.</p>
+<p>If <code>MATCHMAKE_SELECTION_METHOD_BROADEN_RANGE_WITH_PROGRESS_SCORE</code> is specified, the matchmaking session is selected using a combination of range broadening and the game progress score. The matchmaking session that has an attribute value within the same range as the attribute value of the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html">MatchmakeSession</a></code> object passed as an argument to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a8fb60f3d80bc0aac4218111be9262c05">MatchmakeExtensionClient::AutoMatchmake</a>()</code> and that has the highest game progress score is selected from the matchmaking sessions that meet the search criteria. The attribute value in the <code>MATCHMAKE_SESSION_BROADEN_RANGE_ATTRIBUTE_INDEX</code> index is used. If a matchmaking session in the same range cannot be found, the scope can be expanded to any range adjacent to the current range. The matchmaking session with the highest game progress score is then selected from the matchmaking sessions that meet the search criteria in the broader range.</p>
+<p>If <code>MATCHMAKE_SELECTION_METHOD_SCORE_BASED</code> is specified, the best matchmaking session is selected by applying a score to various parameters. By defining the score conversions settings corresponding to each parameter in advance, it compares parameters of the matchmaking sessions matching search criteria against parameters of the user, and selects the matchmaking session with the highest total score. The following parameters can be used.</p>
+<ul class="simple">
+<li>Rating value difference</li>
+<li>Disconnection rate difference</li>
+<li>Violation rate difference</li>
+<li>Distance, accounting for the Internet path</li>
+<li>Country match</li>
+<li>Country match without distance information</li>
+<li>Matchmaking session duration</li>
+<li>Matchmaking session game progress</li>
+</ul>
+<p>You can use multiple score conversion settings by switching a settings index. For example, you can change the assignment of scores by changing the setting index according to the game mode. When multiple <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html">MatchmakeSessionSearchCriteria</a></code> objects are specified, the first criterion is used as the strictest score conversion, the second is used somewhat less strictly, and so on, to enable the best matchmaking session to be found. To use this feature, you must use an overloaded version of the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html#a68beaf5dfa556090f9b870e3eca886dd">MatchmakeSessionSearchCriteria::SetSelectionMethod</a>()</code> function, which takes a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_param.html">MatchmakeParam</a></code> argument. You must also specify the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_param.html">MatchmakeParam</a></code> objects, as is specified for <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html#a68beaf5dfa556090f9b870e3eca886dd">MatchmakeSessionSearchCriteria::SetSelectionMethod</a>()</code>, using <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html#a7d65eb574e5d90d7d476abd2ceb47636">MatchmakeSession::SetMatchmakeParam</a>()</code> for the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html">MatchmakeSession</a></code> object to specify for <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_auto_matchmake_param.html#adcce2f4422383ae7438aa4ab9ee79cf4">AutoMatchmakeParam::SetSourceMatchmakeSession</a></code>. The application must set information for the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_param.html">MatchmakeParam</a></code>, such as the user's own rating value, disconnect rate, violation rate, and country. The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a8fb60f3d80bc0aac4218111be9262c05">MatchmakeExtensionClient::AutoMatchmake</a>()</code> function allows you to get the total score from the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_param.html">MatchmakeParam</a></code> included in the matchmaking session you are participating in. However, if you are the owner of the session, it means no matchmaking occurred, so you cannot get your total score. If the application calculates the rating value, disconnect rate, and violation rate, consider using <code>MatchmakeReferee</code>. Also see <a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-score-based"><span class="std std-ref">11.2.3. Functions for Auto-Matchmaking by Scoring Feature</span></a> in the WebAPI documentation.</p>
+<div class="literal-block-wrapper docutils container" id="id58">
+<div class="code-block-caption"><span class="caption-text">Code 4.5. Using MATCHMAKE_SELECTION_METHOD_SCORE_BASED</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">MatchmakeParam</span> <span class="n">param</span><span class="p">;</span>
+<span class="n">param</span><span class="p">.</span><span class="n">SetSettingIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">param</span><span class="p">.</span><span class="n">SetRatingValue</span><span class="p">(</span><span class="mi">1500</span><span class="p">);</span>
+
+<span class="n">MatchmakeSessionSearchCriteria</span> <span class="n">criteria</span><span class="p">;</span>
+<span class="n">criteria</span><span class="p">.</span><span class="n">SetMatchmakeSystemType</span><span class="p">(</span><span class="n">MATCHMAKE_SYSTEM_TYPE_ANYBODY</span><span class="p">);</span>
+<span class="n">criteria</span><span class="p">.</span><span class="n">SetSelectionMethod</span><span class="p">(</span><span class="n">MATCHMAKE_SELECTION_METHOD_SCORE_BASED</span><span class="p">,</span> <span class="n">param</span><span class="p">);</span>
+<span class="n">qList</span><span class="o">&lt;</span><span class="n">MatchmakeSessionSearchCriteria</span><span class="o">&gt;</span> <span class="n">criteriaList</span><span class="p">;</span>
+<span class="n">criteriaList</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">criteria</span><span class="p">);</span>
+
+<span class="n">MatchmakeSession</span> <span class="n">matchmakeSession</span><span class="p">;</span>
+<span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetGameMode</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetMatchmakeSystemType</span><span class="p">(</span><span class="n">MATCHMAKE_SYSTEM_TYPE_ANYBODY</span><span class="p">);</span>
+<span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetMaxParticipants</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetMatchmakeParam</span><span class="p">(</span><span class="n">param</span><span class="p">);</span>
+
+<span class="n">AutoMatchmakeParam</span> <span class="n">autoMachmakeParam</span><span class="p">;</span>
+<span class="n">autoMachmakeParam</span><span class="p">.</span><span class="n">SetSearchCriteria</span><span class="p">(</span><span class="n">criteria</span><span class="p">);</span>
+<span class="n">autoMachmakeParam</span><span class="p">.</span><span class="n">SetSourceMatchmakeSession</span><span class="p">(</span><span class="n">matchmakeSession</span><span class="p">);</span>
+
+<span class="n">ProtocolCallContext</span> <span class="n">oContext</span><span class="p">;</span>
+<span class="n">matchmakeExtensionClient</span><span class="p">.</span><span class="n">AutoMatchmake</span><span class="p">(</span><span class="o">&amp;</span><span class="n">oContext</span><span class="p">,</span> <span class="n">autoMachmakeParam</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">matchmakeSession</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="matchmake-automatchmake-delay">
+<span id="id11"></span><h3>4.8.2. Delaying the Creation of a New Matchmaking Session During Auto-matchmaking</h3>
+<p>To improve the overall success rate of NAT traversal on P2P networks, auto-matchmaking delays the creation of a new matchmaking session as much as one second if a matchmaking session that meets the search criteria does not exist when calling from a station with a NAT type of EDM or a high failure rate. The auto-matchmaking feature repeatedly searches for matchmaking sessions during the delay period and does not respond to the client. Delaying the creation of a matchmaking session increases the probability of joining an existing matchmaking session and makes the station less likely to become the host. The default delay time is one second. Contact Nintendo if you want to set a time longer than the default of one second.</p>
+<p>The creation of a new session is delayed under the following conditions.</p>
+<ul class="simple">
+<li>It was accessed from a terminal with a NAT type of EDM or with a global IP address that has an aggregate NAT traversal failure rate of 80% or higher.</li>
+</ul>
+<p>The results of the NAT type check and NAT traversal success check for each global IP address are recorded on the game server when the terminal logs out or disconnects. This information is shared between all game servers running NEX 3.5 and later. The information expires one week from the last report.</p>
+<p>You can force a delay by setting <code>MatchmakeFlags::MatchmakeSessionOption0</code> to <code>MatchmakeFlags::MATCHMAKE_SESSION_OPTION0_FORCE_AUTOMATCH_DELAY</code> using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html#a5095cbb7f487a2ae33bb29e0961f8c7a">MatchmakeSession::SetOption0Flag</a>()</code> function. If you have set a time longer than the default of one second, be sure to debug your application with this flag enabled.</p>
+</div>
+</div>
+<div class="section" id="p2p">
+<span id="matchmake-approval-p2psession"></span><h2>4.9. Cautions When Determining to Accept Participation in a Peer-to-Peer Session With an Application</h2>
+<p>When a matchmaking session is opened on the game server, a request to participate in the P2P session associated with that matchmaking session can arrive at any time. In particular, when using the auto matchmaking feature, because joining one of the top 10 matchmaking sessions that can be joined is selected randomly on the game server, the possibility of simultaneously joining the same matchmaking session becomes greater.</p>
+<p>For this reason, specify that the application accepts join requests for a short interval, and that the application makes every effort to not reject requests to join a P2P session. (Omit the check for excessive numbers of participants that copes with deadline timing shift issues.)</p>
+<p>Rejection at the stage of joining a P2P session is a cause of declining matchmaking success rates.</p>
+<p>If a state where joining is not possible to last for a long time, call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#aeda15d9611dccb3eb1ed734a5b91f46b">MatchmakeExtensionClient::OpenParticipation</a>()</code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#adc103383fdcc92e597ea4cc8b0100a8f">MatchmakeExtensionClient::CloseParticipation</a>()</code> functions.</p>
+</div>
+<div class="section" id="team-matchmake">
+<span id="id12"></span><h2>4.10. Joining Multiple Users at Once to a Matchmaking Session</h2>
+<p>In some cases, users play with friends they know, or play as teams after gathering a group of players. The multiple user group matchmaking session join allows this functionality.</p>
+<p>To make multiple users join at the same time, create overloads of the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a8fb60f3d80bc0aac4218111be9262c05">MatchmakeExtensionClient::AutoMatchmake</a>()</code>, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#af971831a2fa90c7e2196a7ceb001ccae">MatchmakeExtensionClient::CreateMatchmakeSession</a>()</code>, and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a7ed086de4be4e00bdac7b1ab1eecbd8b">MatchmakeExtensionClient::JoinMatchmakeSession</a>()</code> functions that take the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_auto_matchmake_param.html">AutoMatchmakeParam</a></code>, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_create_matchmake_session_param.html">CreateMatchmakeSessionParam</a></code>, and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_join_matchmake_session_param.html">JoinMatchmakeSessionParam</a></code> objects as parameters. For example, you can atomically join yourself and other users with known principal IDs by passing the principal IDs to the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_join_matchmake_session_param.html#ae97b914083927efe794465b1cffbc77d">JoinMatchmakeSessionParam::SetAdditionalParticipant</a>()</code> function. The result is all users successfully joining, or an error causing all users to fail joining. Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_join_matchmake_session_param.html#a7597296c60ee4850d0ed5576435106d8">JoinMatchmakeSessionParam::SetGatheringIdForParticipationCheck</a>()</code> function as an option to check if all users have joined the specified gathering. If you specify <code>JOIN_MATCHMAKE_SESSION_BEHAVIOR_IM_ALREADY_JOINED</code> in the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_join_matchmake_session_param.html#a04a27a4379e7088523b56a869131dc9e">JoinMatchmakeSessionParam::SetJoinMatchmakeSessionBehavior</a>()</code> function, you can get other users specified in the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_join_matchmake_session_param.html#ae97b914083927efe794465b1cffbc77d">JoinMatchmakeSessionParam::SetAdditionalParticipant</a>()</code> function joined into the matchmaking session that you have already joined. A <code>NotificationEvents::AddedToGathering</code> notification is sent to the users who were added. Use <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#af049f1b833502964c4d3b39a744a1db4">MatchmakeExtensionClient::FindMatchmakeSessionByGatheringIdDetail()</a></code> to get matchmaking information for users that joined the session, based on matchmaking performed by other users. This API also gets the shared key for peer-to-peer communication in addition to the information that can be obtained with <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a3acd52596dc218553549749deadf378d">MatchmakeExtensionClient::FindMatchmakeSessionByGatheringId()</a></code>.</p>
+</div>
+<div class="section" id="matchmake-condition">
+<span id="id13"></span><h2>4.11. Setting Matchmaking Session Criteria</h2>
+<p>Parameters such as criteria and additional information searched for by other clients are set in <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html">MatchmakeSession</a></code> class objects. You can also reset settings with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html#ae3e2f626308d5c27fc83a8eaa1e137a7">MatchmakeSession::Reset</a>()</code> function.</p>
+<p><a class="reference internal" href="#matchmake-table-condition"><span class="std std-ref">Table 4.1</span></a> lists the parameters that can be set.</p>
+<span id="matchmake-table-condition"></span><table border="1" class="docutils" id="id59">
+<caption><span class="caption-text">Table 4.1. Parameters That Can Be Specified to a Matchmaking Session</span></caption>
+<colgroup>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Overview</th>
+<th class="head">Initial Value</th>
+<th class="head">Function Used</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Game mode</td>
+<td>A number that indicates matchmaking modes such as ranked matches, free play, and co-op mode. Games are free to use any values. Using game modes to filter matchmaking sessions can enhance search performance on the server. Nintendo recommends using as many specific game mode classifications as is feasible for your application.</td>
+<td>0</td>
+<td><code>SetGameMode()</code></td>
+</tr>
+<tr class="row-odd"><td>Matchmaking system type</td>
+<td>The type of matchmaking. The only type that can be used is <code>MATCHMAKE_<wbr/>SYSTEM_<wbr/>TYPE_<wbr/>ANYBODY</code>.</td>
+<td>MATCHMAKE_<wbr/>SYSTEM_<wbr/>TYPE_<wbr/>INVALID</td>
+<td><code>SetMatchmakeSystemType()</code></td>
+</tr>
+<tr class="row-even"><td>Attributes</td>
+<td>Attribute values that a game can use as its own search criteria, such as a level, the number of rounds, and the purpose of a match. Up to six attributes can be specified.</td>
+<td>All <code>0</code></td>
+<td><code>SetAttribute()</code></td>
+</tr>
+<tr class="row-odd"><td>Maximum number of participants</td>
+<td>The maximum number of participants for a matchmaking session. No more than the maximum number of participants can join a matchmaking session.</td>
+<td>0</td>
+<td><code>SetMaxParticipants()</code></td>
+</tr>
+<tr class="row-even"><td>Gathering flags</td>
+<td>Flags that specify options for a gathering. For example, you can set the <code>GatheringFlags::<wbr/>MigrateOwner</code> flag to specify whether owner migration occurs automatically when the owner of the matchmaking session leaves the session (by logging out from NGS or calling the <code>EndParticipation</code> function).</td>
+<td><code>0x0</code></td>
+<td><code>SetFlag()</code> and <code>ClearFlag()</code></td>
+</tr>
+<tr class="row-odd"><td>Application-defined data</td>
+<td>Data that can be freely used by applications. For example, this parameter can be set with up to 512 bytes of data that does not need to be included in the search criteria, such as the matchmaking session state.</td>
+<td>NULL</td>
+<td><code>SetApplicationBuffer()</code></td>
+</tr>
+<tr class="row-even"><td>Description string</td>
+<td>A string that describes a matchmaking session. Applications can set this parameter with any value up to 256 characters.</td>
+<td>NEX_<wbr/>T(“”)</td>
+<td><code>SetDescription()</code></td>
+</tr>
+<tr class="row-odd"><td>Invitation status flag</td>
+<td>Specifies the invitation status of a matchmaking session when it is registered. If this parameter is <code>true</code>, a session waits for new participants when it is registered. If it is <code>false</code>, a session is closed to new participants when it is registered.</td>
+<td>True</td>
+<td><code>SetOpenParticipation()</code></td>
+</tr>
+<tr class="row-even"><td>Game progress score</td>
+<td>An application-defined value that is used when the method for selecting a matchmaking session is <code>MATCHMAKE_<wbr/>SELECTION_<wbr/>METHOD_<wbr/>PROGRESS_<wbr/>SCORE</code>.</td>
+<td>MAX_<wbr/>PROGRESS_<wbr/>SCORE</td>
+<td>SetProgressScore()</td>
+</tr>
+<tr class="row-odd"><td>Options</td>
+<td>Specifies the options enumerated in <code>MatchmakeFlags::<wbr/>MatchmakeSessionOption0</code> to add to the matchmaking session.</td>
+<td>MATCHMAKE_<wbr/>SESSION_<wbr/>OPTION0_<wbr/>NONE</td>
+<td>SetOption0Flag()</td>
+</tr>
+<tr class="row-even"><td>Matchmaking parameters</td>
+<td>Specifies the parameters to add to the matchmaking session for use when the method for selecting a matchmaking session is <code>MATCHMAKE_<wbr/>SELECTION_<wbr/>METHOD_<wbr/>SCORE_<wbr/>BASED</code>.</td>
+<td>MatchmakeParam()</td>
+<td>SetMatchmakeParam()</td>
+</tr>
+<tr class="row-odd"><td>User password</td>
+<td>A password required to join a matchmaking session. A string of up to <code>MAX_<wbr/>MATCHMAKE_<wbr/>SESSION_<wbr/>USER_<wbr/>PASSWORD_<wbr/>LENGTH</code> (32) characters can be specified. If you specify an empty string, no password will be set for the matchmaking session.</td>
+<td>NEX_<wbr/>T(“”)</td>
+<td>SetUserPassword()</td>
+</tr>
+<tr class="row-even"><td>ID of a persistent gathering to associate</td>
+<td>The ID of a persistent gathering to associate with the matchmaking session. Use the <code>PersistentGathering::<wbr/>GetMatchmakeSessionCount()</code> function to get the number of matchmaking sessions associated with the persistent gathering. Specify <code>INVALID_<wbr/>GATHERINGID</code> to not make any association.</td>
+<td>INVALID_<wbr/>GATHERINGID</td>
+<td>SetReferPersistentGatheringId()</td>
+</tr>
+<tr class="row-odd"><td>Keywords</td>
+<td>Specifies the keyword. Specify a blank string to void the use of keywords.</td>
+<td>NEX_<wbr/>T(“”)</td>
+<td>SetCodeword()</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">If a client registers a matchmaking session to wait for new participants, that client may not get a chance to start P2P communication before another client attempts to start communicating with it. If your application joins a matchmaking session and then uses P2P communication, implement it to register the session closed to new participants and prepare for P2P communication before you change the session to wait for new participants.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">Do not directly change the class variables of the <code>MatchmakeSession</code> class or its parent, the <code>Gathering</code> class, or use setting functions other than those in <a class="reference internal" href="#matchmake-table-condition"><span class="std std-ref">Table 4.1</span></a> and <code>MatchmakeSession::Reset()</code>, which resets criteria. Operations in this situation are not guaranteed.</p>
+</div>
+</div>
+<div class="section" id="matchmake-search-condition">
+<span id="id14"></span><h2>4.12. Setting the Search Criteria and Range</h2>
+<p>Search criteria are set in <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html">MatchmakeSessionSearchCriteria</a></code> class objects. <a class="reference internal" href="#matchmake-table-search-condition"><span class="std std-ref">Table 4.2</span></a> shows the search criteria that can be set in <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html">MatchmakeSessionSearchCriteria</a></code>. The configured search criteria are combined using a bitwise AND. You can also restore the default settings by using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html#a4030d7497f83245dd0f6c19af83e3fd1">MatchmakeSessionSearchCriteria::Reset</a>()</code> function.</p>
+<span id="matchmake-table-search-condition"></span><table border="1" class="docutils" id="id60">
+<caption><span class="caption-text">Table 4.2. Specifiable Search Criteria</span></caption>
+<colgroup>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Overview</th>
+<th class="head">Initial Value</th>
+<th class="head">Function Used</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Game mode</td>
+<td>A number that represents types of games. You must specify a value for this option.</td>
+<td>None.</td>
+<td><code>SetGameMode()</code></td>
+</tr>
+<tr class="row-odd"><td>Matchmaking system type</td>
+<td>The type of matchmaking. You must specify a value for this option.</td>
+<td>None.</td>
+<td><code>SetMatchmakeSystemType()</code></td>
+</tr>
+<tr class="row-even"><td>Attributes</td>
+<td>Games can specify up to six of these attributes as independent search criteria. If not specified, the type condition matches any value. Attribute values are evaluated all at once without concern for the index order. Attribute values can be specified with a range by using the <code>SetAttributeWithRange()</code> function.</td>
+<td>Arbitrary value</td>
+<td><code>SetAttribute()</code>, <code>SetAttributeWithRange()</code></td>
+</tr>
+<tr class="row-odd"><td>Maximum number of participants</td>
+<td>Specifies the maximum number of people who can participate. If nothing is specified, it matches any value.</td>
+<td>Arbitrary value</td>
+<td>SetMaxParticipants(),SetMaxParticipantsWithRange()</td>
+</tr>
+<tr class="row-even"><td>Flag for excluding full sessions</td>
+<td>Specifies whether to exclude full matchmaking sessions.</td>
+<td>False</td>
+<td><code>SetVacantOnly()</code></td>
+</tr>
+<tr class="row-odd"><td>Flag for excluding sessions with undetermined hosts</td>
+<td>Specifies whether to exclude sessions for which a P2P communication host has not been determined.</td>
+<td>True</td>
+<td><code>SetExcludeNonHostPid()</code></td>
+</tr>
+<tr class="row-even"><td>Flag for excluding closed sessions</td>
+<td>Specifies whether to exclude matchmaking sessions that are closed to new participants.</td>
+<td>True</td>
+<td><code>SetExcludeLocked()</code></td>
+</tr>
+<tr class="row-odd"><td>User Password Settings Exclusion Flag</td>
+<td>Sets whether to exclude matchmaking sessions for which a user password has been set.</td>
+<td>True</td>
+<td>SetExcludeUserPasswordSet()</td>
+</tr>
+<tr class="row-even"><td>How to select the matchmaking session</td>
+<td>Specifies how to select which matchmaking session to join when multiple matchmaking sessions satisfy the search criteria. (Used only with automatic matchmaking.)</td>
+<td>MATCHMAKE_<wbr/>SELECTION_<wbr/>METHOD_<wbr/>RANDOM</td>
+<td><code>SetSelectionMethod()</code></td>
+</tr>
+<tr class="row-odd"><td>ID of a persistent gathering to associate</td>
+<td>Matchmaking sessions associated with the specified persistent gatherings are included in searches. Specify <code>INVALID_<wbr/>GATHERING</code> to match any value.</td>
+<td>INVALID_<wbr/>GATHERING</td>
+<td>SetReferPersistentGatheringId()</td>
+</tr>
+<tr class="row-even"><td>Keywords</td>
+<td>Specifies the keyword. Specify a blank string to void the use of keywords.</td>
+<td>NEX_<wbr/>T(“”)</td>
+<td>SetCodeword()</td>
+</tr>
+</tbody>
+</table>
+<p>To specify a search range, set an offset and the maximum size of the search results in a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_result_range.html">ResultRange</a></code> class object. By default, the offset is <code>0</code> and the maximum size of an obtained list is <code>100</code>. Although matchmaking session IDs are sorted in ascending order in the lists that can be obtained, the server randomly rearranges data that matches the search criteria before returning the result to the client when <code>RESULTRANGE_ANY_OFFSET</code> is specified as the offset. Use a maximum list size of <code>100</code> or less.</p>
+<p>If your implementation filters search results from the game server without specifying any search criteria, it cannot perform matchmaking effectively because there is no guarantee that it can get a matchmaking session that meets the desired criteria. Consequently, include search criteria that can be matched perfectly (such as the region and round number), by using attributes that you can specify with the <code>SetAttribute()</code> function on the client without filtering.</p>
+</div>
+<div class="section" id="matchmake-point">
+<span id="id15"></span><h2>4.13. Notes About Matchmaking Search</h2>
+<p>Matchmaking search is resource intensive. Implement matchmaking conditions so that existing matchmaking sessions that are waiting for participants are filled before creating a new matchmaking session. If matchmaking conditions are divided into too many small parts, it can be difficult to complete the gathering process, users are forced to wait longer, and the user experience deteriorates.</p>
+<p>Also, actively control to remove the gathering from the search pool. When the maximum number of participants in a matchmaking session is reached, use <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html#ab7c8d9cfc07f90bbe62d65e743643a41">MatchmakeSessionSearchCriteria::SetVacantOnly</a>()</code> to automatically remove the gathering from the search target. If a game starts before the maximum number of participants is reached, and it is obvious that other players are no longer joining the session during the game (after the game itself started for games that run for a long time), call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#adc103383fdcc92e597ea4cc8b0100a8f">MatchmakeExtensionClient::CloseParticipation</a>()</code> function to close the gathering, and remove it from the search target.</p>
+<p>Matchmaking sessions can be password locked to limit the session to a defined group of users. If a matchmaking session restricted in this manner is shown in the general matchmaking search results, a large number of restricted matchmaking sessions may be displayed in the search results. When this occurs, users may reload the search results repeatedly to find open matchmaking sessions, increasing server load and decreasing the quality of the user experience. As a result, restricted matchmaking sessions are not displayed in the matchmaking list during searches. Alternatively, we recommend providing a separate method to search for unrestricted matchmaking sessions.</p>
+<p>We also recommend an implementation to reduce server load by allowing users to add more people to the session outside of the game by showing the gathering ID as a code and searching for this code using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a3acd52596dc218553549749deadf378d">MatchmakeExtensionClient::FindMatchmakeSessionByGatheringId</a>()</code> function instead of storing the search code in a tag to search.</p>
+</div>
+<div class="section" id="matchmake-password">
+<span id="id16"></span><h2>4.14. Setting a Matchmaking Session Password</h2>
+<p>Matchmaking sessions can be created with a password restriction. There are two types of passwords: a user password, and a system password. A user password is set by the player; the system password is set by the server. The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html#ac44242a75b9fe615a7e4cd281f0d39bf">MatchmakeSession::SetUserPassword</a>()</code> function is used to set a user password for a matchmaking session being registered on a server. The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a2239a0b58b85541b20bfe653972e06d1">MatchmakeExtensionClient::GenerateMatchmakeSessionSystemPassword</a>()</code> function is used to set a system password for a matchmaking session already registered on the server. <code>NotificationEvents::MatchmakeSessionSystemPasswordSet</code> is notified to members of the matchmaking session when the system password is set. Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#ad2e012472c6c3e95a29387bcd3387d8a">MatchmakeExtensionClient::ClearMatchmakeSessionSystemPassword</a>()</code> function to remove the system password. <code>NotificationEvents::MatchmakeSessionSystemPasswordClear</code> is notified when the system password is removed. The correct password must be specified to join a matchmaking session protected by a user password or system password. The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_join_matchmake_session_param.html">JoinMatchmakeSessionParam</a></code> object with a set password is selected in the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_join_matchmake_session_param.html#aa67b7ab2e575a9af4ff0ed147eeaf124">JoinMatchmakeSessionParam::SetUserPassword</a>()</code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_join_matchmake_session_param.html#a852b8aad85c1fac36148e21407a0905c">JoinMatchmakeSessionParam::SetSystemPassword</a>()</code> function, for the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a7ed086de4be4e00bdac7b1ab1eecbd8b">MatchmakeExtensionClient::JoinMatchmakeSession</a>()</code> function taking <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_join_matchmake_session_param.html">JoinMatchmakeSessionParam</a></code> as an argument. A matchmaking session protected by a system password is automatically hidden from <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a5976c36a85bc45f9e39f3e4f27369d67">MatchmakeExtensionClient::BrowseMatchmakeSession()</a></code>. You can use <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a3acd52596dc218553549749deadf378d">MatchmakeExtensionClient::FindMatchmakeSessionByGatheringId</a>()</code> to search. The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html#aed9b2526d7a3c047b69541ace077c454">MatchmakeSessionSearchCriteria::SetExcludeUserPasswordSet</a>()</code> function is used to set whether the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a5976c36a85bc45f9e39f3e4f27369d67">MatchmakeExtensionClient::BrowseMatchmakeSession</a>()</code> function shows matchmaking sessions protected by user passwords. The system password is useful when a session is waiting for certain players to join. Players that are unexpectedly disconnected from a server can use the system password generated by the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a2239a0b58b85541b20bfe653972e06d1">MatchmakeExtensionClient::GenerateMatchmakeSessionSystemPassword</a>()</code> function to rejoin the same matchmaking session. User passwords and system passwords cannot be obtained from matchmaking sessions retrieved using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a3acd52596dc218553549749deadf378d">MatchmakeExtensionClient::FindMatchmakeSessionByGatheringId</a>()</code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a5976c36a85bc45f9e39f3e4f27369d67">MatchmakeExtensionClient::BrowseMatchmakeSession</a>()</code> function. The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html#a566e65631f71cc3b402829584593b1c0">MatchmakeSession::GetUserPassword</a>()</code> function always returns an empty string when called on matchmaking sessions retrieved from the server. However, you can use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html#a4a6175ca19008da4e086272b6f7054d3">MatchmakeSession::GetUserPasswordEnabled</a>()</code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html#a4d0a55caf2f5b35042842a9e7b584f61">MatchmakeSession::GetSystemPasswordEnabled</a>()</code> functions to determine whether a user password or system password has been set.</p>
+</div>
+<div class="section" id="matchmake-update">
+<span id="id17"></span><h2>4.15. Changing Registered Matchmaking Sessions</h2>
+<p>Some criteria can be changed even after the owner of a matchmaking session is registered with the game server.</p>
+<div class="section" id="matchmake-update-openparticipatin">
+<span id="id18"></span><h3>4.15.1. Inviting Clients to Join a Matchmaking Session</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#aeda15d9611dccb3eb1ed734a5b91f46b">MatchmakeExtensionClient::OpenParticipation</a>()</code> function to invite clients to join a matchmaking session. This function takes two arguments: a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> object, and the ID of the matchmaking session to invite clients to join.</p>
+<p>When asynchronous processing succeeds, other clients can join the matchmaking session. (When searching for matchmaking sessions, the invitation status flag is <code>true</code>.) However, new clients cannot join after the maximum number of matchmaking participants is reached.</p>
+</div>
+<div class="section" id="matchmake-update-closeparticipatin">
+<span id="id19"></span><h3>4.15.2. Closing a Matchmaking Session to New Clients</h3>
+<p>Although new clients cannot join a session after it has reached its maximum number of participants, a session can also be closed to new clients even if it has not reached the maximum number of participants.</p>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#adc103383fdcc92e597ea4cc8b0100a8f">MatchmakeExtensionClient::CloseParticipation()</a></code> function to close a matchmaking session to new clients. This function takes two arguments: a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> object, and the ID of the matchmaking session to close to new clients.</p>
+<p>When asynchronous processing succeeds, other clients can no longer join the matchmaking session. (When searching for matchmaking sessions, the invitation status flag is <code>false</code>.) However, clients that have already joined are not affected. Also, note that a <code>ParticipationEvents::Participate</code> notification may arrive after a successful call to this function due to differences in when the <code>NotificationEvents::ParticipationEvent</code> event and session participation close process are handled.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">Be careful if your application is designed to have users join a P2P session after joining a matchmaking session. Participation in the P2P session may not complete for some time after closing participation in the matchmaking session because the NAT traversal and join P2P session processes themselves take some time to complete. If a client is denied participation when attempting to join a P2P session, it can have an extremely negative effect on the efficiency of the matchmaking process. It is particularly important to consider this effect if you close participation in a matchmaking session before the maximum number of participants has joined. In this case, implement handling using a <code>NotificationEvents::ParticipationEvent</code> notification and make sure that you do not deny participation in the P2P session if the number of participants in the matchmaking session and the number of participants in the P2P session are different.</p>
+</div>
+</div>
+<div class="section" id="matchmake-update-ownermigration">
+<span id="id20"></span><h3>4.15.3. Transferring Matchmaking Session Owner Authority</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#ac344a14dec4c7a741ffd5b259fb8d9e9">MatchMakingClient::MigrateGatheringOwnership</a>()</code> function to transfer ownership of a matchmaking session to another client. This function is usually used when the owner leaves the matchmaking session. When <code>GatheringFlags::MigrateOwner</code> is specified in the gathering flag, there is no need to call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#ac344a14dec4c7a741ffd5b259fb8d9e9">MatchMakingClient::MigrateGatheringOwnership</a>()</code> function when leaving because ownership transfer occurs automatically. Only existing members of a matchmaking session can become the new owner. When automatic owner transfers occur by specifying <code>GatheringFlags::MigrateOwner</code>, the new owner begins as the player who has been participating in the gathering for longest. This is true even when the owner candidate list is cleared with <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#ac344a14dec4c7a741ffd5b259fb8d9e9">MatchMakingClient::MigrateGatheringOwnership</a>()</code>.</p>
+<p>This function takes the following arguments: a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> object, the ID of the matchmaking session for which to transfer ownership, and a list of principal IDs for the clients to which ownership is transferred. If the list of principal IDs is empty, a new owner is automatically selected from the clients that have joined the matchmaking session. (As a general rule, use this approach.)</p>
+<p>The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a0de416aa113a25611cf9db48beed2161">MatchMakingClient::UpdateGatheringOwnership</a>()</code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a94f4b05ed49a70b9fbf78286fb508172">MatchMakingClient::UpdateSessionHost</a>()</code> function can be used by a gathering member to take ownership, if the <code>GatheringFlags::ChangeOwnerByOtherHost</code> flag is set in the matchmaking session gathering flags. These APIs can be used to make the P2P host and gathering owner the same.</p>
+</div>
+<div class="section" id="matchmake-update-updategathering">
+<span id="id21"></span><h3>4.15.4. Updating Matchmaking Sessions</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a86c9743e0df5dae846efd2f78b321a68">MatchmakeExtensionClient::UpdateMatchmakeSession</a>()</code> function to make changes to matchmaking session information. Specifies the item to modify, and the value after modification, using <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_update_matchmake_session_param.html">UpdateMatchmakeSessionParam</a></code>. The following items cannot be modified, however.</p>
+<ul>
+<li><p class="first">The gathering ID.</p>
+</li>
+<li><p class="first">Owner</p>
+<blockquote>
+<div><ul class="simple">
+<li>Use <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#ac344a14dec4c7a741ffd5b259fb8d9e9">MatchMakingClient::MigrateGatheringOwnership</a>()</code> to modify the matchmaking owner.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">The P2P communication host.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Use <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a94f4b05ed49a70b9fbf78286fb508172">MatchMakingClient::UpdateSessionHost</a>()</code> to modify the P2P communication host.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">Gathering flags</p>
+</li>
+<li><p class="first">ID of a persistent gathering to associate.</p>
+</li>
+<li><p class="first">Returns a common key for P2P communication.</p>
+</li>
+</ul>
+<p>The matchmaking system type can only use <code>MATCHMAKE_SYSTEM_TYPE_ANYBODY</code>.</p>
+</div>
+<div class="section" id="matchmake-update-attribute">
+<span id="id22"></span><h3>4.15.5. Changing Attributes</h3>
+<p>There are two ways to change attributes: either individually with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a159dc48e5de685af6904f169545739b0">MatchmakeExtensionClient::ModifyMatchmakeSessionAttribute</a>()</code> function, or all at the same time with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a3dd2e7c58c0bb3ee12cc0361be19c81e">MatchmakeExtensionClient::UpdateMatchmakeSessionAttribute</a>()</code> function. The <code>ModifyMatchmakeSessionAttribute()</code> function takes the following arguments: a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> object, the ID of the matchmaking session to change, the index of the attribute to change, and the new attribute value. The <code>UpdateMatchmakeSessionAttribute()</code> function takes the following arguments: a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> object, the ID of the matchmaking session to change, and an array of new attribute values.</p>
+</div>
+<div class="section" id="matchmake-update-applicationbuffer">
+<span id="id23"></span><h3>4.15.6. Changing Application-defined Data</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a6ea730877ed92c468ab633f531a2254d">MatchmakeExtensionClient::UpdateApplicationBuffer</a>()</code> function to change application-defined data. This function takes the following arguments: a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> object, the ID of the matchmaking session to change, and the new data.</p>
+</div>
+<div class="section" id="matchmake-update-unregister">
+<span id="id24"></span><h3>4.15.7. Deleting a Matchmaking Session</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a4d7ba4274f6b563d693d223c773ca749">MatchMakingClient::UnregisterGathering</a>()</code> function to delete a matchmaking session. This function takes the following arguments: a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> object, and the ID of the matchmaking session to delete. Matchmaking sessions are automatically removed in the following cases.</p>
+<ul class="simple">
+<li>When the matchmaking session owner logs out from the game server when <code>GatheringFlag::OwnerMigration</code> is not set in the gathering flag.</li>
+<li>The number of participants in the matchmaking session becomes 0.</li>
+</ul>
+<p>To prevent meaningless matchmaking sessions from being left on the game server, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a4d7ba4274f6b563d693d223c773ca749">MatchMakingClient::UnregisterGathering</a>()</code> function to delete unnecessary matchmaking sessions.</p>
+</div>
+</div>
+<div class="section" id="matchmake-blocklist">
+<span id="id25"></span><h2>4.16. Blocked-User Lists</h2>
+<p>The NX will support blocked-user list management as a system feature. For more information, see the Account Guide. Applications can use blocked-user lists to prevent harassment by specific users. The blocked-user list provides the following features.</p>
+<ul class="simple">
+<li>Block users registered to the blocked-user list from joining the matchmaking session of the local system.</li>
+<li>Block the local system user from joining matchmaking sessions in which users registered to the blocked-user list are participating.</li>
+<li>Configure applications to prevent users registered to the blocked-user list from getting status. (This feature is the privacy filter feature.)</li>
+</ul>
+<p>If you want to disable the blocked-user list feature to better suit your application's design, configure the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_block_list_param.html">MatchmakeBlockListParam</a></code> object appropriately when joining matchmaking sessions.</p>
+<p>The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a5976c36a85bc45f9e39f3e4f27369d67">MatchmakeExtensionClient::BrowseMatchmakeSession</a>()</code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a3acd52596dc218553549749deadf378d">MatchmakeExtensionClient::FindMatchmakeSessionByGatheringId</a>()</code> functions, among others, also do not check whether a user who is registered to the local system's blocked-user list is participating. Consequently, you cannot determine whether users in a session are registered to the blacklist of the local system, or the user of the local system is registered to their blacklist, until the call to the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a7ed086de4be4e00bdac7b1ab1eecbd8b">MatchmakeExtensionClient::JoinMatchmakeSession</a>()</code> function. Note that the primary purpose of the privacy filter is to prevent harassment by particular users.</p>
+</div>
+<div class="section" id="matchmake-persistent-gathering">
+<span id="id26"></span><h2>4.17. Persistent Gatherings</h2>
+<p>A <em>persistent gathering</em> is a mechanism for matchmaking within a specific group of users. You can make a persistent gathering room (where, for example, only students at a specific school can participate), and matchmake within that room.</p>
+<p>Although some features are similar to friend features, a user can join a persistent gathering without needing to establish any friendships with anyone. This functionality enables game developers to set up official persistent gatherings for particular game titles, hold tournaments, and so on.</p>
+<p>Once created, persistent gatherings remain on the server until they are explicitly deleted. Participation in persistent gatherings is similarly permanent until explicitly modified (when using the default persistent gathering settings). To matchmake users in a persistent gathering with each other, add the ID of that persistent gathering as the ID to associate with the matchmaking session when registering the matchmaking session and then search for or have users join sessions using that ID.</p>
+<p>Although persistent gatherings are a type of gathering, whether the join status is permanent is a significant difference from matchmaking session gatherings.</p>
+<p>The following examples show possible uses for persistent gatherings.</p>
+<ul class="simple">
+<li>Tournaments, rankings, and other uses in an official persistent gathering</li>
+<li>Persistent gatherings that play only on specific courses or under certain rules</li>
+<li>A persistent gathering consisting of a students at a particular school, with matchmaking between the students</li>
+</ul>
+<p>Persistent gatherings exist independently for each game.</p>
+<div class="section" id="id27">
+<h3>4.17.1. Differences Between Persistent Gatherings and Matchmaking Sessions</h3>
+<p>Persistent gatherings and matchmaking sessions differ not only in their lifespans, but also in the following other ways.</p>
+<table border="1" class="docutils" id="id61">
+<caption><span class="caption-text">Table 4.3. Differences Between Persistent Gatherings and Matchmaking Sessions</span></caption>
+<colgroup>
+<col width="33%"/>
+<col width="33%"/>
+<col width="33%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Differences</th>
+<th class="head">Persistent gathering</th>
+<th class="head">Matchmaking session</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Deletion timing</td>
+<td>The number of members becomes 0 [note 1]. The <code>UnregisterGathering()</code> function is called.</td>
+<td>The number of members becomes 0. The <code>UnregisterGathering()</code> function is called.</td>
+</tr>
+<tr class="row-odd"><td>Leaving timing</td>
+<td>• The <code>EndParticipation()</code> function is called [note 2].</td>
+<td>• The <code>EndParticipation()</code> function is called. The user is logged out from the game server.</td>
+</tr>
+<tr class="row-even"><td>Number of participants</td>
+<td>Unlimited by default. (A limit can be set.)</td>
+<td>Number of clients using P2P communication.</td>
+</tr>
+<tr class="row-odd"><td>Notification from the server.</td>
+<td>None.</td>
+<td>A notification is pushed when a user joins or leaves.</td>
+</tr>
+<tr class="row-even"><td>Messaging</td>
+<td>Only possible if the maximum number of participants is set no higher than 32 (<code>MessagingClient::<wbr/>SendChat()</code>).</td>
+<td>Possible (<code>MessagingClient::<wbr/>SendChat()</code>).</td>
+</tr>
+<tr class="row-odd"><td>P2P communication</td>
+<td>None. Register and then join a separate matchmaking session, and then switch to P2P mode.</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>Owner migration</td>
+<td>None.</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>Blocked-user list</td>
+<td>None.</td>
+<td>Yes</td>
+</tr>
+<tr class="row-even"><td>Deadline</td>
+<td>None. However, it is possible to set a period during which joining is possible.</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p>[1] You can make the gathering persist even when the number of participants reaches 0 by setting <code>GatheringFlags::AllowNoParticipant</code> in the gathering flags.</p>
+<p>[2] You can make users leave a gathering automatically when they are disconnected from the game server (including logging out) by setting <code>GatheringFlags::NoPersistentParticipation</code> in the gathering flags.</p>
+</div>
+<div class="section" id="matchmake-persistent-gathering-create-delete-update">
+<span id="id28"></span><h3>4.17.2. Creating, Deleting, and Updating Persistent Gatherings</h3>
+<p>To create a persistent gathering, set the conditions for the persistent gathering in the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_persistent_gathering.html">PersistentGathering</a></code> class object, and execute the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#af9c870053e0fd214c09b14de9b4aeeab">MatchmakeExtensionClient::CreatePersistentGathering</a>()</code> function. (Do not set any items other than those in <a class="reference internal" href="#matchmake-table-persistent-gathering-detail"><span class="std std-ref">Table 4.4</span></a>. Setting other items may cause unintended results.) If the asynchronous process in the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#af9c870053e0fd214c09b14de9b4aeeab">MatchmakeExtensionClient::CreatePersistentGathering</a>()</code> function succeeds, a gathering ID is assigned by the game server so that the persistent gathering can be identified. The user who calls the <code>CreatePersistentGathering()</code> function becomes the owner of that persistent gathering, and joins the gathering automatically. Each user can create up to <code>PERSISTENT_GATHERING_CREATION_MAX</code> (4) persistent gatherings, and can be a member of up to <code>PERSISTENT_GATHERING_PARTICIPATION_MAX</code> (16) persistent gatherings.</p>
+<p>The owner of a community can update that community by using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#add2f728908c7a16dd4ed75e6483329d8">MatchmakeExtensionClient::UpdatePersistentGathering</a>()</code> function, and can delete it by using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a4d7ba4274f6b563d693d223c773ca749">MatchMakingClient::UnregisterGathering</a>()</code> function. It is also possible to delete a persistent gathering that has more members than just the owner. When a persistent gathering is deleted, all users who are members of the community leave it.</p>
+<p>Also, the blocked-user list is not used with persistent gatherings. Regardless of the status of the blocked-user list, it has no effect on searches for or participation in persistent gatherings.</p>
+<p>When an official persistent gathering is created, the owner's principal ID takes a special value (0x081c704917e83fd9), and the client that created the gathering can no longer update or delete the gathering. Update or delete the gathering from NMAS. (NMAS is discussed in more detail later.)</p>
+<p>To use an official persistent gathering, you must create separate versions for the development environment, the Lotcheck environment, and the production environment. For more information, see the NEX Guide.</p>
+<span id="matchmake-table-persistent-gathering-detail"></span><table border="1" class="docutils" id="id62">
+<caption><span class="caption-text">Table 4.4. Persistent Gathering Settings</span></caption>
+<colgroup>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+<col width="25%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Overview</th>
+<th class="head">Initial Value</th>
+<th class="head">Function Used</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Persistent gathering type</td>
+<td>Specify the persistent gathering type: anybody can join, password is required to join, or official persistent gathering.</td>
+<td>Open</td>
+<td><code>SetPersistentGatheringType()</code></td>
+</tr>
+<tr class="row-odd"><td>Attributes</td>
+<td>Games can specify up to six of these attributes as independent search criteria.</td>
+<td>0</td>
+<td><code>SetAttribute()</code></td>
+</tr>
+<tr class="row-even"><td>Maximum number of participants</td>
+<td>When <code>0</code> is specified, there is no limit to the maximum number of participants.</td>
+<td>0</td>
+<td><code>SetMaxParticipants()</code></td>
+</tr>
+<tr class="row-odd"><td>Application-defined data</td>
+<td>Data that can be freely used by applications. You can set up to 512 bytes of data that does not need to be searchable in this parameter, such as the status of the persistent gathering.</td>
+<td>NULL</td>
+<td><code>SetApplicationBuffer()</code></td>
+</tr>
+<tr class="row-even"><td>Description string</td>
+<td>A string describing the persistent gathering. Applications can set this parameter with any value up to 256 characters.</td>
+<td>NEX_<wbr/>T(“”)</td>
+<td><code>SetDescription()</code></td>
+</tr>
+<tr class="row-odd"><td>Date from which users can join</td>
+<td>Sets the date and time after which a persistent gathering can be joined. If <code>DateTime::<wbr/>Never()</code> is specified, there is no limit.</td>
+<td>DateTime::<wbr/>Never()</td>
+<td><code>SetParticipationStartDate</code></td>
+</tr>
+<tr class="row-even"><td>Last day on which users can join</td>
+<td>Gets the deadline (date and time) for joining the persistent gathering. If <code>DateTime::<wbr/>Never()</code> is specified, there is no limit.</td>
+<td>DateTime::<wbr/>Never()</td>
+<td><code>SetParticipationEndDate</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="matchmake-persistent-gathering-search">
+<span id="id29"></span><h3>4.17.3. Searching Persistent Gatherings</h3>
+<p>The following functions can be used to search persistent gatherings.</p>
+<p><strong>Note:</strong> Currently, NEX does not support searching for persistent gatherings by attributes.</p>
+<div class="literal-block-wrapper docutils container" id="id63">
+<div class="code-block-caption"><span class="caption-text">Code 4.6. Persistent Gathering Search Functions</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// Search by ID.</span>
+<span class="n">MatchmakeExtensionClient</span><span class="o">::</span><span class="n">FindPersistentGatheringByGatheringID</span><span class="p">(</span>
+                                    <span class="n">ProtocolCallContext</span> <span class="o">*</span><span class="n">pContext</span><span class="p">,</span>
+                                    <span class="n">qList</span><span class="o">&lt;</span><span class="n">GatheringID</span><span class="o">&gt;</span> <span class="n">gatheringIdList</span><span class="p">,</span>
+                                    <span class="n">qList</span><span class="o">&lt;</span><span class="n">PersistentGathering</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">pPersistentGatheringList</span><span class="p">);</span>
+
+<span class="c1">// Search by participant.</span>
+<span class="n">MatchmakeExtensionClient</span><span class="o">::</span><span class="n">FindPersistentGatheringByParticipant</span><span class="p">(</span>
+                                    <span class="n">ProtocolCallContext</span> <span class="o">*</span><span class="n">pContext</span><span class="p">,</span>
+                                    <span class="n">PrincipalID</span> <span class="n">principalId</span><span class="p">,</span>
+                                    <span class="k">const</span> <span class="n">ResultRange</span><span class="o">&amp;</span> <span class="n">resultRange</span><span class="p">,</span>
+                                    <span class="n">qList</span><span class="o">&lt;</span><span class="n">PersistentGathering</span><span class="o">&gt;*</span> <span class="n">pPersistentGatheringList</span><span class="p">);</span>
+
+<span class="c1">// Search official persistent gatherings. (The persistent gathering type is <code>PERSISTENT_GATHERING_TYPE_OFFICIAL</code>.)</span>
+<span class="n">MatchmakeExtensionClient</span><span class="o">::</span><span class="n">FindOfficialPersistentGathering</span><span class="p">(</span>
+                                    <span class="n">ProtocolCallContext</span> <span class="o">*</span><span class="n">pContext</span><span class="p">,</span>
+                                    <span class="kt">bool</span> <span class="n">isAvailableOnly</span><span class="p">,</span>
+                                    <span class="k">const</span> <span class="n">ResultRange</span><span class="o">&amp;</span> <span class="n">resultRange</span><span class="p">,</span>
+                                    <span class="n">qList</span><span class="o">&lt;</span><span class="n">PersistentGathering</span><span class="o">&gt;*</span> <span class="n">pPersistentGatheringList</span><span class="p">);</span>
+
+<span class="c1">// Search by the principal ID of the owner.</span>
+<span class="n">MatchmakeExtensionClient</span><span class="o">::</span><span class="n">FindMatchmakeSessionByOwner</span><span class="p">(</span><span class="n">ProtocolCallContext</span> <span class="o">*</span><span class="n">pContext</span><span class="p">,</span>
+                                    <span class="n">PrincipalID</span> <span class="n">pidOwner</span><span class="p">,</span>
+                                    <span class="k">const</span> <span class="n">ResultRange</span><span class="o">&amp;</span> <span class="n">resultRange</span><span class="p">,</span>
+                                    <span class="n">qList</span><span class="o">&lt;</span><span class="n">MatchmakeSession</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">lstMatchmakeSession</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id30">
+<h3>4.17.4. Joining and Leaving Persistent Gatherings</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#aa1a8e11cce67ebfff747634b2be9e332">MatchmakeExtensionClient::JoinPersistentGathering</a>()</code> function to join a persistent gathering, and the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a53174bea283308375a5c52e38ea33715">MatchmakeExtensionClient::EndParticipation</a>()</code> function to leave a persistent gathering. Unlike in a matchmaking session, the owner of a persistent gathering is not notified when a member joins or leaves. A user can only join up to 16 (<code>PERSISTENT_GATHERING_PARTICIPATION_MAX</code>) persistent gatherings. If the user tries to join more gatherings, the asynchronous process fails with <code>QERROR(RendezVous, PersistentGatheringParticipationMax)</code>.</p>
+</div>
+<div class="section" id="id31">
+<h3>4.17.5. Persistent Gathering Codes</h3>
+<p>To display an identifier for the persistent gathering in the user interface as an ID, you must convert the gathering ID of the persistent gathering to a persistent gathering code. The persistent gathering code is a 14-digit, decimal, integer HMAC value that is assigned based on the gathering ID and unique access key for the game. Note that you must query the game server to see if a persistent gathering exists, even if the <code>IsValidPersistentGatheringCode()</code> function determines that the persistent gathering code is valid. You can still use the persistent gathering code conversion function shown in <a class="reference internal" href="#matchmake-code-persistent-gathering-code"><span class="std std-ref">Code 4.7</span></a> even when you are not logged in to the game server.</p>
+<div class="literal-block-wrapper docutils container" id="id64">
+<span id="matchmake-code-persistent-gathering-code"></span><div class="code-block-caption"><span class="caption-text">Code 4.7. Persistent Gathering Code Conversion Functions</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// Sets the persistent gathering code HMAC key. Specifies the unique access key for a game.</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="n">MatchmakingClient</span><span class="o">::</span><span class="n">SetPersistentGatheringCodeKey</span><span class="p">(</span><span class="k">const</span> <span class="n">String</span><span class="o">&amp;</span> <span class="n">strKey</span><span class="p">);</span>
+
+<span class="c1">// Clears the persistent gathering code HMAC key.</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="n">MatchmakingClient</span><span class="o">::</span><span class="n">ClearPersistentGatheringCodeKey</span><span class="p">();</span>
+
+<span class="c1">// Converts a gathering ID to a persistent gathering code.</span>
+<span class="k">static</span> <span class="kt">uint64_t</span> <span class="n">MatchmakingClient</span><span class="o">::</span><span class="n">GatheringIdToPersistentGatheringCode</span><span class="p">(</span><span class="n">GatheringID</span> <span class="n">gatheringId</span><span class="p">);</span>
+
+<span class="c1">// Converts a persistent gathering code to a gathering ID.</span>
+<span class="k">static</span> <span class="n">GatheringID</span> <span class="n">MatchmakingClient</span><span class="o">::</span><span class="n">PersistentGatheringCodeToGatheringId</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">persistentGatheringCode</span><span class="p">);</span>
+
+<span class="c1">// Checks whether the community code is valid.</span>
+<span class="k">static</span> <span class="kt">bool</span> <span class="n">MatchmakingClient</span><span class="o">::</span><span class="n">IsValidPersistentGatheringCode</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">persistentGatheringCode</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id32">
+<h3>4.17.6. Connection Between Matchmaking and Ranking</h3>
+<p>While persistent gatherings are permanent, it is not possible to do matchmaking at the persistent-gathering level. To perform matchmaking in connection with a persistent gathering, you must register a separate matchmaking session (a <em>persistent gathering matchmaking session</em>) and associate the gathering ID of the persistent gathering with that matchmaking session. When registering a persistent gathering matchmaking session, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html#a32aec1d0483da1d0e9404015a348ecac">MatchmakeSession::SetReferPersistentGatheringId</a>()</code> function to set the ID of the persistent gathering to associate with the matchmaking session. All other settings have no difference from regular matchmaking.</p>
+<p>Registering a persistent gathering matchmaking session increments the persistent gathering matchmaking session count. You can get the count from the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_persistent_gathering.html#a58d62e35cca80582fca83c020a37afa1">PersistentGathering::GetMatchmakeSessionCount</a>()</code> function. (When the session is deleted, the count is decremented.)</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">To associate a persistent gathering with a matchmaking session in NEX 3.7 and earlier, you had to set the matchmaking system type to <code>MATCHMAKE_SYSTEM_TYPE_PERSISTENT_GATHERING</code> and set the ID of the persistent gathering to associate as the 0th attribute when registering a matchmaking session. To maintain compatibility in NEX 3.8 and later, set the matchmaking system type to <code>MATCHMAKE_SYSTEM_TYPE_PERSISTENT_GATHERING</code> and set the ID of the persistent gathering to associate as the 0th attribute. To automatically set the 0th attribute of new matchmaking sessions to the ID of the persistent gathering to associate when they are registered on the server, specify <code>INVALID_GATHERINGID</code> as the ID of the persistent gathering to associate. Call the <code>MatchmakeSession::GetReferPersistentGatheringId()</code> function, on matchmaking sessions retrieved from the server, to get the ID of the associated persistent gathering. The number of persistent gathering matchmaking sessions being held is also counted.</p>
+</div>
+<p>If you are ranking users in a persistent gathering (by using a community ranking), you can use the gathering ID of the persistent gathering as the category. However, it is not possible to use the same categories as in regular ranking. If your persistent gathering uses the 0th to 10th categories for regular ranking, try to ensure that the persistent gathering rankings are assigned to the 11th and later slots.</p>
+</div>
+<div class="section" id="nex-nmas">
+<h3>4.17.7. NEX Server Management System (NMAS)</h3>
+<p>Persistent gatherings can be created, edited, and deleted using the persistent gathering management functions in the NEX Server Management System (NMAS). The tool supports both the development environment and the production environment.</p>
+<p>Use the following URL to access NMAS.</p>
+<p><a class="reference external" href="https://nmas.tool.n.mng.nintendo.net/">https://nmas.tool.n.mng.nintendo.net/</a></p>
+<p>Use the same login ID and password that you use for OMAS.</p>
+</div>
+</div>
+<div class="section" id="matchmake-notification">
+<span id="id33"></span><h2>4.18. Handling Notification Events</h2>
+<p>A notification event is a message that is sent from a game server to another client when a particular event occurs on the game server. When a client joins a matchmaking session, for example, a message notifies the other clients that have already joined that session.</p>
+<p>For a client process to receive notification events, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_back_end_services.html#ab4da975678d07c19be230fb96398320c">NgsFacade::RegisterNotificationEventHandler</a>()</code> must be used to register a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event_handler.html">NotificationEventHandler</a></code> with the client process. To receive all notification events, perform this registration process before logging in to the game server. If registration is performed after login, the events that were sent between login and registration may not be received. Each time the client process receives a notification event after the handler has been registered, the event is sent to the handler and the <code>ProcessNotificationEvent</code> system callback is invoked. Although this callback ignores all received notification events by default, you can customize how notification events are processed by subclassing <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event_handler.html">NotificationEventHandler</a></code> and re-implementing the system callbacks.</p>
+<p>The following values are passed to the <code>ProcessNotificationEvent</code> system callback: the principal ID of the client that generated the event, the event type, and a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html">NotificationEvent</a></code> object storing up to three parameters. NEX uses the following event types, which can be obtained with <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a6d8e34efc6d35321246b7e68f66a2c89">NotificationEvent::GetType</a>()</code>.</p>
+<ul class="simple">
+<li><code>NotificationEvents::ParticipationEvent</code>: The owner of a matchmaking session is notified when clients join, leave, or is disconnected from the matchmaking session. The default functionality is for the owner of the matchmaking session to be notified. Use <code>GatheringFlags::NotifyParticipationEventsToAllParticipants</code> to change this, and notify all participants. A value from the <code>ParticipationEvents</code> enumerated type is set as the subtype, indicating which event occurred: whether a client joined, left, or was disconnected. You can also get the matchmaking session ID with <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a040abab846bf0204b55eaa8348e7ab07">NotificationEvent::GetParam1</a>()</code>, the principal ID of the client that joined, left, or disconnected with <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a0d927da06c783b43d8a5a6b15631be24">NotificationEvent::GetParam2</a>()</code>, and detailed information when clients join or leave a session with <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a43ac9402e159c8d5adf2fd00d770f079">NotificationEvent::GetStringParam</a>()</code>.</li>
+<li><code>NotificationEvents::OwnershipChangeEvent</code>: This notification is sent to all of the participants of a matchmaking session when ownership of the session is transferred from one client to another. Get the matchmaking session ID with <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a040abab846bf0204b55eaa8348e7ab07">NotificationEvent::GetParam1</a>()</code> and the principal ID of the new owner with <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a0d927da06c783b43d8a5a6b15631be24">NotificationEvent::GetParam2</a>()</code>.</li>
+<li><code>NotificationEvents::GatheringUnregistered</code>: When a matchmaking session is deleted, all of its participants are notified. Get the matchmaking session ID with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a040abab846bf0204b55eaa8348e7ab07">NotificationEvent::GetParam1</a>()</code> function.</li>
+<li><code>NotificationEvents::HostChangeEvent</code>: When host information for matchmaking session P2P communication is updated, the previous host is notified. Get the matchmaking session ID with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a040abab846bf0204b55eaa8348e7ab07">NotificationEvent::GetParam1</a>()</code> function.</li>
+<li><code>NotificationEvents::GameNotificationEvent1</code> through <code>NotificationEvents::GameNotificationEvent8</code>: Presence events that games can use independently. When the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a42d191c9470000ce4828b596c56fd9be">MatchmakeExtensionClient::UpdateNotificationData</a>()</code> function is run, a notification event is sent to friends who are logged in to the same game server. For more information, see <a class="reference internal" href="#matchmake-game-notification"><span class="std std-ref">4.19. Using Game-Specific Notification Events</span></a>.</li>
+<li><code>NotificationEvents::GameNotificationLogout</code>: This notification is sent to friends when a user logs out from the game server if the application has set game-defined events. Non-explicit logout actions, such as when the system is powered down, are included.</li>
+<li><code>NotificationEvents::GameServerMaintenance</code>: This notification is sent when game server maintenance begins. For more information, see <a class="reference internal" href="#matchmake-game-server-maintenance"><span class="std std-ref">4.20. Handling Maintenance Notification Events</span></a>.</li>
+<li><code>NotificationEvents::MaintenanceAnnouncement</code>: Announcement for game server maintenance. For more information, see <a class="reference internal" href="#matchmake-game-server-maintenance"><span class="std std-ref">4.20. Handling Maintenance Notification Events</span></a>.</li>
+<li><code>NotificationEvents::RoundStarted</code>: This notification is sent to all round participants when the round starts.</li>
+<li><code>NotificationEvents::FirstRoundReportReceived</code>: This notification is sent to all round participants when the server receives the first round report.</li>
+<li><code>NotificationEvents::RoundSummarized</code>: This notification is sent to all round participants when round summarizing has completed.</li>
+<li><code>NotificationEvents::AddedToGathering</code>: This notification is sent to the local host to confirm that it has been added to a gathering. Get the added gathering ID with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a040abab846bf0204b55eaa8348e7ab07">NotificationEvent::GetParam1</a>()</code> function and the principal ID of the added user (that is, the principal ID of the local station) with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a0d927da06c783b43d8a5a6b15631be24">NotificationEvent::GetParam2</a>()</code> function. The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a43ac9402e159c8d5adf2fd00d770f079">NotificationEvent::GetStringParam</a>()</code> function gets the join message specified when the user that triggered the event joined the session. You can use <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#adfda598e421eaf0ab581952f0bd28061">NotificationEvent::GetSource</a>()</code> to get the principal ID of the user who made the RMC.</li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="id65">
+<span id="matchmake-code-notifiation"></span><div class="code-block-caption"><span class="caption-text">Code 4.8. Subclassing NotificationEventHandler</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// Event handler for getting notifications from NGS.</span>
+<span class="k">class</span> <span class="nc">MyNotificationEventHandler</span> <span class="o">:</span> <span class="k">public</span> <span class="n">NotificationEventHandler</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="kt">void</span> <span class="n">ProcessNotificationEvent</span><span class="p">(</span><span class="k">const</span> <span class="n">NotificationEvent</span> <span class="o">&amp;</span><span class="n">oEvent</span><span class="p">){</span>
+
+        <span class="k">switch</span> <span class="p">(</span><span class="n">oEvent</span><span class="p">.</span><span class="n">GetType</span><span class="p">())</span>
+        <span class="p">{</span>
+        <span class="k">case</span> <span class="n">NotificationEvents</span><span class="o">::</span><span class="nl">ParticipationEvent</span><span class="p">:</span>
+            <span class="k">switch</span> <span class="p">(</span><span class="n">oEvent</span><span class="p">.</span><span class="n">GetSubType</span><span class="p">())</span>
+            <span class="p">{</span>
+            <span class="k">case</span> <span class="n">ParticipationEvents</span><span class="o">::</span><span class="nl">Participate</span><span class="p">:</span>
+                <span class="n">NN_LOG</span><span class="p">(</span><span class="s">"%u join %u</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">oEvent</span><span class="p">.</span><span class="n">GetParam2</span><span class="p">(),</span> <span class="n">oEvent</span><span class="p">.</span><span class="n">GetParam1</span><span class="p">());</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="n">ParticipationEvents</span><span class="o">::</span><span class="nl">EndParticipation</span><span class="p">:</span>
+                <span class="n">NN_LOG</span><span class="p">(</span><span class="s">"%u end %u</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">oEvent</span><span class="p">.</span><span class="n">GetParam2</span><span class="p">(),</span> <span class="n">oEvent</span><span class="p">.</span><span class="n">GetParam1</span><span class="p">());</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="n">ParticipationEvents</span><span class="o">::</span><span class="nl">Disconnect</span><span class="p">:</span>
+                <span class="n">NN_LOG</span><span class="p">(</span><span class="s">"%u disconnect %u</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">oEvent</span><span class="p">.</span><span class="n">GetParam2</span><span class="p">(),</span> <span class="n">oEvent</span><span class="p">.</span><span class="n">GetParam1</span><span class="p">());</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="k">default</span><span class="o">:</span>
+                <span class="n">NN_LOG</span><span class="p">(</span><span class="s">"unspoorted participation event</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">NotificationEvents</span><span class="o">::</span><span class="nl">OwnershipChangeEvent</span><span class="p">:</span>
+            <span class="n">NN_LOG</span><span class="p">(</span><span class="s">"matchmakesession %u changed owner to %u</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">oEvent</span><span class="p">.</span><span class="n">GetParam1</span><span class="p">,</span> <span class="n">oEvent</span><span class="p">.</span><span class="n">GetParam2</span><span class="p">());</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">NotificationEvents</span><span class="o">::</span><span class="nl">GameNotificationType1</span><span class="p">:</span>
+            <span class="n">NN_LOG</span><span class="p">(</span><span class="s">"game specific event 1</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nl">GameServerMaintenance</span><span class="p">:</span>
+            <span class="n">NN_LOG</span><span class="p">(</span><span class="s">"game server maintenance event</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">default</span><span class="o">:</span>
+            <span class="n">NN_LOG</span><span class="p">(</span><span class="s">"unsupported notification event</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="matchmake-game-notification">
+<span id="id34"></span><h2>4.19. Using Game-Specific Notification Events</h2>
+<p>Games can independently define notification events and send them to friends who are logged in to the same game server. For more information about how these notification events are handled when they are received, see <a class="reference internal" href="#matchmake-notification"><span class="std std-ref">4.18. Handling Notification Events</span></a>. This feature has been designed to account for the server, and assumes implementations such as sending events from users to their communication partners. Do not send events more frequently than that. Specifically, this feature has the following restrictions.</p>
+<ul class="simple">
+<li>It cannot be used to send data other than events from users. One example of this would be the exchange of data during an online game that was originally sent and received through P2P communication.</li>
+<li>Restrict events to being sent no more than 10 times a minute to prevent successive user operations from resulting in too many transmissions.</li>
+<li>Use <code>NotificationEvents::GameNotificationEvent1</code> to <code>NotificationEvents::GameNotificationEvent8</code> as the game-defined event types.</li>
+</ul>
+<div class="section" id="matchmake-game-notification-register">
+<span id="id35"></span><h3>4.19.1. Registering Notification Events With the Server and Sending Them to Friends</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a42d191c9470000ce4828b596c56fd9be">MatchmakeExtensionClient::UpdateNotificationData()</a></code> function to notify friends of game-specific events. This function takes the following arguments: a pointer to a <code>ProtocolCallContext</code> object, a notification type, and notification data defined independently by a game (two <code>uint32_t</code> values and a single string of up to 256 characters). To prevent notification types from overlapping with the system-defined event types, set the values in the range from NotificationEvents::GameNotificationType1 to NotificationEvents::GameNotificationType8. When a client disconnects from the game server, every notification event that it registered is automatically deleted from the game server.</p>
+</div>
+<div class="section" id="id36">
+<h3>4.19.2. Getting Registered Notification Events</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a0f0b43d1b555bf0cc2de455bd933cd67">MatchmakeExtensionClient::GetFriendNotificationData</a>()</code> function to get friend notification events that have already been registered. This function takes the following arguments: a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> object, a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_list.html">qList</a></code>&lt;<code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html">NotificationEvent</a></code>&gt; that stores the asynchronous processing results, and the type of notification to get.</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">Use this function only when a client logs in, and then handle notification events while the client is logged in.</p>
+</div>
+</div>
+</div>
+<div class="section" id="matchmake-game-server-maintenance">
+<span id="id37"></span><h2>4.20. Handling Maintenance Notification Events</h2>
+<div class="section" id="id38">
+<h3>4.20.1. Maintenance Notification Events</h3>
+<p>This section describes the handling of maintenance notification events issued from the game server. For more information about maintenance notifications, see the NEX Guide.</p>
+<p>Handling maintenance notification events in the application can let users know that maintenance will begin. It can also prevent them from selecting menu options that would transition to game modes that use matchmaking.</p>
+<p>Maintenance notification events occur for all users who are logged in to the game server. For users who log in to the game server after scheduled maintenance notifications or maintenance start notifications are issued, the notifications occur after they log in.</p>
+<p>Scheduled maintenance notification events and start notification events that have already been issued from the game server usually occur within 30 seconds after logging in. However, not all notifications are guaranteed to arrive within 30 seconds. Do not hard code a 30-second waiting period into your application.</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">Maintenance notifications are displayed to users as a system feature overlay notification, so it is not necessary for maintenance notification events to be handled in applications.</p>
+</div>
+</div>
+<div class="section" id="id39">
+<h3>4.20.2. Handling Scheduled Maintenance Notification Events</h3>
+<p>Scheduled maintenance notification events are reported as <code>NotificationEvents::MaintenanceAnnouncement</code>. The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_notification_event.html#a040abab846bf0204b55eaa8348e7ab07">NotificationEvent::GetParam1</a>()</code> function takes the maintenance start time in Unix Epoch Time. The server maintenance start time can be retrieved using the <code>DataTime::FromUnixEpochTime()</code> function of the <code>DateTime</code> class. The time in the event is in UTC.</p>
+</div>
+<div class="section" id="matchmake-handle-game-server-maintenance">
+<span id="id40"></span><h3>4.20.3. Handling Maintenance Start Notification Events</h3>
+<p>Maintenance start notification events are reported as <code>NotificationEvents::GameServerMaintenance</code>. The following processing may be necessary for this event. Consider the handling method in the game specifications.</p>
+<ul class="simple">
+<li>Notify the user that maintenance will begin and prompt them to cancel matchmaking.</li>
+<li>Even after receiving a maintenance start notification, games continue without the user being notified.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="matchmake-messaging">
+<span id="id41"></span><h2>4.21. Using Messaging Features</h2>
+<p>The messaging feature provides a general way for clients to exchange text and binary messages. Using reliable communication, instant messages are sent to specified users by using the game server. Messages can only be sent to users who are logged in to the game server.</p>
+<p>This feature has been designed to account for the server, and assumes implementations such as sending messages from users to their communication partners. Do not send events more frequently than that. Specifically, this feature has the following restrictions.</p>
+<ul class="simple">
+<li>It cannot be used to send data other than messages from users. One example of this would be the exchange of data during an online game that was originally sent and received through P2P communication.</li>
+<li>Restrict events to being sent no more than 10 times a minute to prevent successive user operations from resulting in too many transmissions.</li>
+</ul>
+<div class="section" id="matchmake-messaging-send">
+<span id="id42"></span><h3>4.21.1. Sending Messages</h3>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_messaging_client.html#ab61b67e6b29408060462dbf04b695e17">MessagingClient::SendInstant</a>()</code> function to send a message to a particular client. This function takes the following arguments: a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> object, the principal ID of the recipient client, and a <code>UserMessageDataHolder</code> object holding a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_user_message.html">UserMessage</a></code> (or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_text_message.html">TextMessage</a></code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_binary_message.html">BinaryMessage</a></code>) object. (See <a class="reference internal" href="#matchmake-code-message-send"><span class="std std-ref">Code 4.9</span></a>.)</p>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_messaging_client.html#a2a6421693be4ab59c560c7add59886fd">MessagingClient::SendChat</a>()</code> function to send a message to all the clients that have joined a particular matchmaking session. This function takes the following arguments: a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> object, the principal ID of the recipient client, and a <code>UserMessageDataHolder</code> object holding a pointer to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_user_message.html">UserMessage</a></code> (or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_text_message.html">TextMessage</a></code> or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_binary_message.html">BinaryMessage</a></code>) object.</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">The asynchronous call returns success when the message reaches the game server. For this reason, it is not known if the message has arrived at the recipient from the results of the asynchronous results. Messages that reach the game server are guaranteed to reach the recipient as long as the recipient is not disconnected from the game server.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">The <code>MessageClient::SendChat</code> function supports up to 32 connected clients. Contact Nintendo if you want to use this function with more than 32 clients.</p>
+</div>
+<div class="literal-block-wrapper docutils container" id="id66">
+<span id="matchmake-code-message-send"></span><div class="code-block-caption"><span class="caption-text">Code 4.9. Sending a Text Message</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">SendInstantMessage</span><span class="p">(</span><span class="n">MessagingClient</span> <span class="o">*</span><span class="n">pMessagingClient</span><span class="p">,</span> <span class="n">PrincipalID</span> <span class="n">target</span><span class="p">,</span> <span class="k">const</span> <span class="n">String</span><span class="o">&amp;</span> <span class="n">message</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">TextMessage</span><span class="o">*</span> <span class="n">pTextMessage</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TextMessage</span><span class="p">();</span>
+    <span class="n">UserMessageDataHolder</span> <span class="n">oDataHolder</span> <span class="o">=</span> <span class="n">pTextMessage</span><span class="p">;</span>
+
+    <span class="c1">// Set the message.</span>
+    <span class="n">pTextMessage</span><span class="o">-&gt;</span><span class="n">SetTextBody</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
+
+    <span class="n">ProtocolCallContext</span> <span class="n">oContext</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">pMessagingClient</span><span class="o">-&gt;</span><span class="n">SendInstant</span><span class="p">(</span><span class="o">&amp;</span><span class="n">oContext</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">oDataHolder</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="n">oContext</span><span class="p">.</span><span class="n">Wait</span><span class="p">();</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">oContext</span><span class="p">.</span><span class="n">GetState</span><span class="p">()</span> <span class="o">!=</span> <span class="n">CallContext</span><span class="o">::</span><span class="n">CallSuccess</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="c1">// Error handling.</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="c1">// Error handling.</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="matchmake-messaging-receive">
+<span id="id43"></span><h3>4.21.2. Handling Message Notifications</h3>
+<p>For a client to receive messages, the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_messaging_client.html#a7a37c24c2054679abb7073405940890a">MessagingClient::RegisterMessagingNotificationHandler</a>()</code> function must register a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_messaging_notification_handler.html">MessagingNotificationHandler</a></code> with the client process after the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_service_client.html#a508e73b62eabce5933e66988331a4830">MessagingClient::Bind</a>()</code> function is run. Each time the client receives a notification message after the handler has been registered, the message is sent to the handler and the <code>DeliverInstantMessage</code> callback is invoked. To customize how messages are processed, make <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_messaging_notification_handler.html">MessagingNotificationHandler</a></code> into a subclass, and reimplement the system callback. For more information, see <a class="reference internal" href="#matchmake-code-message-receive"><span class="std std-ref">Code 4.10</span></a>.</p>
+<p>In the <code>DeliverInstantMessage</code> callback, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_holder.html#a3293be45cc581fc3897d996b4e1f7502">DataHolder::Get</a>()</code> function to get the stored message. Use <code>DynamicCast()</code> to determine whether the message is an instance of the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_user_message.html">UserMessage</a></code>, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_text_message.html">TextMessage</a></code>, or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_binary_message.html">BinaryMessage</a></code> concrete class.</p>
+<p>For example, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data.html#a973b1c604fb8dfb13164c719407c6021">TextMessage::DynamicCast</a>()</code> function to determine whether the message can be dynamically cast to a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_text_message.html">TextMessage</a></code> object. Similarly, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data.html#a973b1c604fb8dfb13164c719407c6021">BinaryMessage::DynamicCast</a>()</code> function to determine whether the message is a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_binary_message.html">BinaryMessage</a></code> object.</p>
+<p>The following example shows a messaging notification handler that determines the type of the message object.</p>
+<div class="literal-block-wrapper docutils container" id="id67">
+<span id="matchmake-code-message-receive"></span><div class="code-block-caption"><span class="caption-text">Code 4.10. Subclassing MessagingNotificationHandler</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyMessagingNotificationHandler</span><span class="o">:</span> <span class="k">public</span> <span class="n">MessagingNotificationHandler</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="c1">// Overridden from MessagingNotificationHandler.</span>
+<span class="kt">void</span> <span class="n">DeliverInstantMessage</span><span class="p">(</span><span class="k">const</span> <span class="n">DataHolder</span><span class="o">&amp;</span> <span class="n">hMsg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">TextMessage</span><span class="o">::</span><span class="n">DynamicCast</span><span class="p">(</span><span class="n">hMsg</span><span class="p">.</span><span class="n">Get</span><span class="p">()))</span>
+    <span class="p">{</span>
+        <span class="c1">// If TextMessage::DynamicCast() succeeds, a TextMessage object is received.</span>
+        <span class="n">TextMessage</span><span class="o">*</span> <span class="n">pTextMsg</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">TextMessage</span><span class="o">*&gt;</span><span class="p">(</span> <span class="n">hMsg</span><span class="p">.</span><span class="n">Get</span><span class="p">()</span> <span class="p">);</span>
+        <span class="n">NN_LOG</span><span class="p">(</span><span class="s">"from:%u message:%ls </span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">pTextMsg</span><span class="o">-&gt;</span><span class="n">GetSenderID</span><span class="p">()</span> <span class="p">,</span><span class="n">pTextMsg</span><span class="o">-&gt;</span><span class="n">GetTextBody</span><span class="p">().</span><span class="n">CStr</span><span class="p">());</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">BinaryMessage</span><span class="o">::</span><span class="n">DynamicCast</span><span class="p">(</span><span class="n">hMsg</span><span class="p">.</span><span class="n">Get</span><span class="p">()))</span>
+    <span class="p">{</span>
+        <span class="c1">// If BinaryMessage::DynamicCast() succeeds, a BinaryMessage object has been received.</span>
+        <span class="n">BinaryMessage</span><span class="o">*</span> <span class="n">pBinaryMsg</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">BinaryMessage</span><span class="o">*&gt;</span><span class="p">(</span> <span class="n">hMsg</span><span class="p">.</span><span class="n">Get</span><span class="p">()</span> <span class="p">);</span>
+        <span class="n">NN_LOG</span><span class="p">(</span><span class="s">"from:%u size:%u </span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">pBinaryMsg</span><span class="o">-&gt;</span><span class="n">GetSenderID</span><span class="p">()</span> <span class="p">,</span><span class="n">pBinaryMsg</span><span class="o">-&gt;</span><span class="n">GetBufferSize</span><span class="p">());</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="matchmakereferee">
+<span id="matchmake-matchmakereferee"></span><h2>4.22. Using the MatchmakeReferee Feature</h2>
+<p>The <code>MatchmakeReferee</code> feature records results fairly by summarizing match reports sent by clients and checking them all together. This record is called personal statistics.</p>
+<p>Personal statistics include the following.</p>
+<ul class="simple">
+<li>Primary associated NEX unique ID (the principal ID if NEX unique IDs are not being used).</li>
+<li>Category</li>
+<li>Last used principal ID.</li>
+<li>Number of disconnects in the most recent 100 matches.</li>
+<li>Number of violations in the most recent 100 matches.</li>
+<li>Number of report mismatches in the most recent 100 matches.</li>
+<li>Number of wins in the most recent 100 matches.</li>
+<li>Number of losses in the most recent 100 matches.</li>
+<li>Number of draws in the most recent 100 matches.</li>
+<li>Total number of disconnects until now.</li>
+<li>Total number of violations until now.</li>
+<li>Total number of report mismatches until now.</li>
+<li>Total number of wins until now.</li>
+<li>Total number of losses until now.</li>
+<li>Total number of draws until now.</li>
+<li>Rating value.</li>
+</ul>
+<p>Items other than report mismatches are updated based on the content of reports sent from clients.</p>
+<div class="section" id="matchmake-matchmakereferee-personalstats">
+<span id="id44"></span><h3>4.22.1. Personal Statistics Record Units</h3>
+<p>The default recording unit is by principal ID, but statistics can be recorded in finer units by registering a NEX unique ID as a primary associated NEX unique ID.</p>
+<p>For more information, see <a class="reference internal" href="utility.html#utility-uniqueid-matchmakereferee-usage"><span class="std std-ref">10.3.2.1. Using NEX Unique IDs With the MatchmakeReferee Feature</span></a>.</p>
+<p>The default functionality if a NEX unique ID is not used is to use the principal ID internally as the primary associated NEX unique ID.</p>
+</div>
+<div class="section" id="matchmake-matchmakereferee-flow">
+<span id="id45"></span><h3>4.22.2. Overall Flow of the MatchmakeReferee Feature</h3>
+<ol class="arabic simple">
+<li>Load the primary associated NEX unique ID from save data.</li>
+<li>Log in with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html#a88027e43cd2641ffbb0497a04352e406">NgsFacade::Login</a>()</code> function.</li>
+<li>If there is no primary associated NEX unique ID, get one with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_utility_client.html#ab7dd518d8fca7156e919a3810cc91660">UtilityClient::AcquireNexUniqueIdWithPassword</a>()</code> function.</li>
+<li>Call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_utility_client.html#a0dfaa8083317da836429ee7dafbd73f0">UtilityClient::AssociateNexUniqueIdWithMyPrincipalId</a>()</code> function to declare the primary associated NEX unique ID to be used.</li>
+<li>Call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#ace126d41ae9f546bb60546ed850661db">MatchmakeRefereeClient::GetOrCreateStats</a>()</code> function to get or create personal statistics.</li>
+<li>Call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#a693b979073eb8a50e7cc077c4ca0740c">MatchmakeRefereeClient::GetNotSummarizedRound</a>()</code> function as needed to check whether there is a round that is not summarized yet.</li>
+<li>Perform matchmaking and participate in a matchmaking session, and establish a P2P session.</li>
+<li>The peer-to-peer session host calls the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#a8c224f6e48cd315f078a0d7338cbcef6">MatchmakeRefereeClient::StartRound</a>()</code> function. <code>NotificationEvents::RoundStarted</code> notifications are sent to round participants, who can get the personal statistics of opponents by calling the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#a124cbc70a68d150f99fe3956f68d9d52">MatchmakeRefereeClient::GetStats</a>()</code> function, as necessary.</li>
+<li>To withdraw during the round, call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#af3efcfad6a6f76d4bc82a76285b4653f">MatchmakeRefereeClient::EndRoundWithoutReport</a>()</code> function.</li>
+<li>When the round ends, each user calls the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#ad4ad07c53678b425297c35a5b20bd814">MatchmakeRefereeClient::EndRound</a>()</code> function to report the round results for all users as a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_vector.html">qVector</a>&lt;<a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_personal_round_result.html">MatchmakeRefereePersonalRoundResult</a>&gt;</code>.</li>
+<li>Wait for the notification that summarization has completed (<code>NotificationEvents::RoundSummarized</code>) and display the round results.</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">If personal statistics are being managed in units of principal IDs, steps 1, 3, and 4 are not needed.</p>
+</div>
+</div>
+<div class="section" id="matchmake-matchmakereferee-reportsummary">
+<span id="id46"></span><h3>4.22.3. Report Summarizing on the Server</h3>
+<p>The report on the server is summarized after the reports from all round participants are received (including empty reports from calls to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#af3efcfad6a6f76d4bc82a76285b4653f">MatchmakeRefereeClient::EndRoundWithoutReport</a>()</code>), or one minute after the first report is received (not including empty reports from calls to <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#af3efcfad6a6f76d4bc82a76285b4653f">MatchmakeRefereeClient::EndRoundWithoutReport</a>()</code>).</p>
+<p>The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#af3efcfad6a6f76d4bc82a76285b4653f">MatchmakeRefereeClient::EndRoundWithoutReport</a>()</code> function is called to allow summarizing to start without having to wait for the one-minute timeout. The feature still works even if this function is not called, but starting processing to summarize is delayed. Make sure that you call it in any situation where you cannot call <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#ad4ad07c53678b425297c35a5b20bd814">MatchmakeRefereeClient::EndRound</a>()</code>, such as when withdrawing during the round. When participants in the round log out from the game server, report summary processing occurs like when <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#af3efcfad6a6f76d4bc82a76285b4653f">MatchmakeRefereeClient::EndRoundWithoutReport()</a></code> is called.</p>
+<p>In the report summarizing process on the server, the reports sent to (<code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_vector.html">qVector</a>&lt;<a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_personal_round_result.html">MatchmakeRefereePersonalRoundResult</a>&gt;</code>) are checked to verify that they match with reports sent by other round participants. Because the <code><var><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_vector.html">qVector</a></var>&lt;<a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_personal_round_result.html">MatchmakeRefereePersonalRoundResult</a>&gt;</code> match check is performed among players that match the principal ID of each <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_personal_round_result.html">MatchmakeRefereePersonalRoundResult</a></code>, it is not necessary for the order of <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_personal_round_result.html">MatchmakeRefereePersonalRoundResult</a></code> to be the same among the reports sent to various users within <code><var><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_vector.html">qVector</a></var></code>. If the data from more than half of the reports matches, that data is used as the final result. This process is called normalization.</p>
+<p>The normalized report is held on the server for one hour. You can get the normalized report by calling the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#a7ec0191fbde2558d3bfc7f5e9a9b1d94">MatchmakeRefereeClient::GetRound</a>()</code> function. The personal statistics linked to the primary associated NEX unique ID are updated based on the normalized report. The personal statistics are persistent data. Get personal statistics using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#a124cbc70a68d150f99fe3956f68d9d52">MatchmakeRefereeClient::GetStats</a>()</code>function, and reset the statistics to the initial state using the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#a73e83d76374b0f65260e7d772c9aca28">MatchmakeRefereeClient::ResetStats</a>()</code> function. For more information about personal statistics, see <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_stats.html">MatchmakeRefereeStats</a></code>.</p>
+<p>In the following cases, the round is considered invalid and the personal statistics are not updated.</p>
+<ul class="simple">
+<li>No more than half of the reports match.</li>
+<li>All participants are disconnected or have called the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#af3efcfad6a6f76d4bc82a76285b4653f">MatchmakeRefereeClient::EndRoundWithoutReport</a>()</code> function.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="matchmake-codeword">
+<span id="id47"></span><h2>4.23. Using Keywords</h2>
+<p><em>Keywords</em> refer to optional strings shared among users. This functionality refers to the use of keywords for matchmaking.</p>
+<p>The following types of play are possible when the user who sets a keyword decides on how broadly to share that keyword among acquaintances.</p>
+<ul class="simple">
+<li>Use matchmaking to play with a few people by sharing the keyword among a particular small group.</li>
+<li>Use matchmaking to play with anyone who found a shared keyword in connection with social media posts or with an online event.</li>
+</ul>
+<p>One of the unique characteristics of the keywords functionality is that it allows for simpler matchmaking when you share the keyword and the time to play, eliminating the need to become friends prior to cooperative or competitive play.</p>
+<div class="section" id="matchmake-codeword-spec">
+<span id="id48"></span><h3>4.23.1. Keyword Specifications</h3>
+<p>You can specify a Unicode string, up to 32 characters in length, as a keyword. Any character within the UCS-2 scope can be used.</p>
+<p>The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html#aa65a65e30d7dff7dd7358c08b0b858ff">MatchmakeSession::SetCodeword</a>()</code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html#aec1783d1471dd84c6afa0aaf58c3c683">MatchmakeSessionSearchCriteria::SetCodeword</a>()</code> functions will return <code>false</code> when an unavailable character is used within a keyword. Prompt the user to set an appropriate keyword.</p>
+<p>The strings you use as keywords do not need to be unique. You can create matchmaking sessions that use the same keyword again and again.</p>
+<p>The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a5976c36a85bc45f9e39f3e4f27369d67">MatchmakeExtensionClient::BrowseMatchmakeSession</a>()</code> function can get multiple matchmaking sessions. You must allow the user to select the desired session when there are multiple sessions using the same keyword.</p>
+<p>You can also use the auto-matchmaking functionality for events where an unspecified number of users can join and there is no need to specify a particular matchmaking session.</p>
+<p>Nintendo recommends the use of a gathering ID for a matchmaking session, instead of using keyword functionality, to be certain of joining a particular matchmaking session.</p>
+</div>
+<div class="section" id="matchmake-codeword-createsession">
+<span id="id49"></span><h3>4.23.2. Adding a Matchmaking Session With a Configured Keyword</h3>
+<p>You must use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html#aa65a65e30d7dff7dd7358c08b0b858ff">MatchmakeSession::SetCodeword</a>()</code> function to configure the keyword you want to use for a matchmaking session.</p>
+<div class="literal-block-wrapper docutils container" id="id68">
+<div class="code-block-caption"><span class="caption-text">Code 4.11. Adding Matchmaking Sessions</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">ProtocolCallContext</span> <span class="n">oContext</span><span class="p">;</span>
+<span class="n">MatchmakeSession</span> <span class="n">matchmakeSession</span><span class="p">,</span> <span class="n">joinedMatchmakeSession</span><span class="p">;</span>
+<span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetGameMode</span><span class="p">(</span><span class="n">gameMode</span><span class="p">);</span>
+<span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetMaxParticipants</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetMatchmakeSystemType</span><span class="p">(</span><span class="n">MATCHMAKE_SYSTEM_TYPE_ANYBODY</span><span class="p">);</span>
+
+<span class="c1">// Setting a keyword to MatchmakeSession.</span>
+<span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetCodeword</span><span class="p">(</span><span class="s">"keyword"</span><span class="p">);</span>
+
+<span class="n">CreateMatchmakeSessionParam</span> <span class="n">createMatchmakeSessionParam</span><span class="p">;</span>
+<span class="n">createMatchmakeSessionParam</span><span class="p">.</span><span class="n">SetSourceMatchmakeSession</span><span class="p">(</span><span class="n">matchmakeSession</span><span class="p">);</span>
+<span class="c1">// Register a matchmaking session with the server, and join a session.</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="n">matchmakeExtensionClient</span><span class="p">.</span><span class="n">CreateMatchmakeSession</span><span class="p">(</span><span class="o">&amp;</span><span class="n">oContext</span><span class="p">,</span> <span class="n">createMatchmakeSessionParam</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">joinedMatchmakeSession</span><span class="p">))</span>
+<span class="p">{</span>
+    <span class="c1">// Error processing.</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// Wait for the result of asynchronous processing.</span>
+<span class="n">oContext</span><span class="p">.</span><span class="n">Wait</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">oContext</span><span class="p">.</span><span class="n">GetState</span><span class="p">()</span><span class="o">!=</span><span class="n">CallContext</span><span class="o">::</span><span class="n">CallSuccess</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// Error processing.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="matchmake-codeword-joinsession">
+<span id="id50"></span><h3>4.23.3. Joining a Matchmaking Session With a Configured Keyword</h3>
+<p>You can search for a matchmaking session that matches a keyword when you specify that keyword to the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html#aec1783d1471dd84c6afa0aaf58c3c683">MatchmakeSessionSearchCriteria::SetCodeword</a>()</code> function.</p>
+<p>You can only use one of the following. A search via an attribute value used by the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html#abfd3dad54d6110911712caf47219ff3f">MatchmakeSessionSearchCriteria::SetAttribute</a>()</code> function or a search with keyword functionality.</p>
+<p>An error occurs when both a codeword and an attribute value are specified as search conditions.</p>
+<p>Matchmaking sessions with a keyword specified are not subject to attribute value searches to prevent users who do not know the keyword from joining the session.</p>
+<p>To search for matchmaking sessions with a keyword specified, always specify the keyword to be searched for using the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html#aec1783d1471dd84c6afa0aaf58c3c683">MatchmakeSessionSearchCriteria::SetCodeword()</a> function.</p>
+<div class="literal-block-wrapper docutils container" id="id69">
+<div class="code-block-caption"><span class="caption-text">Code 4.12. Searching Matchmaking Sessions</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">ProtocolCallContext</span> <span class="n">oContext</span><span class="p">;</span>
+<span class="n">ResultRange</span> <span class="nf">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+<span class="n">qList</span><span class="o">&lt;</span><span class="n">MatchmakeSession</span><span class="o">&gt;</span> <span class="n">lstResult</span><span class="p">;</span>
+
+<span class="n">MatchmakeSessionSearchCriteria</span> <span class="n">searchCriteria</span><span class="p">;</span>
+<span class="n">searchCriteria</span><span class="p">.</span><span class="n">SetGameMode</span><span class="p">(</span><span class="n">gameMode</span><span class="p">);</span>
+<span class="n">searchCriteria</span><span class="p">.</span><span class="n">SetMatchmakeSystemType</span><span class="p">(</span><span class="n">MATCHMAKE_SYSTEM_TYPE_ANYBODY</span><span class="p">);</span>
+
+<span class="c1">// Set a keyword as a matchmaking sessions search criterion.</span>
+<span class="n">searchCriteria</span><span class="p">.</span><span class="n">SetCodeword</span><span class="p">(</span><span class="s">"keyword"</span><span class="p">);</span>
+
+<span class="n">matchmakeExtensionClient</span><span class="p">.</span><span class="n">BrowseMatchmakeSession</span><span class="p">(</span><span class="o">&amp;</span><span class="n">oContext</span><span class="p">,</span> <span class="n">searchCriteria</span><span class="p">,</span> <span class="n">range</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">lstResult</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="matchmake-codeword-automatch">
+<span id="id51"></span><h3>4.23.4. Using Keywords With Auto-Matchmaking</h3>
+<p>You can also use keywords with auto-matchmaking.</p>
+<p>Use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html#aa65a65e30d7dff7dd7358c08b0b858ff">MatchmakeSession::SetCodeword</a>()</code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html#aec1783d1471dd84c6afa0aaf58c3c683">MatchmakeSessionSearchCriteria::SetCodeword</a>()</code> functions to set a keyword for the matchmaking session and the search criterion.</p>
+<div class="literal-block-wrapper docutils container" id="id70">
+<div class="code-block-caption"><span class="caption-text">Code 4.13. Auto-Matchmaking</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">String</span> <span class="n">codeword</span><span class="o">=</span><span class="s">"keyword"</span><span class="p">;</span>
+
+<span class="n">ProtocolCallContext</span> <span class="n">oContext</span><span class="p">;</span>
+<span class="n">MatchmakeSession</span> <span class="n">matchmakeSession</span><span class="p">,</span> <span class="n">joinedMatchmakeSession</span><span class="p">;</span>
+<span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetGameMode</span><span class="p">(</span><span class="n">gameMode</span><span class="p">);</span>
+<span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetMaxParticipants</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetMatchmakeSystemType</span><span class="p">(</span><span class="n">MATCHMAKE_SYSTEM_TYPE_ANYBODY</span><span class="p">);</span>
+
+<span class="c1">// Setting a keyword to MatchmakeSession.</span>
+<span class="n">matchmakeSession</span><span class="p">.</span><span class="n">SetCodeword</span><span class="p">(</span><span class="n">codeword</span><span class="p">);</span>
+
+<span class="n">AutoMatchmakeParam</span> <span class="n">autoMatchmakeParam</span><span class="p">;</span>
+<span class="n">autoMatchmakeParam</span><span class="p">.</span><span class="n">SetSourceMatchmakeSession</span><span class="p">(</span><span class="n">matchmakeSession</span><span class="p">);</span>
+<span class="n">autoMatchmakeParam</span><span class="p">.</span><span class="n">SetJoinMessage</span><span class="p">(</span><span class="n">NEX_T</span><span class="p">(</span><span class="s">"joined"</span><span class="p">));</span>
+<span class="n">qList</span><span class="o">&lt;</span><span class="n">MatchmakeSessionSearchCriteria</span><span class="o">&gt;</span> <span class="n">listSearchCriteria</span><span class="p">;</span>
+
+<span class="n">MatchmakeSessionSearchCriteria</span> <span class="n">criteria</span><span class="p">;</span>
+<span class="n">criteria</span><span class="p">.</span><span class="n">SetGameMode</span><span class="p">(</span><span class="n">gameMode</span><span class="p">);</span>
+<span class="n">criteria</span><span class="p">.</span><span class="n">SetMatchmakeSystemType</span><span class="p">(</span><span class="n">MATCHMAKE_SYSTEM_TYPE_ANYBODY</span><span class="p">);</span>
+
+<span class="c1">// Also set a keyword for MatchmakeSessionSearchCriteria.</span>
+<span class="n">criteria</span><span class="p">.</span><span class="n">SetCodeword</span><span class="p">(</span><span class="n">codeword</span><span class="p">);</span>
+
+<span class="n">listSearchCriteria</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">criteria</span><span class="p">);</span>
+<span class="n">autoMatchmakeParam</span><span class="p">.</span><span class="n">SetSearchCriteria</span><span class="p">(</span><span class="n">listSearchCriteria</span><span class="p">);</span>
+<span class="n">matchmakeExtensionClient</span><span class="p">.</span><span class="n">AutoMatchmake</span><span class="p">(</span><span class="o">&amp;</span><span class="n">oContext</span><span class="p">,</span> <span class="n">autoMatchmakeParam</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">joinedMatchmakeSession</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="matchmake-error-handling">
+<span id="id52"></span><h2>4.24. Error Handling</h2>
+<div class="section" id="api">
+<span id="matchmake-api-error"></span><h3>4.24.1. Errors During Function Calls</h3>
+<p>Asynchronous functions that communicate with the game server could return <code>false</code> for the following reasons.</p>
+<ol class="arabic simple">
+<li>A <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a></code> object was passed as an argument while it was being used by another asynchronous process.</li>
+<li>The <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_service_client.html#a508e73b62eabce5933e66988331a4830">ServiceClient::Bind</a>()</code> function has not been run.</li>
+<li>Data failed to be sent to the game server (such as when a connection with the game server was lost).</li>
+</ol>
+<p>All asynchronous functions check these reasons in the listed order. Although (1) and (2) are program errors, (3) is caused by the network state. You must log in to the game server again to restore communication with it from this state. For this reason, display the error message "A communication error has occurred" and then shut down communication. For more information, see <a class="reference internal" href="#matchmake-code-error-handling"><span class="std std-ref">Code 4.14</span></a>.</p>
+</div>
+<div class="section" id="id53">
+<h3>4.24.2. Asynchronous Processing Errors</h3>
+<p>You can get asynchronous processing results with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#acb03838807a46d921f5517fcc887bdcf">CallContext::GetOutcome</a>()</code> function. The API Reference describes errors that must be handled by the application for each function.</p>
+<p>When an unlisted error occurs, use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html#ad88a83b6db9d69fd1d1a061c97c5ede9">qResult::GetNnResult</a>()</code> function to get <code>nn::Result</code>, or <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1q_result.html#a01cb4ff331eda28fc8abbb1bcf2c205e">qResult::GetErrorCodeStruct</a>()</code> to get the error code, and perform any communication termination processes after passing the result to the error viewer applet (see <a class="reference internal" href="#matchmake-code-error-handling"><span class="std std-ref">Code 4.14</span></a>).</p>
+<div class="literal-block-wrapper docutils container" id="id71">
+<span id="matchmake-code-error-handling"></span><div class="code-block-caption"><span class="caption-text">Code 4.14 Error Handling</span></div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">MatchmakeExtensionClient</span> <span class="n">client</span><span class="p">;</span>
+<span class="n">ProtocolCallContext</span> <span class="n">context</span><span class="p">;</span>
+client</span><span class="p">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">pCredentials</span><span class="p">);</span>  <span class="c1">// pCredentials is a Credentials object obtained from a logged-in <code>NgsFacade</code> object.</span>
+
+<span class="c1">// Call asynchronous processing. Arguments other than context are omitted.</span>
+<span class="c1">// In cases where the asynchronous processing returns <code>false</code>, it is a programming error in which the context is being used by another asynchronous process, </span>
+<span class="c1">// so error handling is unnecessary as long as it returns the newly generated object.</span>
+<span class="n">client</span><span class="p">.</span><span class="n">JoinMatchmakeSession</span><span class="p">(</span><span class="o">&amp;</span><span class="n">context</span><span class="p">,</span> <span class="p">...);</span>
+
+<span class="n">context</span><span class="p">.</span><span class="n">Wait</span><span class="p">();</span> <span class="c1">// Block and wait for asynchronous processing to complete.</span>
+
+<span class="k">if</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">GetState</span><span class="p">()</span> <span class="o">!=</span> <span class="n">CallContext</span><span class="o">::</span><span class="n">CallSuccess</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">GetOutcome</span><span class="p">().</span><span class="n">GetReturnCode</span><span class="p">())</span>
+    <span class="p">{</span>
+        <span class="c1">// If an error occurs that the application needs to handle, perform the required processing in the application.</span>
+        <span class="k">case</span> <span class="n">QERROR</span><span class="p">(</span><span class="n">RendezVous</span><span class="p">,</span> <span class="n">SessionVoid</span><span class="p">)</span><span class="o">:</span>
+            <span class="c1">// There is no matchmaking session.</span>
+            <span class="c1">// Display a message such as “Could not find the selected room."</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nf">QERROR</span><span class="p">(</span><span class="n">RendezVous</span><span class="p">,</span> <span class="n">SessionFull</span><span class="p">)</span><span class="o">:</span>
+            <span class="c1">// The matchmaking session is full.</span>
+            <span class="c1">// Display a message such as "At capacity."</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">default</span><span class="o">:</span>
+        <span class="p">{</span>
+            <span class="c1">// Cases where there is an unintended error in the application.</span>
+
+
+            <span class="n">nn</span><span class="o">::</span><span class="n">err</span><span class="o">::</span><span class="n">ErrorCode</span> <span class="n">errorCode</span> <span class="o">=</span> <span class="n">result</span><span class="p">.</span><span class="n">GetErrorCodeStruct</span><span class="p">();</span>
+            <span class="c1">// Start the error viewer applet.</span>
+            <span class="n">nn</span><span class="o">::</span><span class="n">err</span><span class="o">::</span><span class="n">ShowError</span><span class="p">(</span><span class="n">errorCode</span><span class="p">);</span>
+
+            <span class="c1">// Log out and shut down.</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

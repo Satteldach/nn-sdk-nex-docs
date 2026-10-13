@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>10. Utilities — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="utility-top">
+<span id="id1"></span><h1>10. Utilities</h1>
+<p>This section provides an overview of the utilities available in NEX.</p>
+<div class="section" id="id2">
+<h2>10.1. Utilities Workflow</h2>
+<p>This is the basic workflow when you use the utilities.</p>
+<ol class="arabic simple">
+<li>Log in to the game server.</li>
+<li>Initialize a service client. For more information, see <a class="reference internal" href="#utility-initialize"><span class="std std-ref">10.2</span></a>.</li>
+<li>Use the various utilities.<ul>
+<li>Use a password protected NEX unique ID. For more information, see <a class="reference internal" href="#utility-uniqueid-with-password"><span class="std std-ref">10.3.2.</span></a>.</li>
+<li>Get application settings. For more information, see <a class="reference internal" href="#utility-application-setting-get"><span class="std std-ref">10.4.3.</span></a>.</li>
+<li>Call other functions as needed.</li>
+</ul>
+</li>
+<li>Finalize the service client, and log out from the game server.</li>
+</ol>
+</div>
+<div class="section" id="utility-initialize">
+<span id="id3"></span><h2>10.2. Initializing and Finalizing a Service Client</h2>
+<p>Initializing and finalizing a service client for the utilities (<a href="../../external.html?file=../Api/classnn_1_1nex_1_1_utility_client.html">UtilityClient</a>) involves the same processes as in matchmaking. For more information, see section <a class="reference internal" href="matchmake.html#matchmake-initialize"><span class="std std-ref">4.3</span></a>. </p>
+</div>
+<div class="section" id="nex-id">
+<span id="utility-uniqueid"></span><h2>10.3. NEX Unique ID</h2>
+<p>The NEX unique ID is a unique ID issued by the game server.</p>
+<p>You can get the NEX unique ID with the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_utility_client.html#a0de3be1984832a3061141e452dda151b">UtilityClient::AcquireNexUniqueId()</a> or <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_utility_client.html#ab7dd518d8fca7156e919a3810cc91660">UtilityClient::AcquireNexUniqueIdWithPassword()</a> function. The latter function includes a password to use it when a password is needed. A new NEX unique ID is issued each time one of these functions is called. Both use the same ID system, and they only differ in whether they return a password. To check whether a NEX unique ID is valid and was issued from the server, use the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_utility_client.html#a9636e6e0155e94fe51f2ea0ca417b462">UtilityClient::IsValidNexUniqueId()</a> function.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">NEX unique IDs are not unique across game servers. This is also true for server environments. NEX unique IDs are not guaranteed to be unique between a development environment and a production environment, for example.</p>
+</div>
+<div class="section" id="utility-uniqueid-without-password">
+<span id="id4"></span><h3>10.3.1. Using Password-Free NEX Unique IDs</h3>
+<p>The rankings features use NEX unique IDs that do not include passwords.</p>
+<div class="section" id="utility-uniqueid-ranking-usage">
+<span id="id5"></span><h4>10.3.1.1. Using NEX Unique IDs for Rankings</h4>
+<p>You can use NEX unique IDs to register scores on a more detailed basis than when using principal IDs alone.</p>
+<p>For example, they can be used in situations such as the following.</p>
+<ul class="simple">
+<li>When you want to share the same save data among multiple users and register scores separately for each user.</li>
+<li>When a single user plays a game using multiple characters, and you want to register scores for each character.</li>
+</ul>
+<p>When using NEX unique IDs, get a NEX unique ID the first time a score is ranked, and pass that ID as an argument to each of the ranking functions. The first time a NEX unique ID is obtained, save it in save data and then retrieve it from the save data from then on.</p>
+<p>To register scores on the basis of principal IDs, specify nn::nex::INVALID_UNIQUEID (the default value) for the NEX unique ID.</p>
+<div class="admonition warning">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p>When using NEX unique IDs issued by the game server, describe how you plan to use them in detail on OMAS, and note the following.</p>
+<ul class="last simple">
+<li>When a user deletes save data, there is no longer a way to identify the NEX unique ID that was used. The data remains on the server with no way to be updated or deleted.</li>
+<li>If the same user repeatedly creates save data, uploads a high score, and then deletes the save data, that user may be in first place in the rankings permanently.</li>
+<li>For friend rankings, if the local user and the friends of that user upload scores under multiple NEX unique IDs, all of those scores (and not just the high score for that user) are included in the rankings because rankings are retrieved on the basis of principal IDs.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="utility-uniqueid-with-password">
+<span id="id6"></span><h3>10.3.2. Using Password-Protected NEX Unique IDs</h3>
+<p>Ranking2 and the <code>MatchmakeReferee</code> feature use password protected NEX unique IDs.</p>
+<p>To use password protected NEX unique IDs, first use the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_utility_client.html#ab7dd518d8fca7156e919a3810cc91660">UtilityClient::AcquireNexUniqueIdWithPassword()</a> function to get a NEX unique ID and the associated password.</p>
+<p>Next, use the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_utility_client.html#a0dfaa8083317da836429ee7dafbd73f0">UtilityClient::AssociateNexUniqueIdWithMyPrincipalId()</a> function to register the NEX unique ID and password on the server and associate them with a principal ID.</p>
+<p>The NEX unique IDs associated with a principal ID are known as associated NEX unique IDs. To associate all of the NEX unique IDs, you can specify a list of NEX unique IDs with a single principal ID. The element added to the top of the list of associated NEX unique IDs is known as the <em>primary associated NEX unique ID</em>.</p>
+<p>When the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_utility_client.html#a0dfaa8083317da836429ee7dafbd73f0">UtilityClient::AssociateNexUniqueIdWithMyPrincipalId()</a> function is called, if NEX unique IDs that were previously associated with that principal ID are not included, any data associated with those NEX unique IDs is deleted. Therefore, NEX unique IDs for which you do not want the associated data to be deleted must be specified in the list every time this function is called, even if those NEX unique IDs were registered at an earlier time.</p>
+<p>For example, consider an application that has three pieces of save data, and you want to keep those pieces of save data separate on the server. To do this, first, each time a new piece of save data is created, get a new NEX unique ID from the server. Save this NEX unique ID as part of the save data.</p>
+<p>Then, when a certain piece of save data is selected, associate the list of NEX unique IDs for all of the save data that has been created thus far (starting with the NEX unique ID for the selected save data) with the principal ID. This list must include NEX unique IDs that are already registered. Therefore, you must also prepare common save data in addition to the individual pieces of save data. This process must be repeated every time a different piece of save data is selected, not just the first time a piece of save data is selected. Any other features used in this state work on a per-NEX unique ID basis.</p>
+<p>Finally, when the save data is deleted, delete the NEX unique ID associated with that save data. Then, to delete any data associated with that deleted NEX unique ID from the server, immediately after, or the next time a piece of save data is selected, associate a list of NEX unique IDs that does not include the deleted NEX unique ID with the principal ID.</p>
+<p>The association between a principal ID and an associated NEX unique ID might change due to circumstances outside of the application. If you try to use an associated NEX unique ID after it has been disassociated, you might receive a communication error. For example, if you try to send a Ranking2 score in that state, <code>QERROR(Ranking2, InvalidArgument)</code> will occur.</p>
+<p>To avoid this error, the application must call the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_utility_client.html#a0dfaa8083317da836429ee7dafbd73f0">UtilityClient::AssociateNexUniqueIdWithMyPrincipalId()</a> function every time it logs in to the game server. For more information, see Nintendo Switch Guidelines &gt; 0147.</p>
+<div class="section" id="matchmakereferee-nex-id">
+<span id="utility-uniqueid-matchmakereferee-usage"></span><h4>10.3.2.1. Using NEX Unique IDs With the MatchmakeReferee Feature</h4>
+<p>With the <code>MatchmakeReferee</code> feature, using password protected NEX unique IDs enables more fine-tuned control of personal statistics than when using principal IDs.</p>
+<p>After an associated NEX unique ID has been registered, personal statistics recorded during subsequent processes are recorded using the primary associated NEX unique ID.</p>
+<p>When the associated NEX unique ID is deleted, the personal statistics associated with that ID are also deleted.</p>
+</div>
+<div class="section" id="utility-uniqueid-ranking2-usage">
+<span id="id7"></span><h4>10.3.2.2. Using NEX Unique IDs in Ranking2</h4>
+<p>In Ranking2, using password protected NEX unique IDs enables more fine-tuned control of scores and common user data than when using principal IDs.</p>
+<p>After an associated NEX unique ID has been registered, subsequent work on scores and common user data for that user can be processed using the NEX unique ID.</p>
+<p>Adding an associated NEX unique ID will delete any added scores and common user data when there is no association with a NEX unique ID. When the associated NEX unique ID is deleted, scores and common user data associated with that ID are also deleted.</p>
+<p>The existing ranking features previously used password-free NEX unique IDs, but now the ranking features use password protected NEX unique IDs to associate NEX unique IDs with principal IDs. This solves the issue of being able to upload multiple scores to the same rankings by repeatedly creating and deleting save data, amongst other problems.</p>
+</div>
+</div>
+</div>
+<div class="section" id="utility-application-setting">
+<span id="id8"></span><h2>10.4. Managing Application Settings</h2>
+<p>NEX saves application settings on the server and allows the application to retrieve those settings from the server.</p>
+<p>If you design your application to work using these settings, you can change or update the behavior of the application just by changing the application settings saved on the server instead of having to update the application ROM itself.</p>
+<div class="section" id="utility-application-setting-usecase">
+<span id="id9"></span><h3>10.4.1. Use Cases</h3>
+<p>Possible use cases for the application settings management feature include the following, for example. In each case, the application saves the threshold values to use on the server, and the client gets those threshold values from the server and uses them.</p>
+<ul>
+<li><p class="first">Testing Data Before Upload to the Data Store</p>
+<p>Assume you only want to upload data that meets or exceeds a certain condition. You can save the threshold testing value on the server to limit the number of pieces of data that get uploaded.</p>
+</li>
+<li><p class="first">Player Ratings</p>
+<p>Assume you want to display ratings that represent player skill on the client devices. You can save the threshold values for determining player ratings on the server to update player ratings according to the number of players, or other play conditions.</p>
+</li>
+</ul>
+<p>Contact Nintendo if you are considering use cases other than those listed above.</p>
+</div>
+<div class="section" id="utility-application-setting-content">
+<span id="id10"></span><h3>10.4.2. Application Settings Details</h3>
+<p>Application settings include the following elements.</p>
+<table border="1" class="colwidths-given docutils" id="id13">
+<caption><span class="caption-text">Table 10.1. Application Setting Structure</span></caption>
+<colgroup>
+<col width="25%"/>
+<col width="50%"/>
+<col width="25%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Item Name</th>
+<th class="head">Description</th>
+<th class="head">Accepted Values</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Setting index</td>
+<td>Used to switch settings. You can use up to 20 setting indices.</td>
+<td>An integer between 0 and 19.</td>
+</tr>
+<tr class="row-odd"><td>Keys</td>
+<td>Setting key. You can register up to 100 keys for each setting index.</td>
+<td>A 16-bit non-negative integer.</td>
+</tr>
+<tr class="row-even"><td>Value</td>
+<td>The setting values itself.</td>
+<td>32-bit integer.</td>
+</tr>
+<tr class="row-odd"><td>Description</td>
+<td>A description of the setting.</td>
+<td>UTF-8 string.</td>
+</tr>
+</tbody>
+</table>
+<p>Using the setting indices allows you to switch between several groups of settings. For example, if you want to have a setting with the same key but different values for each region, you can create a setting index for each region and configure the keys and values accordingly.</p>
+<p>Use NMAS or WebAPI to upload and delete application settings. For more information about WebAPI, see <a class="reference internal" href="webapi_utility.html#webapi-utility-application-setting"><span class="std std-ref">11.7.2. Managing Application Settings</span></a>.</p>
+</div>
+<div class="section" id="utility-application-setting-get">
+<span id="id11"></span><h3>10.4.3. Getting Settings</h3>
+<p>To get the application settings from the application, use <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_utility_client.html#a4afcabbf4ad4966c13d4fc90d8a7e806">UtilityClient::GetIntegerSettings()</a> and specify the setting index for which you would like to get settings.</p>
+</div>
+<div class="section" id="id12">
+<h3>10.4.4. Important Usage Notes</h3>
+<ul class="simple">
+<li>To reduce server load, have the application get the settings immediately after logging into the NEX server, and then store those settings in the application and reuse them for a prescribed period of time.</li>
+<li>If you use the setting indices to separate settings into debugging settings and production settings, make a dedicated debugging menu that must be used to switch the setting indices so that the debugging settings are never used in the production version of the application.</li>
+<li>Be aware of the following when changing application settings saved on the server.<ul>
+<li>Immediately after the settings are changed, some clients may still be using the old settings while other clients are using the new settings. This depends on when the application retrieves the settings. Make sure that the application does not behave strangely if not all of the clients are using the same settings. For example, use a matchmaking session attribute to ensure that clients using the old settings and clients using the new settings, do not join the same matchmaking session.</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>2. NAT Traversal — NX NEX Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="nat">
+<span id="nat-traversal-top"></span><h1>2. NAT Traversal</h1>
+<p>NAT traversal is a feature for establishing peer-to-peer (P2P) communication in an environment that uses network address translation (NAT).</p>
+<p>For more information about using the NAT traversal feature, see <a class="reference internal" href="vsocket.html#vsocket-top"><span class="std std-ref">1</span></a>.</p>
+<p>Although NAT traversal is supported for nearly all ordinary network environments in NEX, some specific network configurations do not support NAT traversal. Although application developers do not need to consider this information when implementing code, this section describes how to solve problems that may arise during development and debugging.</p>
+<p>In this section, <em>router</em> refers to the router that enables the NAT feature. Routers that only perform segment partitioning and routing without enabling the NAT feature do not have an effect on NAT traversal.</p>
+<div class="section" id="nat-traversal-nat-type">
+<span id="id1"></span><h2>2.1. NAT Types</h2>
+<p>With NEX, NAT types are classified according to two mapping types and two filtering types. A total of four NAT types are possible by combining mapping types and filtering types. This example assumes a client IP address of 192.168.0.1, an IP address of 10.10.10.1 assigned to the global side of NAT, and two peer addresses of 10.10.10.10:10000 and 10.10.10.11:10000.</p>
+<ul>
+<li><dl class="first docutils">
+<dt>Mapping types</dt>
+<dd><p class="first">The mapping type is determined based on changes in the source port assignment when packets are sent in order to two addresses.</p>
+<ul class="last">
+<li><dl class="first docutils">
+<dt>Endpoint-Independent Mapping (EIM)</dt>
+<dd><p class="first">If packets are sent to different addresses from the same local source port, mapping is performed so that the global source port after overwriting is the same.</p>
+<p>[192.168.0.1:10000:10.10.10.10:10000]→[10.10.10.1:10000:10.10.10.10:10000]</p>
+<p class="last">[192.168.0.1:10000:10.10.10.11:10000]→[10.10.10.1:10000:10.10.10.11:10000]</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Endpoint-Dependent Mapping (EDM)</dt>
+<dd><p class="first">If packets are sent to different addresses from the same local source port, mapping is performed so that the global source port after overwriting is different.</p>
+<p>[192.168.0.1:10000:10.10.10.10:10000]→[10.10.10.1:10000:10.10.10.10:10000]</p>
+<p class="last">[192.168.0.1:10000:10.10.10.11:10000]→[10.10.10.1:10001:10.10.10.11:10000]</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Filtering types</dt>
+<dd><p class="first">After a packet is sent to an address, the filtering type determines whether packets received at other ports at that address are filtered by NAT. The following example assumes that a particular type of server program is running at <code>10.10.10.10:10000</code>, and that when a packet is received responses are returned from the two ports <code>10000</code> and <code>10100</code>. If the terminal sends a packet to 10.10.10.10:10000 under these conditions, the following packets can be observed on the LAN side of the terminal.</p>
+<ul class="last">
+<li><dl class="first docutils">
+<dt>Port-Independent Filtering (PIF)</dt>
+<dd><p class="first">[192.168.0.1:10000:10.10.10.10:10000] // Send from the terminal.</p>
+<p>[10.10.10.10:10000:192.168.0.1:10000] // First response from the server.</p>
+<p class="last">[10.10.10.10:10100:192.168.0.1:10000] // Second response from the server.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Port-Dependent Filtering (PDF)</dt>
+<dd><p class="first">[192.168.0.1:10000:10.10.10.10:10000] // Send from the terminal.</p>
+<p>[10.10.10.10:10000:192.168.0.1:10000] // First response from the server.</p>
+<p class="last">// Second response from the server was not received.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Generally, even though using PIF provides higher NAT traversal performance than EIM and PDF, which is better than EDM, all NAT type combinations are supported.</p>
+</div>
+<div class="section" id="nat-traversal-check-nat-type">
+<span id="id2"></span><h2>2.2. Checking the NAT Type</h2>
+<p>You can get the NAT type of the network that the unit is currently connected to by running a connection test from the Internet settings on the Nintendo Switch. The correlations are as follows.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%"/>
+<col width="12%"/>
+<col width="15%"/>
+<col width="8%"/>
+<col width="58%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">NAT Type</th>
+<th class="head">Mapping Type</th>
+<th class="head">Filtering Type</th>
+<th class="head">Port Prediction</th>
+<th class="head">Comments</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>A</td>
+<td>EIM</td>
+<td>PIF</td>
+<td>(Not necessary)</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>B</td>
+<td>EIM</td>
+<td>PDF</td>
+<td>(Not necessary)</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>C</td>
+<td>EDM</td>
+<td>PIF or PDF</td>
+<td>Possible</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>D</td>
+<td>EDM or undefined</td>
+<td>PIF or PDF</td>
+<td>Not possible</td>
+<td>The port cannot be predicted, or the mapping type and filtering type are undefined.</td>
+</tr>
+<tr class="row-even"><td>F</td>
+<td>Unknown</td>
+<td>Unknown</td>
+<td>Not possible</td>
+<td>The NAT type cannot be determined (UDP communication is restrained).</td>
+</tr>
+</tbody>
+</table>
+<p>The following table lists the NAT traversal compatibility of the various NAT types.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%"/>
+<col width="17%"/>
+<col width="17%"/>
+<col width="17%"/>
+<col width="17%"/>
+<col width="17%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head stub">&nbsp;</th>
+<th class="head">Destination Terminal NAT Type A</th>
+<th class="head">Type B</th>
+<th class="head">Type C</th>
+<th class="head">Type D</th>
+<th class="head">Type F</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><th class="stub">Home Terminal NAT Type A</th>
+<td>Excellent</td>
+<td>Excellent</td>
+<td>Good</td>
+<td>Possible</td>
+<td>Not possible</td>
+</tr>
+<tr class="row-odd"><th class="stub">Home Terminal NAT Type B</th>
+<td>Excellent</td>
+<td>Excellent</td>
+<td>Good</td>
+<td>Not possible</td>
+<td>Not possible</td>
+</tr>
+<tr class="row-even"><th class="stub">Home Terminal NAT Type C</th>
+<td>Good</td>
+<td>Good</td>
+<td>Good</td>
+<td>Not possible</td>
+<td>Not possible</td>
+</tr>
+<tr class="row-odd"><th class="stub">Home Terminal NAT Type D</th>
+<td>Possible</td>
+<td>Not possible</td>
+<td>Not possible</td>
+<td>Not possible</td>
+<td>Not possible</td>
+</tr>
+<tr class="row-even"><th class="stub">Home Terminal NAT Type F</th>
+<td>Not possible</td>
+<td>Not possible</td>
+<td>Not possible</td>
+<td>Not possible</td>
+<td>Not possible</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%"/>
+<col width="96%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Excellent</td>
+<td>High probability of NAT traversal success.</td>
+</tr>
+<tr class="row-odd"><td>Good</td>
+<td>High probability of NAT traversal success on NAT Type C terminal if port prediction is successful.</td>
+</tr>
+<tr class="row-even"><td>Possible</td>
+<td>Port prediction fails on the NAT Type D terminal, but if a packet can reach the destination terminal from one of the terminals, there is a high probability of NAT traversal success.</td>
+</tr>
+<tr class="row-odd"><td>Not possible</td>
+<td>NAT traversal fails.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="nex">
+<span id="nat-traversal-unsupported-network"></span><h2>2.3. Network Configurations Not Supported by NEX</h2>
+<p>NEX does not support the following network configurations. Although clients with these network configurations can log in to the game server, attempts to join P2P communication fail.</p>
+<ul class="simple">
+<li><strong>Port assignment rules are random EDM:</strong> Because the port assignment rules are random, it is not possible to predict the port to which future packets will be mapped.</li>
+<li><strong>Port assignment rules result in decremental EDM:</strong> NEX does not support this type of assignment rule to avoid failed determinations with decremental EDM because of packet switching, and because there are far fewer cases of decremental EDM than incremental EDM.</li>
+<li><strong>Multiple terminals running under EDM:</strong> This configuration is not supported because port predictions may fail if the send timing of packets matches exactly. Problems can easily arise if two clients connected to the same EDM router attempt to join the same session.</li>
+<li><strong>Multi-level NAT with three or more levels:</strong> If the client being connected to has a multi-level NAT configuration with three or more levels, packets with a TTL value of 3 that are sent to the client being connected to first do not reach the outermost NAT. Communication fails because the outermost router bounces packets arriving from connected clients.</li>
+<li><strong>NAT traversal to a router with SPI (neighboring nodes only):</strong> To deal with stateful packet inspection (SPI) under NEX, the client being connected to sends packets with a TTL value of 3 first. Such packets are sent only to update the NAT table for the client being connected to. Communication may fail if this packet reaches a connected client with a router that has the SPI feature. Note that the SPI feature has different functionality depending on the router type. Even if the router has the SPI feature, problem occurrence is not limited to communication between the routers that are closest, in terms of the network.</li>
+<li><strong>Environments where multiple terminals exist under the same global IP address, but mutual communication is not possible using the local IP address assigned to the terminals:</strong> For example, configurations like when several other routers are connected under the router that is connected to the internet, and the terminals are connected under different routers. When preparing several routers to confirm communications between terminals through routers, assign different global IP addresses to each router.</li>
+<li>When multiple users are logged in to the game server from the same device, one user is able to perform NAT traversal. Multiple users cannot each perform NAT traversal. When multiple users participate in online play, a representative user should be in charge of communication.</li>
+</ul>
+<p>Because the implementation of the application does not change this functionality, the developer does not need to be aware of these limitations during implementation. However, in some cases problems are emphasized if debugging is performed during development with a large number of clients connected to a small number of routers. Make sure that you check the network configuration if there are problems with P2P communications, such as being unable to join a P2P session.</p>
+<p>There may be cases where NAT traversal fails due to instruments and configurations being used aside from the described configuration. Cases where several routers are set up within the same local network or NAT is being performed through business routers have different behavior than general user environments, so NAT traversal frequently fails in these environments. We recommend that you configure an environment linking only one household router to one local network when reproducing the user environment for development verification.</p>
+</div>
+</div>
+</div>
+
+</body>
+</html>

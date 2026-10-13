@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['matchmakeblocklistparam',['MatchmakeBlockListParam',['../classnn_1_1nex_1_1_matchmake_block_list_param.html',1,'nn::nex']]],
+  ['matchmakeextensionclient',['MatchmakeExtensionClient',['../classnn_1_1nex_1_1_matchmake_extension_client.html',1,'nn::nex']]],
+  ['matchmakeparam',['MatchmakeParam',['../classnn_1_1nex_1_1_matchmake_param.html',1,'nn::nex']]],
+  ['matchmakerefereeclient',['MatchmakeRefereeClient',['../classnn_1_1nex_1_1_matchmake_referee_client.html',1,'nn::nex']]],
+  ['matchmakerefereeendroundparam',['MatchmakeRefereeEndRoundParam',['../classnn_1_1nex_1_1_matchmake_referee_end_round_param.html',1,'nn::nex']]],
+  ['matchmakerefereepersonalroundresult',['MatchmakeRefereePersonalRoundResult',['../classnn_1_1nex_1_1_matchmake_referee_personal_round_result.html',1,'nn::nex']]],
+  ['matchmakerefereeround',['MatchmakeRefereeRound',['../classnn_1_1nex_1_1_matchmake_referee_round.html',1,'nn::nex']]],
+  ['matchmakerefereestartroundparam',['MatchmakeRefereeStartRoundParam',['../classnn_1_1nex_1_1_matchmake_referee_start_round_param.html',1,'nn::nex']]],
+  ['matchmakerefereestats',['MatchmakeRefereeStats',['../classnn_1_1nex_1_1_matchmake_referee_stats.html',1,'nn::nex']]],
+  ['matchmakerefereestatsinitparam',['MatchmakeRefereeStatsInitParam',['../classnn_1_1nex_1_1_matchmake_referee_stats_init_param.html',1,'nn::nex']]],
+  ['matchmakerefereestatstarget',['MatchmakeRefereeStatsTarget',['../classnn_1_1nex_1_1_matchmake_referee_stats_target.html',1,'nn::nex']]],
+  ['matchmakesession',['MatchmakeSession',['../classnn_1_1nex_1_1_matchmake_session.html',1,'nn::nex']]],
+  ['matchmakesessionsearchcriteria',['MatchmakeSessionSearchCriteria',['../classnn_1_1nex_1_1_matchmake_session_search_criteria.html',1,'nn::nex']]],
+  ['matchmakingclient',['MatchMakingClient',['../classnn_1_1nex_1_1_match_making_client.html',1,'nn::nex']]],
+  ['matchmakingutil',['MatchmakingUtil',['../classnn_1_1nex_1_1_matchmaking_util.html',1,'nn::nex']]],
+  ['memorymanager',['MemoryManager',['../classnn_1_1nex_1_1_memory_manager.html',1,'nn::nex']]],
+  ['messagingclient',['MessagingClient',['../classnn_1_1nex_1_1_messaging_client.html',1,'nn::nex']]],
+  ['messagingnotificationhandler',['MessagingNotificationHandler',['../classnn_1_1nex_1_1_messaging_notification_handler.html',1,'nn::nex']]]
+];

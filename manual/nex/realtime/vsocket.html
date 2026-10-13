@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>1. VSocket — NX NEX Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="vsocket">
+<span id="vsocket-top"></span><h1>1. VSocket</h1>
+<div class="section" id="vsocket-about">
+<span id="id1"></span><h2>1.1. VSocket Overview</h2>
+<p><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a> is a UDP socket-like interface to a low-level communication library. <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a> allows you to use third-party network engines for peer-to-peer communication between clients while continuing to take advantage of NEX server features, NAT traversal, encryption, and spoofing detection. We expect third-party network engines to be updated to use the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a> API instead of the socket API.</p>
+<p>Like UDP, <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a> is a connectionless protocol that does not guarantee delivery or ordering. Because most networked devices are located behind a NAT router, NAT traversal must be done before starting <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a> communications. For more information about the NAT traversal feature, see also <a class="reference internal" href="nat_traversal.html#nat-traversal-top"><span class="std std-ref">2</span></a>. Applications must send keepalive signals to preserve routers’ NAT table entries along the path between two devices.</p>
+<p>You can send up to 1,250 (<a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html#aa1393bcb4a9e14024fed61de149d7a85">VSocket::MAX_DATA_SIZE</a>) bytes. You cannot communicate with an independent server that is not using the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a> library. That library is necessary for spoof detection.</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">An online battle system that uses VSocket and NEX matchmaking was implemented with Unreal Engine 4. For more information, contact Nintendo. Unreal Engine 4 is a trademark or registered trademark of Epic Games, Inc.</p>
+</div>
+</div>
+<div class="section" id="vsocket-provide-condition">
+<span id="id2"></span><h2>1.2. Notes</h2>
+<p>Note that the following must be implemented when using <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a>.</p>
+<ul class="simple">
+<li>NAT traversal must be done before starting <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a> communications. Call <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_connectivity_manager.html#ad90552d393fe63e009e5a20327c0cea7">ConnectivityManager::StartNATSession</a>()</code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html#aab22762f2181ffd6c37edcfabab165db">VSocket::ProbeStations</a>()</code> to perform NAT traversal before starting communication. Call <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_connectivity_manager.html#af53350f0c1b57a18bec8604ef5de4a5a">ConnectivityManager::StopNATSession</a>()</code> after communication has completed.</li>
+<li>You must call <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_connectivity_manager.html#af53350f0c1b57a18bec8604ef5de4a5a">ConnectivityManager::StopNATSession</a>()</code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_connectivity_manager.html#ad90552d393fe63e009e5a20327c0cea7">ConnectivityManager::StartNATSession</a>()</code> again, every time a <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a></code> object is destroyed, when you change opponents.</li>
+<li>NAT table entries that were created using NAT traversal, for any NAT devices that remain without communication for a long period of time, are removed. As a result, communication via <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a> will not continue. Make sure that communication occurs for all <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a> partners at least once every ten seconds to avoid losing the ability to communicate. Send a keep-alive packet when a state with no communication continues.</li>
+<li>You cannot use multiple P2P sessions from the same device. <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_connectivity_manager.html#ad90552d393fe63e009e5a20327c0cea7">ConnectivityManager::StartNATSession()</a> cannot be called for multiple clients even if several <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html">NgsFacade</a> objects are prepared and you are using multiple clients. When multiple users participate in real-time communication from the same terminal, have them do so from a single representative client, and also use that client as the representative for communication processing.</li>
+</ul>
+<p>The <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a> transmission buffer is managed by the packet buffer manager, using a fixed-length memory pool. When the packet buffer runs out of space, <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html#a8eec8c73a023f03099e5b133dae53e81">VSocket::SendTo</a>()</code> returns <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html#a986c0ebc9f68181a24ebfc1db1b607a2a9115895932383fb1b30531de67cb57e9">VSocket::PacketBufferFull</a></code>. When <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html#a986c0ebc9f68181a24ebfc1db1b607a2a9115895932383fb1b30531de67cb57e9">VSocket::PacketBufferFull</a></code> occurs, call <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> and either wait briefly before trying to send the data again, or increase the packet buffer. For more information about the packet buffer, see <a class="reference internal" href="../common/memory.html#overall-memory-pb"><span class="std std-ref">Managing Packet Buffer Memory</span></a>.</p>
+</div>
+<div class="section" id="how-to-implement">
+<span id="id3"></span><h2>1.3. Implementation</h2>
+<p>For more information, see the <a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html">VSocket</a> sample demo. The sample demo offers examples of creating full-mesh network topologies and server-client (star) network topologies.</p>
+<div class="section" id="id4">
+<h3>1.3.1. Host Migration</h3>
+<p>To continue supporting matchmaking and peer-to-peer (P2P) sessions even after a P2P session, created by an application, experiences a host device's disconnection, call <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a94f4b05ed49a70b9fbf78286fb508172">MatchMakingClient::UpdateSessionHost</a>()</code> from the new host device. You must then update the host data that was added to the game server.</p>
+<div class="admonition note">
+<p class="first admonition-title"><strong>Note:</strong></p>
+<p class="last">To get information about devices connected by VSocket, use the <code>MatchMakingClient::GetSessionURLs()</code> or <code>MatchMakingClient::GetParticipantsURLs()</code> function. Specifically, device information retrieved with <code>MatchMakingClient::GetSessionURLs()</code> is for devices that have created the most recent matchmaking session. After the hosting device has left a peer-to-peer session, you can no longer get information with the <code>MatchMakingClient::GetSessionURLs()</code> function, and it is no longer possible to join the peer-to-peer session. <code>MatchMakingClient::UpdateSessionHost()</code> is the function to register or update new host information.</p>
+</div>
+</div>
+<div class="section" id="id5">
+<h3>1.3.2. Error Handling</h3>
+<p>When NAT traversal fails using <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html#aab22762f2181ffd6c37edcfabab165db">VSocket::ProbeStations</a>()</code>, you can get <code>QERROR(Transport, NatTraversalError)</code> with the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#acb03838807a46d921f5517fcc887bdcf">CallContext::GetOutcome</a>()</code> function. When this is the case, get the network error code, pass it to the error viewer applet, and then shut down communication. (For information, see <a class="reference internal" href="../common/overall.html#overall-async-job-error"><span class="std std-ref">Handling Asynchronous Processing Errors</span></a>.)</p>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

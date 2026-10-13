@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../tocData.js"></script>
+<link href="../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>Revision History — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="history-top">
+<span id="id1"></span><h1>Revision History</h1>
+<p>For a summary of changes from NEX 3.x, see <a class="reference internal" href="difference_from_nex_3_x.html#difference-from-nex-3-x-top"><span class="std std-ref">Changes From NEX 3.x</span></a>.</p>
+<div class="section" id="version-4-6-8-for-nintendosdk-17-5-0-2024-02-06">
+<span id="ver-4-6-8-nintendosdk-17-5-0"></span><h2>Version 4.6.8 for NintendoSDK 17.5.0 (2024-02-06)</h2>
+<div class="section" id="id2">
+<h3>Additions and Changes</h3>
+<div class="section" id="id3">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>Deleted the sample demos for the Topics feature of Subscriber.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id4">
+<h3>Bug Fixes</h3>
+<div class="section" id="id5">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>Fixed a bug where sometimes an invalid memory access exception was thrown in the sample demos when the <a href="../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a134fcf01f0478baee44c72fc735183c3">CallContext::Cancel()</a> function was called to cancel all asynchronous processes.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id6">
+<h3>Revisions to Documentation</h3>
+<div class="section" id="id7">
+<h4>General</h4>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Added information noting that the friend presence privacy setting is applied to the friend notifications used by the following library functions.</dt>
+<dd><ul class="first last">
+<li><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a0f0b43d1b555bf0cc2de455bd933cd67">MatchmakeExtensionClient::GetFriendNotificationData()</a></li>
+<li><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a42d191c9470000ce4828b596c56fd9be">MatchmakeExtensionClient::UpdateNotificationData()</a></li>
+<li><dl class="first docutils">
+<dt>NotificationEvents::NotificationEvents()</dt>
+<dd><ul class="first last">
+<li>Notification Event (NotificationEvents::GameNotificationType1 - NotificationEvents::GameNotificationType8, NotificationEvents::GameNotificationLogout, NotificationEvents::UserStatusUpdatedEvent).</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>Added information noting that you want to call <a href="../external.html?file=../Api/classnn_1_1nex_1_1_utility_client.html#a0dfaa8083317da836429ee7dafbd73f0">UtilityClient::AssociateNexUniqueIdWithMyPrincipalId()</a> every time a user logs in to NGS.</li>
+<li>Revised the description of the <code>RESULTRANGE_ANY_OFFSET</code> constant in the API Reference.</li>
+<li>Revised the description of <code>RESULTRANGE_ANY_OFFSET</code> for the <a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_param.html#ab0304347997ce3d22ccd726825f81763">nn::nex::DataStoreSearchParam::SetResultRange()</a> function.</li>
+<li>Added information noting that there is an exception where sometimes the gathering ID does not auto-increment.</li>
+<li>Added an Info block to <a class="reference internal" href="common/init_final.html#do-init"><span class="std std-ref">2.2. Initialization</span></a> about a known bug in <a class="reference internal" href="#ver-4-6-6"><span class="std std-ref">NEX 4.6.6</span></a> involving the procedure for creating instances.</li>
+</ul>
+</div>
+<div class="section" id="id8">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>Added a description of how to use NSA ID tokens when logging in to the game server from the Windows version of the application.</li>
+</ul>
+</div>
+<div class="section" id="id9">
+<h4>DataStore</h4>
+<ul class="simple">
+<li>Added information noting that the <code>/nex/datastore/v2/metainfo/search</code> WebAPI does not accept the <code>-type</code> sort method.</li>
+<li>Added information noting that performance is not affected even if the number of uploads with specified data ID exceeds 10,000.</li>
+<li>Added information about the number of objects assumed for the data store feature.</li>
+</ul>
+</div>
+<div class="section" id="id10">
+<h4>Ranking2</h4>
+<ul class="simple">
+<li>Added information noting that scores must be deleted after changing the category type score reset rules.</li>
+</ul>
+</div>
+<div class="section" id="id11">
+<h4>Subscriber</h4>
+<ul class="simple">
+<li>Added information noting that the topics feature has been deprecated.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-6-7-for-nintendosdk-17-3-0-2023-08-23">
+<span id="ver-4-6-7-nintendosdk-17-3-0"></span><h2>Version 4.6.7 for NintendoSDK 17.3.0 (2023-08-23)</h2>
+<div class="section" id="id12">
+<h3>Additions and Changes</h3>
+<div class="section" id="id13">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Added the parameters <code><em>offset</em></code> and <code><em>limit</em></code> to some WebAPIs.</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>Added a control to restrict the number of items that can be obtained by the WebAPIs, which previously could retrieve all items.</dt>
+<dd><ul class="first last">
+<li>Also, there is a valid range to the numerical values that can be specified for <code><em>limit</em></code>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>If undefined, the number is restricted by the default value of <code><em>limit</em></code> for each WebAPI.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="id14">
+<h4>Debug Assistance</h4>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Added information corresponding to the following library function names in <a class="reference internal" href="serverservice/debug.html#debug-api-table"><span class="std std-ref">Function Name Correspondence Tables</span></a>.</dt>
+<dd><ul class="first last">
+<li><a href="../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a6f3cc3cd79b0cea80e7ee5cc3c628b04">MatchMakingClient::GetDetailedParticipants</a>()</li>
+<li><a href="../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a6fba3cc691521da8a3d98048b4e1d897">MatchMakingClient::GetParticipantsURLs</a>()</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="nintendo-switch-online">
+<h4>Nintendo Switch Online Voice Chat</h4>
+<ul class="simple">
+<li>Revised the error check control of the <a href="../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a6d0eede07c1faceb0af9644bcf5c5f93">SmartDeviceVoiceChatClient::SetUserHandle</a>() function.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-6-7-2022-03-18">
+<span id="ver-4-6-7"></span><h2>Version 4.6.7 (2022-03-18)</h2>
+<div class="section" id="id15">
+<h3>Additions and Changes</h3>
+<div class="section" id="id16">
+<h4>General</h4>
+<ul class="simple">
+<li>When building applications on Windows, it is no longer possible to replace <code>vsnprintf()</code> with <code>_vsnprintf()</code> in the same way that can be done with <code>snprintf()</code> and <code>_snprintf_s()</code>.</li>
+<li>Memory is no longer allocated dynamically by <a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html#a411e212a93a0afdd086b62d9d35b0525">String::FindSubstringCase()</a> and <a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html#a8f7600f1376cbe1ee752f367a6a2dc66">String::FindSubstringNoCase()</a>.</li>
+</ul>
+</div>
+<div class="section" id="id17">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>When an instance of nn::Result is created, <cite>{}</cite> is specified to explicitly initialize the object.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id18">
+<h3>Bug Fixes</h3>
+<div class="section" id="id19">
+<h4>General</h4>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>When logging in to the game server, sometimes memory was dynamically allocated unintentionally. This bug was fixed.</dt>
+<dd><ul class="first last">
+<li>Due to this bug, there was a risk of the application crashing when a memory allocator that was not thread-safe was set in the NEX library.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="id20">
+<h4>DataStore</h4>
+<ul class="simple">
+<li>Fixed a bug in the overloads of the <a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_change_meta_compare_param.html#aa6aa074af04ef6b75bda1a3dad768323">DataStoreChangeMetaCompareParam::SetMetaBinary()</a>, <a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_change_meta_param.html#a27d1dc92753df26585f18f5393330201">DataStoreChangeMetaParam::SetMetaBinary()</a>, and <a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_prepare_post_param.html#a43aa43df30cfecc2f17ea4acaac42c08">DataStorePreparePostParam::SetMetaBinary()</a> functions that take <code><em><a href="../external.html?file=../Api/classnn_1_1nex_1_1q_vector.html">qVector</a></em>&lt;qByte&gt;</code> as an argument. Due to this bug, there was a risk of an assertion failure occurring in the application if it was built in Windows and a <code><em><a href="../external.html?file=../Api/classnn_1_1nex_1_1q_vector.html">qVector</a></em></code> of size <code>0</code> was specified for the argument.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id21">
+<h3>Revisions to Documentation</h3>
+<div class="section" id="id22">
+<h4>General</h4>
+<ul class="simple">
+<li>In <a class="reference internal" href="sampledemos.html#sampledemo-top"><span class="std std-ref">Sample Demo List</span></a>, noted that the Nintendo Switch Online policy for the application ID specified in the sample demos is <strong>No features require membership</strong>.</li>
+<li>Added a description of the <code>DELETE</code> method to a number of the features in the DataStore, Matchmaking, and Debug Assistance sections of the WebAPI documentation. Previously, this was unintentionally made private.</li>
+<li>In <a class="reference internal" href="common/overall.html#overall-common-error"><span class="std std-ref">Common Errors</span></a>, corrected a typo in <code>QERROR(RendezVous, GameServerMaintenance)</code>.</li>
+<li><dl class="first docutils">
+<dt>The following functions are now private. Previously, they were unintentionally made public. These functions cannot be used in NX NEX.</dt>
+<dd><ul class="first last">
+<li>The <code>GetOutputEmulationDevice()</code> member function of the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_root_transport.html">RootTransport</a></code> class</li>
+<li>The <code>EmulationDevice</code> class and its derived classes (<code>InputEmulationDevice</code> and <code>OutputEmulationDevice</code>)</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="id23">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>In the search criteria for matchmaking sessions (<code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session_search_criteria.html">MatchmakeSessionSearchCriteria</a></code>), the default value for the <code>VacantOnly</code> element is now set to <code>true</code>. This change was included in NX NEX 4.0.0, but its addition was omitted from the API Reference.</li>
+<li><dl class="first docutils">
+<dt>The <code>Set()</code>, <code>Get()</code>, and <code>Remove()</code> member functions of the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_station_u_r_l.html">StationURL</a></code> class have been deleted from the API Reference.</dt>
+<dd><ul class="first last">
+<li>Their use is prohibited in new applications (including patches) for master ROM submission.</li>
+<li>If you use these functions, there is a risk that future server updates will lead to communication failures by API resources that take <a href="../external.html?file=../Api/classnn_1_1nex_1_1_station_u_r_l.html">StationURL</a> as an argument.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="id24">
+<h4>DataStore</h4>
+<ul class="simple">
+<li>In <a class="reference internal" href="serverservice/datastore.html#datastore-data-status"><span class="std std-ref">Data Status</span></a>, added information about the ways in which the status can transition when the status of data in the data store is manipulated on NMAS (NMAS2).</li>
+<li>In <a class="reference internal" href="serverservice/webapi_datastore.html#webapi-datastore-top"><span class="std std-ref">DataStore</span></a>, noted that the data URLs obtained using WebAPI contain authentication information for downloading the data.</li>
+</ul>
+</div>
+<div class="section" id="id25">
+<h4>Debug Assistance</h4>
+<ul class="simple">
+<li>In the <a class="reference internal" href="serverservice/debug.html#debug-overview"><span class="std std-ref">Introduction</span></a>, noted that the features to assist in debugging will no longer be available from the application in the future.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-6-6-for-nintendosdk-13-1-0-2021-07-01">
+<span id="ver-4-6-6-nintendosdk-13-1-0"></span><h2>Version 4.6.6 for NintendoSDK 13.1.0 (2021-07-01)</h2>
+<div class="section" id="id26">
+<h3>Revisions to Documentation</h3>
+<div class="section" id="id27">
+<h4>General</h4>
+<ul class="simple">
+<li>Updated Readme <a class="reference internal" href="readme-nx-nex.html#debug-login-direct"><span class="std std-ref">How to log in to game server from Windows version application</span></a>. From now on, logging in using this method requires prior discussion with Nintendo. As of June 2021, the default user name (for example, <strong>testuser_1</strong>) and the default password (same as the access key) have been removed, making this change necessary.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-6-6-2021-05-14">
+<span id="ver-4-6-6"></span><h2>Version 4.6.6 (2021-05-14)</h2>
+<div class="section" id="id28">
+<h3>Additions and Changes</h3>
+<div class="section" id="id29">
+<h4>General</h4>
+<ul class="simple">
+<li>Added the library for MSVC v142 (14.2) (Visual Studio 2019).</li>
+<li>Deprecated the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_root_transport.html#aa388835ea2347dbcaa9cef6ec6f0331b">RootTransport::GetTransportBufferThreadPriority()</a></code> function. Use the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_root_transport.html#aa200e18c21c6026f55d886aef48aa6c1">RootTransport::GetTransportBufferThreadRecvPriority()</a></code> function instead.</li>
+</ul>
+</div>
+<div class="section" id="id30">
+<h4>DataStore</h4>
+<ul class="simple">
+<li>Added overloads of the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_change_meta_compare_param.html#aa6aa074af04ef6b75bda1a3dad768323">DataStoreChangeMetaCompareParam::SetMetaBinary()</a></code>, <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_change_meta_param.html#a27d1dc92753df26585f18f5393330201">DataStoreChangeMetaParam::SetMetaBinary()</a></code>, and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_prepare_post_param.html#a43aa43df30cfecc2f17ea4acaac42c08">DataStorePreparePostParam::SetMetaBinary()</a></code> functions that take <code><em><a href="../external.html?file=../Api/classnn_1_1nex_1_1q_vector.html">qVector</a></em>&lt;qByte&gt;</code> as an argument.</li>
+</ul>
+</div>
+<div class="section" id="id31">
+<h4>Subscriber</h4>
+<ul class="simple">
+<li>Deprecated the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#afecdfb1e18e168cbe7d9549075c471a5">SubscriberClient::GetUserStatuses()</a></code> function.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id32">
+<h3>Bug Fixes</h3>
+<div class="section" id="id33">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>Added solution files for Visual Studio 2019. When NX-x64, NX-Win32, x64, or Win32 is selected as the build target, you can use the MSVC v142 library for the build.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id34">
+<h3>Revisions to Documentation</h3>
+<div class="section" id="id35">
+<h4>General</h4>
+<ul class="simple">
+<li>Reorganized the contents of <a class="reference internal" href="common/init_final.html#nex-init-final"><span class="std std-ref">NEX Initialization and Finalization</span></a>, separating the procedure for initializing the SDK libraries from the procedure for initializing NEX.</li>
+<li>Added text to <a class="reference internal" href="common/init_final.html#do-finalize"><span class="std std-ref">Finalization</span></a>, describing how to clear the settings of the functions NEX uses to allocate and deallocate memory.</li>
+<li>Added a description to <a href="../external.html?file=../Api/classnn_1_1nex_1_1_memory_manager.html#a346e93b188e228f020d830ff28fd831d">MemoryManager::SetBasicMemoryFunctions()</a> about how to clear the settings for the memory allocation and deallocation functions.</li>
+</ul>
+</div>
+<div class="section" id="id36">
+<h4>Ranking</h4>
+<ul class="simple">
+<li>Revised <a class="reference internal" href="serverservice/ranking.html#ranking-nmas-set-timescope-type"><span class="std std-ref">Setting Time Scopes</span></a>, deleting "<strong>24 hours earlier to the present</strong>" from the available time scope types. Do not use this type in new applications.</li>
+</ul>
+</div>
+<div class="section" id="id37">
+<h4>Ranking2</h4>
+<ul class="simple">
+<li>Revised <a class="reference internal" href="serverservice/ranking2.html#ranking2-table-ranking2-mode"><span class="std std-ref">Ranking Types</span></a>, noting that an empty ranking list will be returned by the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#a66838f790c04b82304e840209c06030b">Ranking2Client::GetRanking()</a></code> function if <code>NEAR_RANKING</code> is specified and the specified user is not ranked.</li>
+<li>Clarified that the value returned by the <a href="../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_info.html#ad12854576878656aad6ca7f3f71c9934">Ranking2Info::GetNumRankedIn()</a> function is the total number of registered scores in the category.</li>
+</ul>
+</div>
+<div class="section" id="id38">
+<h4>DataStore</h4>
+<ul class="simple">
+<li>Added text to <a class="reference internal" href="serverservice/datastore.html#datastore-table-permission"><span class="std std-ref">Privilege Types</span></a>, noting that the user with the owner role can always access and update the target data, regardless of the privilege type of the data.</li>
+<li>Added a more detailed description about the difference between logically deleted data and physically deleted data to <a class="reference internal" href="serverservice/datastore.html#datastore-delete-type"><span class="std std-ref">Logically and Physically Deleting Data</span></a> and also to <a class="reference internal" href="serverservice/datastore.html#datastore-data-status"><span class="std std-ref">Data Status</span></a>.</li>
+<li>Added an example to <a class="reference internal" href="serverservice/webapi_datastore.html#webapi-datastore-prepare"><span class="std std-ref">Preparing for Upload</span></a> of the command when uploading data to the storage server.</li>
+<li>Noted that for the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html">DataStoreLogicServerClient</a></code> class member functions that can enable transactions, the process targets must be sorted ahead of time when the function's <code><em>transactional</em></code> parameter is set to <code>true</code>.</li>
+<li>Noted that a maximum of 512 data IDs can be specified when you use the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_client.html#ad2d52cbc4140c6b86ea0ffd732581fe6">DataStoreClient::GetRating()</a></code> function to get the ratings for a number of data sets in one go.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id39">
+<h3>Known Bugs</h3>
+<ul class="simple">
+<li>You must create an instance of <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html">NgsFacade</a></code> before you create a service client instance (for example, an instance of <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html">RankingClient</a></code>). If you do not follow this procedure when creating instances, internal inconsistencies will be detected when <code>nn::nex::Finalize(true)</code> is called and finalization will fail.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="version-4-6-5-2020-07-30">
+<span id="ver-4-6-5"></span><h2>Version 4.6.5 (2020-07-30)</h2>
+<div class="section" id="id40">
+<h3>Additions and Changes</h3>
+<ul class="simple">
+<li>Added support for C++17 and build options for both C++14 and C++17.</li>
+</ul>
+</div>
+<div class="section" id="id41">
+<h3>Bug Fixes</h3>
+</div>
+<div class="section" id="id42">
+<h3>Revisions to Documentation</h3>
+</div>
+</div>
+<div class="section" id="version-4-6-4-2020-04-15">
+<span id="ver-4-6-4"></span><h2>Version 4.6.4 (2020-04-15)</h2>
+<div class="section" id="id43">
+<h3>Additions and Changes</h3>
+</div>
+<div class="section" id="id44">
+<h3>Bug Fixes</h3>
+<div class="section" id="nat">
+<h4>NAT Traversal</h4>
+<ul class="simple">
+<li>Fixed a bug where NAT traversal sometimes failed when multiple users (network service accounts) were logged in from the same device (console). However, multiple users still cannot perform NAT traversal.</li>
+</ul>
+</div>
+<div class="section" id="id45">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>Added error handling to the subscriber sample demo (<code>08-Subscriber/UserStatus/UserStatus.cpp</code>) for when an error is returned by the SubscriberClient::GetFriendUserStatuses() overload function called when cache is enabled.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id46">
+<h3>Revisions to Documentation</h3>
+<div class="section" id="id47">
+<h4>General</h4>
+<ul class="simple">
+<li>Fixed an error in the login user name listed in the Readme that can be used when running the sample demo on Windows. Do not specify testuser_0 as the login user name anymore.</li>
+<li>Added <a class="reference internal" href="common/memory.html#libcurl-memory-replacement-explain"><span class="std std-ref">libcurl Initialization [Required]</span></a> to the Memory Management documentation.</li>
+<li>We no longer recommend using <a href="../external.html?file=../Api/classnn_1_1nex_1_1_rendez_vous.html#a299096598260fc10ad0d0a54122891c4">RendezVous::GetGameServerTime()</a>. Instead, use the SDK network clock (nn::time::StandardNetworkSystemClock).</li>
+</ul>
+</div>
+<div class="section" id="id48">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>Clarified in <a class="reference internal" href="serverservice/matchmake.html#matchmake-codeword"><span class="std std-ref">Using Keywords</span></a> that matchmaking sessions where keywords are specified are not subject to attribute value searches.</li>
+<li>Removed the descriptions for <a href="../external.html?file=../Api/classnn_1_1nex_1_1_gathering.html#a1cb7614b22161fb531bdbe9551be134f">MatchmakeSession::SetMinParticipants()</a> and <a href="../external.html?file=../Api/classnn_1_1nex_1_1_update_matchmake_session_param.html#aa54458ab30c92b140e1644b6d7d178f2">UpdateMatchmakeSessionParam::SetMinParticipants()</a> indicating that values set by these functions have no effect on matchmaking because it was incorrect.</li>
+</ul>
+</div>
+<div class="section" id="id49">
+<h4>Ranking2</h4>
+<ul class="simple">
+<li>Added information to <a class="reference internal" href="serverservice/ranking2.html#ranking2-old-season"><span class="std std-ref">Past Seasons</span></a> about conditions for the season value in the ranking acquisition results being negative.</li>
+<li>Added information to <a class="reference internal" href="serverservice/webapi_ranking2.html#webapi-ranking2-top"><span class="std std-ref">Ranking2</span></a> about considerations when the score reset rule setting is changed with the WebAPI.</li>
+<li>Fixed an error in <a class="reference internal" href="serverservice/ranking2.html#ranking2-fix-binssize"><span class="std std-ref">When the Segment Range Is Fixed</span></a> where the ascending and descending orders for scores were described in reverse.</li>
+</ul>
+</div>
+<div class="section" id="id50">
+<h4>Subscriber</h4>
+<ul class="simple">
+<li>Added a note to the <a class="reference internal" href="serverservice/subscriber.html#subscriber-table-error"><span class="std std-ref">Subscriber Errors</span></a> table and <a href="../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html">SubscriberClient</a> API reference that <code>QERROR(Subscriber, OverLimit)</code> also occurs for reasons other than programming errors.</li>
+</ul>
+</div>
+<div class="section" id="id51">
+<h4>Debug Assistance</h4>
+<ul class="simple">
+<li>Added information about the <a href="../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#aa4d7dae40bd359b7d301b65f6c5d0faa">Ranking2Client::PutScore</a> (Multiple) function to the <a class="reference internal" href="serverservice/debug.html#debug-api-table"><span class="std std-ref">API Name Correspondence Table</span></a>. When uploading multiple scores at the same time, calls to this API are recorded on the game server.</li>
+</ul>
+</div>
+<div class="section" id="id52">
+<h4>NAT Traversal</h4>
+<ul class="simple">
+<li>Added a note that only one user can perform NAT traversal when multiple users are logged in to the game server from a single device. If multiple users are participating in online play, a representative user should be in charge of communication.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-6-3-2019-04-01">
+<span id="ver-4-6-3"></span><h2>Version 4.6.3 (2019-04-01)</h2>
+<div class="section" id="id53">
+<h3>Additions and Changes</h3>
+<ul class="simple">
+<li>The maximum size of the name that can be stored in the Ranking2 common data, as defined by <code>MAX_USERNAME_LENGTH</code>, has been changed from 16 to 20.</li>
+</ul>
+</div>
+<div class="section" id="id54">
+<h3>Bug Fixes</h3>
+<div class="section" id="id55">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>Fixed a bug where the libcurl finalization process did not work correctly in the sample demos.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id56">
+<h3>Revisions to Documentation</h3>
+<div class="section" id="id57">
+<h4>General</h4>
+<ul class="simple">
+<li>Removed the display of "Deprecated" for <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a42d191c9470000ce4828b596c56fd9be">MatchmakeExtensionClient::UpdateNotificationData</a>()</code> and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a0f0b43d1b555bf0cc2de455bd933cd67">MatchmakeExtensionClient::GetFriendNotificationData</a>()</code>.</li>
+<li>Moved the description of the uses of the WebAPI to the <em>NEX Guide</em> and noted that fact.</li>
+<li>Fixed typos and other errors throughout the documentation.</li>
+<li>Changed the URL for NMAS.</li>
+</ul>
+</div>
+<div class="section" id="id58">
+<h4>DataStore</h4>
+<ul class="simple">
+<li>Added the same note to the reference for the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#add817538c1616d7104e559252d7dad26">DataStoreLogicServerClient::SearchObject</a>()</code> function that is written in the reference for the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_param.html#a6b8e302b6f6442bc63ddeefe90e5f9bf">DataStoreSearchParam::SetSearchSortOrderColumn</a>()</code> function.</li>
+</ul>
+</div>
+<div class="section" id="id59">
+<h4>Debug Assistance</h4>
+<ul class="simple">
+<li>Fixed errors in the function name correspondence tables.</li>
+<li>Corrected the description of the condition for excluding specific matchmaking sessions during auto-matchmaking. It incorrectly stated that the condition applied to matchmaking sessions that the user joined three or more times within the last hour. The correct condition for exclusion involves the last three matchmaking sessions that the user joined one or more times within the last hour.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-6-2-2018-09-14">
+<span id="ver-4-6-2"></span><h2>Version 4.6.2 (2018-09-14)</h2>
+<div class="section" id="id60">
+<h3>Additions and Changes</h3>
+</div>
+<div class="section" id="id61">
+<h3>Bug Fixes</h3>
+<div class="section" id="id62">
+<h4>Nintendo Switch Online Voice Chat</h4>
+<ul class="simple">
+<li>Fixed a bug where an abort would occur when calling <a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>() if at least two hours had passed since the use of Machmaking Voice Chat had started.</li>
+<li>Fixed a bug where the parameter would not get initialized and would not operate properly when the default constructor was used in some of the parameter types of Matchmaking Voice Chat.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-6-1-2018-08-03">
+<span id="ver-4-6-1"></span><h2>Version 4.6.1 (2018-08-03)</h2>
+<div class="section" id="id63">
+<h3>Additions and Changes</h3>
+<div class="section" id="id64">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>Added calls to <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a5b5dd46411fbce52998d4c578246fd4f">SmartDeviceVoiceChatClient::GetAvailability</a>()</code> and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a3ad78b085cdc66806a6234109d56e94c">SmartDeviceVoiceChatClient::ShowAppPage</a>()</code> in the Matchmaking Voice Chat sample demo.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id65">
+<h3>Bug Fixes</h3>
+<div class="section" id="id66">
+<h4>Nintendo Switch Online Voice Chat</h4>
+<ul class="simple">
+<li>Fixed a bug where a fatal error would occur if <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a3ad78b085cdc66806a6234109d56e94c">SmartDeviceVoiceChatClient::ShowAppPage</a>()</code>, which performs asynchronous processing, was called.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id67">
+<h3>Revisions to Documentation</h3>
+<div class="section" id="id68">
+<h4>Nintendo Switch Online Voice Chat</h4>
+<ul class="simple">
+<li>Added in the API Reference that <code>QERROR(SmartDeviceVoiceChat, UserNotFound)</code> is not returned for calls to <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a5b5dd46411fbce52998d4c578246fd4f">SmartDeviceVoiceChatClient::GetAvailability</a>()</code>.</li>
+<li>Added cases where <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a3ad78b085cdc66806a6234109d56e94c">SmartDeviceVoiceChatClient::ShowAppPage</a>()</code> can be called in the API Reference.</li>
+<li>Fixed mistakes in the error names posted in the descriptions of <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#ae1cb41b624a99ef2b177b19f99bf3a8d">SmartDeviceVoiceChatClient::JoinRoom</a>()</code> and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_smart_device_voice_chat_client.html#a5b5dd46411fbce52998d4c578246fd4f">SmartDeviceVoiceChatClient::GetAvailability</a>()</code> in the API Reference.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-6-0-2018-06-27">
+<span id="ver-4-6-0"></span><h2>Version 4.6.0 (2018-06-27)</h2>
+<div class="section" id="id69">
+<h3>Additions and Changes</h3>
+<div class="section" id="id70">
+<h4>General</h4>
+<ul class="simple">
+<li>Added <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a0eb440d23ae8391978ddc9de4c481ed1">Scheduler::SetInternalThreadInvokeDispatchOnEvent()</a></code> and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#ad938ad47156a9dadd0da709586ce0768">Scheduler::GetInternalThreadInvokeDispatchOnEvent()</a></code>. If you specify <code>true</code> for <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a0eb440d23ae8391978ddc9de4c481ed1">Scheduler::SetInternalThreadInvokeDispatchOnEvent()</a></code> when using internal threads, the execution timing of internal processing is made to match the timing of inserting new jobs or downloading packets.</li>
+<li>Made Nintendo Switch Online Voice Chat public. This provides the <a class="reference internal" href="smartdevicevoicechat/matchmakevoicechat.html#smartdevicevoicechat-matchmakevoicechat-top"><span class="std std-ref">Matchmaking Voice Chat</span></a> feature that is linked to the Nintendo Switch Online app that runs on smart devices.</li>
+</ul>
+</div>
+<div class="section" id="id71">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>Made it so that when automatic owner transfers occur by specifying <code>GatheringFlags::MigrateOwner</code>, the new owner begins with the player who has been participating in the gathering the longest. In the past, the new owner was not defined. Even when the owner candidate list is cleared with <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#ac344a14dec4c7a741ffd5b259fb8d9e9">MatchMakingClient::MigrateGatheringOwnership()</a></code>, the new owner has similarly been changed to be delegated to the player who has been participating the longest.</li>
+<li><code>MatchMakingClient::FindByID()</code> and <code>MatchMakingClient::FindByOwner()</code>, which we no longer recommend using, have been made private.</li>
+<li>The overloads <code>MatchmakeExtensionClient::UpdateMatchmakeSession()</code>, <code>MatchmakeExtensionClient::JoinMatchmakeSession()</code>, and <code>MatchmakeExtensionClient::BrowseMatchmakeSession()</code>, which we no longer recommend using, have been made private.</li>
+</ul>
+</div>
+<div class="section" id="id72">
+<h4>Subscriber</h4>
+<ul class="simple">
+<li>Added <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#ad30a9a6c8d8dde881513c946c4bc12da">SubscriberClient::GetUserStatusRevision()</a></code>.</li>
+</ul>
+</div>
+<div class="section" id="id73">
+<h4>Real-Time Communication</h4>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>The following functions are now private.</dt>
+<dd><ul class="first last">
+<li><code>StationURL::GetStringRepresentation()</code></li>
+<li><code>StationURL::GetURLType()</code></li>
+<li><code>StationURL::SetAddress()</code></li>
+<li><code>StationURL::SetPortNumber()</code></li>
+<li><code>StationURL::SetURLType()</code></li>
+<li><code>StreamSettings::GetMaxRetransmission()</code></li>
+<li><code>StreamSettings::SetMaxRetransmission()</code></li>
+<li><code>StreamSettings::GetKeepAliveTimeout()</code></li>
+<li><code>StreamSettings::SetKeepAliveTimeout()</code></li>
+<li><code>StreamSettings::GetMaxSilenceTime()</code></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>The following functions are now public.</dt>
+<dd><ul class="first last">
+<li><code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_station_u_r_l.html#a7c61fd66730ecc24196bc2bc72302fd2">StationURL::GetInetAddress()</a></code></li>
+<li><code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_stream_settings.html#a1ef9b41548c22e927028ed14f3b33311">StreamSettings::SetEncryptionKey()</a></code></li>
+<li><code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_stream_settings.html#a54770381e1107de94bd9cd9cdc1b1c28">StreamSettings::SetIsEncryptionRequired()</a></code></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="online">
+<h4>Online Lounge</h4>
+<ul class="simple">
+<li>With Nintendo Switch Online Voice Chat becoming public, the Online Lounge that was made public as the beta version has been deprecated.</li>
+</ul>
+</div>
+<div class="section" id="id74">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>Added a sample demo that uses the Matchmaking Voice Chat feature.</li>
+<li>Deleted the sample demo that uses Online Lounge.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id75">
+<h3>Bug Fixes</h3>
+<div class="section" id="id76">
+<h4>General</h4>
+<ul class="simple">
+<li>Fixed where <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a516bd0277828a22f5001bde386f6a404">nn::nex::Core::SetInternalThreadCoreNo()</a></code> and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a235866c73c22db2c7484a74124d9ae9f">nn::nex::Core::GetInternalThreadCoreNo()</a></code> were mistakenly defined as <code>nn::nex::SetInternalThreadCoreNo()</code> and <code>nn::nex::GetInternalThreadCoreNo()</code>.</li>
+</ul>
+</div>
+<div class="section" id="id77">
+<h4>Subscriber</h4>
+<ul class="simple">
+<li>Fixed a bug where the system crashed when the cache was invalid and you called <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#afcf6cac0433f9dae282f7674520647ca">SubscriberClient::GetFriendUserStatuses()</a></code> or <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_subscriber_client.html#afcf6cac0433f9dae282f7674520647ca">SubscriberClient::GetFriendUserStatuses()</a></code> and made it return <code>QERROR(Core, InvalidSequence)</code> as is written in API Reference.</li>
+</ul>
+</div>
+<div class="section" id="id78">
+<h4>Real-Time Communication</h4>
+<ul class="simple">
+<li>There was a problem where it always took two minutes to finish when NAT traversal with one of the targets failed while the fourth argument of <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html#aab22762f2181ffd6c37edcfabab165db">VSocket::ProbeStations()</a></code> was <code>true</code>. This bug was fixed.</li>
+</ul>
+</div>
+<div class="section" id="id79">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>The spelling for the macro in sample demo <code>FORSE_DISABLE_USE_SHOW_USER_SELECTOR</code> has been revised to <code>FORCE_DISABLE_USE_SHOW_USER_SELECTOR</code>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id80">
+<h3>Revisions to Documentation</h3>
+<div class="section" id="id81">
+<h4>General</h4>
+<ul class="simple">
+<li>Spelling inconsistencies and typos were corrected throughout the document.</li>
+<li>Revised places in the sample code within the document that use <code>qNew</code> and <code>qDelete</code> to generate or destroy objects to use <code>new</code> and <code>delete</code>.</li>
+<li><code>QERROR(Core, Cancelled)</code> has been added as an error that must be handled by the application.</li>
+<li>There was description that log output by <a href="../external.html?file=../Api/classnn_1_1nex_1_1_trace_log.html">TraceLog</a> was not included in Development builds, but this description has been deleted because log is also included in Development builds.</li>
+<li>The description stated that <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a3031f078f75c940616d6958131280e68">nn::nex::Core::SetTerminateImmediately()</a></code> configured the option to automatically terminate when the network is disconnected, but this statement was incorrect and has been removed.</li>
+</ul>
+</div>
+<div class="section" id="id82">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>Changed the <a class="reference internal" href="serverservice/matchmake.html#matchmake-code-error-handling"><span class="std std-ref">Error Handling</span></a> code to suit existing specifications. Changed it to not handle the return value from the start of asynchronous processing.</li>
+<li>Only changed the content related to maintenance notification event handling for writing related to maintenance notifications. For general information about maintenance notifications, see the NEX Guide.</li>
+<li>Noted that the state of when users log out from game servers in <code>MatchmakeReferee</code> is similar to when <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#af3efcfad6a6f76d4bc82a76285b4653f">MatchmakeRefereeClient::EndRoundWithoutReport()</a></code> is called.</li>
+</ul>
+</div>
+<div class="section" id="id83">
+<h4>Ranking2</h4>
+<ul class="simple">
+<li>The description stated that you cannot specify the position to start getting results or the length when getting rankings with ranking mode. This description was fixed because it is the correct behavior to ignore these even if they are specified.</li>
+</ul>
+</div>
+<div class="section" id="id84">
+<h4>Debug Assistance</h4>
+<ul class="simple">
+<li>Fixed the whole list.</li>
+</ul>
+</div>
+<div class="section" id="id85">
+<h4>Real-Time Communication</h4>
+<ul class="simple">
+<li>Specified to indicate that NAT features are assumed to be valid for the routers recorded in <a class="reference internal" href="realtime/nat_traversal.html#nat-traversal-top"><span class="std std-ref">NAT Traversal</span></a>.</li>
+<li>Some cases were not described in <a class="reference internal" href="realtime/nat_traversal.html#nat-traversal-unsupported-network"><span class="std std-ref">Network Configurations Not Supported by NEX</span></a> but are not supported, so they were added. Also noted environments where it can easily fail.</li>
+<li>The virtual port number that can be specified for <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html#ab4b3795c87bbbaa0da1316e9ca780402">VSocket::Bind()</a></code> was described as being in the range from 0 to 15, but this description was changed to the range from 1 to 15.</li>
+</ul>
+</div>
+<div class="section" id="id86">
+<h4>Online Lounge</h4>
+<ul class="simple">
+<li>Deleted the description of the Online Lounge.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-5-0-2018-03-16">
+<span id="ver-4-5-0"></span><h2>Version 4.5.0 (2018-03-16)</h2>
+<div class="section" id="id87">
+<h3>Additions and Changes</h3>
+<div class="section" id="id88">
+<h4>General</h4>
+<ul class="simple">
+<li>A <code>QERROR(RendezVous, LimitExceeded)</code> error is now generated if the number of function access attempts to the game server is much higher than the maximum number established by the guidelines, or if the total number of calls per unit time is high (300 or more calls every 300 seconds).</li>
+<li>The internally used <code>AttributeType</code> and <code>InternalValue</code> definitions have been changed to <code>NEX_AttributeType</code> and <code>NEX_InternalValue</code>, respectively.</li>
+<li>Made the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html#a88027e43cd2641ffbb0497a04352e406">NgsFacade::Login()</a></code> function that specifies nn::account::UserHandle private. Use an overloaded function that uses <code>nn::account::NetworkServiceAccountId</code> to log in to the game server.</li>
+</ul>
+</div>
+<div class="section" id="id89">
+<h4>Utilities</h4>
+<ul class="simple">
+<li>Fixed a bug where <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_unique_id_info.html">UniqueIdInfo</a></code> did not initialize a password and would not operate properly when the default constructor was used.</li>
+</ul>
+</div>
+<div class="section" id="id90">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li><code>QERROR(Core, InvalidArgument)</code> is now returned as the result when both a code word and an attribute value are specified as search conditions with either the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a8fb60f3d80bc0aac4218111be9262c05">MatchmakeExtensionClient::AutoMatchmake()</a></code> or <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a5976c36a85bc45f9e39f3e4f27369d67">MatchmakeExtensionClient::BrowseMatchmakeSession()</a></code> function in response to <a class="reference internal" href="serverservice/matchmake.html#matchmake-codeword-joinsession"><span class="std std-ref">Joining a Matchmaking Session With a Configured Keyword</span></a>.</li>
+</ul>
+</div>
+<div class="section" id="id91">
+<h4>DataStore</h4>
+<ul class="simple">
+<li>The maximum size of a principal ID list that can be specified in the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_permission.html#a6cbe5950eb86fc8ceb447fda64b20834">DataStorePermission::SetRecipientIds()</a></code>, <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_param.html#a9c0cb519c58b16686d29c1d5142142b2">DataStoreSearchParam::SetOwnerIds()</a></code>, and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_search_param.html#a76468a37d82e3dbcdd60991a9f75dfcc">DataStoreSearchParam::SetDestinationIds()</a></code> functions has been set to <code>MAX_PID_LIST_SIZE</code>. A <code>QERROR(Core, InvalidArgument)</code> error is now returned as the result when a value exceeding the maximum size is specified.</li>
+</ul>
+</div>
+<div class="section" id="id92">
+<h4>Subscriber</h4>
+<ul class="simple">
+<li>Added a user status sharing feature. For more information, see <a class="reference internal" href="serverservice/subscriber.html#userstatus"><span class="std std-ref">User Status Sharing Feature</span></a>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id93">
+<h3>Bug Fixes</h3>
+<div class="section" id="id94">
+<h4>Ranking2</h4>
+<ul class="simple">
+<li>Fixed a bug in WebAPI where all the chart data for a season that is not specified with the same chart index would be deleted if <code>/nex/ranking2/v1/charts/<em>(chart_index)</em>/<em>(num_season_to_go_back)</em>/delete</code> was run.</li>
+</ul>
+</div>
+<div class="section" id="id95">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>Corrected the Online Lounge sample demo because voice chat sometimes did not immediately finalize on smart devices.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id96">
+<h3>Revisions to Documentation</h3>
+<div class="section" id="id97">
+<h4>General</h4>
+<ul class="simple">
+<li>Added <code>QERROR (RendezVous, LimitExceeded)</code> errors to the Common Errors for All APIs (Errors That Are Handled In The Same Way as Unlisted Errors) section in <a class="reference internal" href="common/overall.html#overall-common-error"><span class="std std-ref">Common Errors</span></a>.</li>
+<li>Spelling inconsistencies and typos were corrected throughout the document.</li>
+<li><a class="reference internal" href="common/initialize_detail.html#threadmode-comparison"><span class="std std-ref">Thread Mode Comparison and Thread Types</span></a> states that user threads and internal threads are used to make callbacks in thread modes that use internal thread mode. However, it has been corrected to say that callbacks are only made from internal threads. This correction is included in operations that were changed with NEX 4.2.0.</li>
+</ul>
+</div>
+<div class="section" id="id98">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>Added that <a href="../external.html?file=../Api/classnn_1_1nex_1_1_persistent_gathering.html">PersistentGathering</a> is a derived class of <a href="../external.html?file=../Api/classnn_1_1nex_1_1_gathering.html">Gathering</a> to the descriptions of the <a href="../external.html?file=../Api/classnn_1_1nex_1_1_gathering.html">Gathering</a> and <a href="../external.html?file=../Api/classnn_1_1nex_1_1_gathering_holder.html">GatheringHolder</a> classes.</li>
+<li>The Tokyo address in the example IP address in the <a class="reference internal" href="serverservice/webapi_matchmake.html#matchmake-webapi-scoresimurator"><span class="std std-ref">Score Simulator</span></a> was not actually a Tokyo address. Corrected it to show a Tokyo address.</li>
+<li><a class="reference internal" href="serverservice/matchmake.html#matchmake-persistent-gathering-search"><span class="std std-ref">Searching Persistent Gatherings</span></a> stated that search results differ depending on the blocked-user list, but because the blocked-user list is not actually referenced, this statement has been deleted.</li>
+<li>Clarified that the blocked-user list is not used in <a class="reference internal" href="serverservice/matchmake.html#matchmake-persistent-gathering-create-delete-update"><span class="std std-ref">Creating, Deleting, and Updating Persistent Gatherings</span></a>.</li>
+</ul>
+</div>
+<div class="section" id="id99">
+<h4>DataStore</h4>
+<ul class="simple">
+<li>Clarified that status is passed as a parameter in <a class="reference internal" href="serverservice/webapi_datastore.html#webapi-datastore-metainfo-search"><span class="std std-ref">Searching for Data</span></a>.</li>
+</ul>
+</div>
+<div class="section" id="id100">
+<h4>Ranking</h4>
+<ul class="simple">
+<li>Clarified the listing order for identical rank placements when RankingConstants::ORDER_CALCULATION_113 is specified.</li>
+</ul>
+</div>
+<div class="section" id="id101">
+<h4>Ranking2</h4>
+<ul class="simple">
+<li>The length of the <a class="reference internal" href="serverservice/ranking2.html#ranking2-get-param"><span class="std std-ref">Ranking Retrieval Parameters</span></a> and the valid range of <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_get_param.html#a765b132855fda43a683870adc3d7cb7d">Ranking2GetParam::SetLength()</a></code> was from 1 to Ranking2Constants::MAX_RANKING_LENGTH, but added that only the friend ranking goes from 1 to Ranking2Constants::MAX_FRIEND_RANKING_LENGTH.</li>
+<li>Added a description to the <a class="reference internal" href="serverservice/ranking2.html#ranking2-user"><span class="std std-ref">Users</span></a> section of the cases where different NEX unique IDs are used with the same principal ID.</li>
+</ul>
+</div>
+<div class="section" id="id102">
+<h4>Real-Time Communication</h4>
+<ul class="simple">
+<li>Made the description more detailed in <a class="reference internal" href="realtime/nat_traversal.html#nat-traversal-check-nat-type"><span class="std std-ref">Checking the NAT Type</span></a>.</li>
+</ul>
+</div>
+<div class="section" id="id103">
+<h4>Online Lounge</h4>
+<ul class="simple">
+<li>Made the <code>OnlineLoungeClient::Deactivate()</code> function for getting the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a></code> argument public. You can use this function when you are waiting for the use finalization notification processing to the Online Lounge Server to finish.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-4-0-2017-12-19">
+<span id="ver-4-4-0"></span><h2>Version 4.4.0 (2017-12-19)</h2>
+<div class="section" id="id104">
+<h3>Additions and Changes</h3>
+<div class="section" id="id105">
+<h4>General</h4>
+<ul class="simple">
+<li>Publicly released the beta version of the online lounge. This provides functionality linked to the Nintendo Switch Online app for inviting people together for voice chatting on smart devices.</li>
+<li>This is the beta version of the online lounge feature. At the present time, you cannot submit a master ROM for your application if it incorporates the online lounge feature. The functions relating to the online lounge feature may be changed in a future update.</li>
+<li>Made <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_date_time.html#a57387dc65f34123c629fbe630c3e2b5c">DateTime::GetUTCSystemTime()</a></code> public. This function gets the system time as UTC time.</li>
+<li>Made <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_date_time.html#a95c6cc8a0b59bb005ab7d92ef62c7ecb">DateTime::GetLocalSystemTime()</a></code> public. This function gets the system time as local time.</li>
+<li>Changed the type of the values returned by the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_chrono.html#aa667624cf39bce40f735ccb6c32c49cc">Chrono::Pause()</a></code>, <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_chrono.html#aea9f3571468d4f35d0262a5c0c45a35b">Chrono::Check()</a></code>, and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_chrono.html#a6f64fd5c6f3d3aae0837a5a193f50208">Chrono::Stop()</a></code> functions from <code>TimeInterval</code> type to <code>LargeTimeInterval</code> type.</li>
+<li>Changed the argument type of the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_pacer.html#a2f79d320520fc9f8bb0429b5b248418a">Pacer::GetStats()</a></code> function from <code>TimeInterval</code> to <code>LargeTimeInterval</code>.</li>
+</ul>
+</div>
+<div class="section" id="id106">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>Added a feature in <code>MatchmakeReferee</code> for getting personal statistics with WebAPI. For more information, see <a class="reference internal" href="serverservice/webapi_matchmake.html#matchmake-webapi-get-referee-stats"><span class="std std-ref">Getting Personal Statistics</span></a>.</li>
+<li>Added the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#a73e83d76374b0f65260e7d772c9aca28">MatchmakeRefereeClient::ResetStats()</a></code> function to <code>MatchmakeReferee</code> for resetting personal statistics with WebAPI. For more information, see the <a class="reference internal" href="serverservice/webapi_matchmake.html#matchmake-webapi-reset-referee-stats"><span class="std std-ref">Resetting Personal Statistics</span></a> feature of WebAPI.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id107">
+<h3>Bug Fixes</h3>
+<div class="section" id="id108">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>Corrected the inappropriate error handling by the <code>nn::account::LoadNetworkServiceAccountIdTokenCache()</code> function in the <code>account</code> library sample demo in <code>NexDemoUtil</code>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id109">
+<h3>Revisions to Documentation</h3>
+<div class="section" id="id110">
+<h4>General</h4>
+<ul class="simple">
+<li>Removed the description in the NEX manual regarding the copying of application settings to the production environment and the Lotcheck environment, which was relocated to the NEX Guide in <a class="reference internal" href="#ver-4-1-1"><span class="std std-ref">NEX 4.1.1</span></a>, but not removed from the manual at the time.</li>
+<li>Corrected the API reference for the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_date_time.html#a930f3209fe1bcb7e828bfe23ce14f1bf">DateTime::GetSystemTime()</a></code> function, which incorrectly stated that the function gets UTC time, when it actually gets time for a time zone that is platform-dependent. To get the system time in UTC time, use the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_date_time.html#a57387dc65f34123c629fbe630c3e2b5c">DateTime::GetUTCSystemTime()</a></code> function. To get the system time in local time, use the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_date_time.html#a95c6cc8a0b59bb005ab7d92ef62c7ecb">DateTime::GetLocalSystemTime()</a></code> function.</li>
+</ul>
+</div>
+<div class="section" id="id111">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>Added text to the description of the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a12aea48959686e801efb1cd05c350b06">MatchMakingClient::GetSessionURLs()</a></code> function stating that <code>QERROR(RendezVous, SessionVoid)</code> occurs if host information has not been set for P2P communication.</li>
+</ul>
+</div>
+<div class="section" id="id112">
+<h4>Ranking2</h4>
+<ul class="simple">
+<li>Noted in <a class="reference internal" href="serverservice/webapi_ranking2.html#ranking2-webapi-season-init"><span class="std std-ref">Initializing Season Data</span></a> in WebAPI that you need to wait several seconds if you want to get season data after you have used this API.</li>
+<li>Corrected <a class="reference internal" href="serverservice/ranking2.html#ranking2-chart-data-client"><span class="std std-ref">Getting Ranking Chart Data</span></a>, which mixed up the descriptions for ascending order and descending order.</li>
+</ul>
+</div>
+<div class="section" id="id113">
+<h4>Debug Assistance</h4>
+<ul class="simple">
+<li>Added information about the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#a73e83d76374b0f65260e7d772c9aca28">MatchmakeRefereeClient::ResetStats()</a></code>, <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#a05b3c7aedd5f3d723854ff1f6e04ec7b">Ranking2Client::GetEstimateScoreRank()</a></code>, and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#a99dc6ff95029358b2801dbc59a93206e">Ranking2Client::GetRankingChart()</a></code> functions to the <a class="reference internal" href="serverservice/debug.html#debug-api-table"><span class="std std-ref">API Name Correspondence Table</span></a>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id114">
+<h3>Known Bugs</h3>
+<ul class="simple">
+<li>A <code>QERROR(Core, Timeout)</code> error now results when a NEX 4.4.0 or later version client is used to log in to a game server that is compatible with NEX 4.3.0 or earlier. If you attempt to log in to a game server with an earlier version, the result is usually <code>QERROR(Authentication, ServerVersionIsOld)</code>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="version-4-3-1-2017-12-18">
+<span id="ver-4-3-1"></span><h2>Version 4.3.1 (2017-12-18)</h2>
+<div class="section" id="id115">
+<h3>Additions and Changes</h3>
+<div class="section" id="id116">
+<h4>General</h4>
+<ul class="simple">
+<li>Improved security.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-3-0-2017-10-31">
+<span id="ver-4-3-0"></span><h2>Version 4.3.0 (2017-10-31)</h2>
+<div class="section" id="id117">
+<h3>Additions and Changes</h3>
+<div class="section" id="id118">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>Increased the maximum number of <code>score_setting</code> values that can be set from 200 to 400 in <a class="reference internal" href="serverservice/webapi_matchmake.html#matchmake-webapi-set-score-conversion-setting"><span class="std std-ref">Setting Score Conversion Settings</span></a> and <a class="reference internal" href="serverservice/webapi_matchmake.html#matchmake-webapi-set-score-mapping-setting"><span class="std std-ref">Configuring the Score-Conversion Settings</span></a>. Also increased the maximum value that can be set for each <code>setting_index</code> and <code>type</code> from 16 to 64.</li>
+<li>Made it so that conversion is not performed when -1 is specified for the value in <a class="reference internal" href="serverservice/webapi_matchmake.html#matchmake-webapi-set-score-mapping-setting"><span class="std std-ref">Setting Score Conversion Settings</span></a>.</li>
+</ul>
+</div>
+<div class="section" id="id119">
+<h4>DataStore</h4>
+<ul class="simple">
+<li>Changed the validity period for data when converted to the logically deleted state in <a class="reference internal" href="serverservice/datastore.html#datastore-delete-type"><span class="std std-ref">Logically and Physically Deleting Data</span></a>.</li>
+<li>An error used to be generated when metadata was uploaded with an expiration other than the default specified in <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_data_store_prepare_post_param.html#aa67e75f0c5fdc8babd742a633aa7ae55">DataStorePreparePostParam::SetPeriod()</a></code> in the <code>DataStoreClient::PostObject()</code> function, which uploads metadata to the DataStore server with a specified data ID. Now, instead of returning an error, the specified expiration is ignored and expiration is set to infinite.</li>
+<li>Added WebAPI functions for converting between data IDs and data code strings for display. For more information, see <a class="reference internal" href="serverservice/webapi_datastore.html#webapi-datastore-data-code"><span class="std std-ref">Converting Datacode Strings</span></a>.</li>
+</ul>
+</div>
+<div class="section" id="id120">
+<h4>Ranking2</h4>
+<ul class="simple">
+<li>Added a <a class="reference internal" href="serverservice/ranking2.html#ranking2-chart"><span class="std std-ref"> Leaderboard chart</span></a> feature to create score histograms. Added the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#a99dc6ff95029358b2801dbc59a93206e">Ranking2Client::GetRankingChart</a>()</code> function to get ranking chart data.</li>
+<li>Added the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#a05b3c7aedd5f3d723854ff1f6e04ec7b">Ranking2Client::GetEstimateScoreRank</a>()</code> function to estimate the ranking order from scores. The correct order can be determined when the rank is higher than the lowest rank, else the estimated order is determined if the rank is lower.</li>
+<li>A WebAPI <a class="reference internal" href="serverservice/webapi_ranking2.html#ranking2-population"><span class="std std-ref">population</span></a> function can now be used to generate <a class="reference internal" href="serverservice/webapi_ranking2.html#ranking2-population-distribution"><span class="std std-ref">normal distribution and log-normal distribution</span></a> data. The data generation limit has also been changed from 10,000 items to 20,000 items.</li>
+<li>Previously, when the <a class="reference internal" href="serverservice/webapi_ranking2.html#ranking2-webapi-score-delete"><span class="std std-ref">WebAPI for deleting scores</span></a> was used to delete scores in a specified category or to delete all scores, the value that was returned was the total number of deleted scores. That has been changed so that now what is returned is the number of pairs of deleted categories and seasons.</li>
+</ul>
+</div>
+<div class="section" id="id121">
+<h4>Debug Assistance</h4>
+<ul class="simple">
+<li>Added <code>facility</code>, <code>error_code</code>, and <code>network_error_code</code>, to the WebAPI response body, for <a class="reference internal" href="serverservice/webapi_debug.html#webapi-debug-error-simulation-log-get"><span class="std std-ref">get the error simulation run log</span></a>.</li>
+<li>Changed the password for the account specified in advance in the game server using the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html#a74a928efa41b616e5f6f2e122be27186">NgsFacade::DebugLoginDirect</a>()</code> function. For more information, see <a class="reference internal" href="readme-nx-nex.html#debug-login-direct"><span class="std std-ref">Readme</span></a>.</li>
+</ul>
+</div>
+<div class="section" id="id122">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>Made it so that a ranking chart-related function (<code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ranking2_client.html#a99dc6ff95029358b2801dbc59a93206e">Ranking2Client::GetRankingChart</a>()</code>) is called in the Ranking2 sample demo.</li>
+<li>As a security measure, you can no longer use the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html#a74a928efa41b616e5f6f2e122be27186">NgsFacade::DebugLoginDirect()</a></code> function to log in to the game server at the default access point in the sample demo.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id123">
+<h3>Bug Fixes</h3>
+<div class="section" id="id124">
+<h4>General</h4>
+<ul class="simple">
+<li>A bug existed where asynchronous processing would not complete if no <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_credentials.html">Credentials</a></code> were bound to a <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_service_client.html">ServiceClient</a></code> (except the <code>DataStore</code>) in advance, when generating a remote method call (RMC), by passing <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_credentials.html">Credentials</a></code> to the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_protocol_call_context.html">ProtocolCallContext</a></code> constructor. This bug was fixed.</li>
+</ul>
+</div>
+<div class="section" id="id125">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>A bug was fixed in which a <code>QERROR(MatchmakeReferee, AlreadyExists)</code> result was returned if the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_referee_client.html#ace126d41ae9f546bb60546ed850661db">MatchmakeRefereeClient::GetOrCreateStats</a>()</code> function was called after a principal ID bound to a NEX unique ID and was then released, and then the same NEX unique ID and principal ID were bound again.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id126">
+<h3>Revisions to Documentation</h3>
+<div class="section" id="id127">
+<h4>General</h4>
+<ul class="simple">
+<li>Added a description of NEX library log validation to <a class="reference internal" href="common/initialize_detail.html#set-output-log"><span class="std std-ref">Log Output Settings</span></a>.</li>
+<li>Changed the description in <a class="reference internal" href="common/overall.html#overall-detect-changes"><span class="std std-ref">Data Integrity in NEX Communications</span></a>.</li>
+<li>Added documentation for DataStore WebAPI parameters that were available, but were not noted until now.<ul>
+<li>Added <code>type</code> to <a class="reference internal" href="serverservice/webapi_datastore.html#webapi-datastore-metainfo-put"><span class="std std-ref">Changing Metadata</span></a>.</li>
+<li>Added <code>name</code> to <a class="reference internal" href="serverservice/webapi_datastore.html#webapi-datastore-prepare"><span class="std std-ref">Preparing for Upload</span></a>.</li>
+<li>Added <code>principal_id</code> to <a class="reference internal" href="serverservice/webapi_datastore.html#webapi-datastore-ratings-put"><span class="std std-ref">Rating Data</span></a>.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id128">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>Added a description of <code>AUTO_MATCHMAKE_OPTION_UNIQUE_GATHERING_BY_CODEWORD</code> to the <code>AutoMatchmakeOption</code> API reference.</li>
+<li>Added a description of errors related to <code>AUTO_MATCHMAKE_OPTION_UNIQUE_GATHERING_BY_CODEWORD</code> to the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a8fb60f3d80bc0aac4218111be9262c05">MatchmakeExtensionClient::AutoMatchmake</a>()</code> API reference.</li>
+</ul>
+</div>
+<div class="section" id="id129">
+<h4>Ranking2</h4>
+<ul class="simple">
+<li>Added <a class="reference internal" href="serverservice/ranking2.html#ranking2-chart"><span class="std std-ref">Ranking Chart</span></a>, <a class="reference internal" href="serverservice/webapi_ranking2.html#ranking2-chart-data-set-settings-section"><span class="std std-ref">Ranking Chart Data Settings API</span></a>, and <a class="reference internal" href="serverservice/webapi_ranking2.html#ranking2-chart-data-api"><span class="std std-ref">Ranking Chart Data API</span></a>.</li>
+<li>Added <a class="reference internal" href="serverservice/ranking2.html#raking2-estimate-score-rank"><span class="std std-ref">Ranking Approximation</span></a>.</li>
+<li>Added a description of data generation in normal distribution, and log-normal distribution, to <a class="reference internal" href="serverservice/webapi_ranking2.html#ranking2-population"><span class="std std-ref">Data Population</span></a>.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-2-1-2017-07-31">
+<span id="ver-4-2-1"></span><h2>Version 4.2.1 (2017-07-31)</h2>
+<div class="section" id="id130">
+<h3>Additions and Changes</h3>
+<div class="section" id="id131">
+<h4>General</h4>
+<ul class="simple">
+<li>Added support for Visual Studio 2017. This is available when using NEX packages that support Nintendo SDK 4.1.0 and later.</li>
+</ul>
+</div>
+<div class="section" id="id132">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>The libcurl initialization processing was previously only performed in the DataStore sample demo. It is now also performed at the network connection stage.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id133">
+<h3>Bug Fixes</h3>
+<div class="section" id="id134">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>Revised the previous process of using <code>delete</code> to delete the buffer array during libcurl termination to use <code>delete[]</code> instead.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-2-0-2017-06-09">
+<span id="ver-4-2-0"></span><h2>Version 4.2.0 (2017-06-09)</h2>
+<div class="section" id="id135">
+<h3>Additions and Changes</h3>
+<div class="section" id="id136">
+<h4>General</h4>
+<ul class="simple">
+<li>Made <a href="../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html"><code>VSocket</code></a> public. Using <a href="../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html"><code>VSocket</code></a> enables peer-to-peer-to-peer communication between clients on any third-party network engine while using NEX server features, the NAT traversal feature, and encryption and modification detection features. An online battle system that uses <a href="../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html"><code>VSocket</code></a> and NEX matchmaking was implemented with Unreal Engine 4. For more information, contact Nintendo.</li>
+<li>A timeout period could previously be specified as the third parameter of <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html#aab22762f2181ffd6c37edcfabab165db">VSocket::ProbeStations</a>()</code>, but now the timeout value is automatically set internally, and the specified value is ignored. In addition, the timeout result was previously <code>QERROR(Core, Timeout)</code>, but has been changed to <code>QERROR(Transport, NatTraversalError)</code>.</li>
+<li>Added the <code>Initialize()</code> and <code>Finalize()</code> functions. Use this function to control when to initialize the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_core.html">Core</a></code> object. This prevents the problem where the object is initialized at an unintended time when settings such as the thread mode are not correctly configured. Calling <code>Initialize()</code> and <code>Finalize()</code> is not required.</li>
+<li>Calling <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_global_variables.html#a9c1bece531a9ffab275ee7e1823c7e99">GlobalVariables::AcquireInstance</a>()</code> and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_global_variables.html#abbea6b575e905079b0d520ea09dcfb3f">GlobalVariables::ReleaseInstance</a>()</code> is no longer required. There is no issue calling these functions in the same way as they were previously called.</li>
+<li>When there is a disconnect from the game server, previously <code>QERROR(Transport, ConnectionFailure)</code> would be obtained as the asynchronous processing results returned from <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_back_end_services.html#abcc207d756734515947dd14a1e948cb7">NgsFacade::IsConnected</a>()</code>, but now <code>QERROR(RendezVous, ConnectionDisconnected)</code> is returned.</li>
+<li>If a user is disconnected from the game server because another user with the same principal ID has logged in, the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_back_end_services.html#abcc207d756734515947dd14a1e948cb7">NgsFacade::IsConnected</a>()</code> previously returned <code>QERROR(Transport, ConnectionFailure)</code> as a result of asynchronous processing. <code>QERROR(RendezVous, ConnectionDisconnectedForConcurrentLogin)</code> is now returned instead.</li>
+<li>The <code>NgsFacade::EnableLoginDataCache()</code> function is now private. It can be used because it is compatible with existing codes, but it has no particular effect even if it used.</li>
+<li>Previously, the specification did not allow you to use <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#acb03838807a46d921f5517fcc887bdcf">CallContext::GetOutcome</a>()</code> to get a result if <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a134fcf01f0478baee44c72fc735183c3">CallContext::Cancel</a>()</code> was called and the state became <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a60673045e1359c752a575b959e991de7">CallContext::CallCancelled</a>()</code>. It has been changed so that the results can be obtained as <code>QERROR(Core, Cancelled)</code>.</li>
+<li>Added <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a7323489c606b149e32537ce2bbdaeed1">CallContext::RegisterCompletionCallbackGeneric</a>()</code> to <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a></code> and its subclasses. Use it to specify any function pointers, function objects, and lambda expressions that take <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a></code> as an argument. You can also specify a function that does not take parameters by using <code>AddCallContextArgumentAdapter()</code>.</li>
+<li>Most RMC asynchronous processing functions would return <code>false</code> if they were called while disconnected from the server. These functions were changed so that asynchronous processing begins even in that situation, and they now return <code>true</code>. This change means that an asynchronous processing function will only return <code>false</code> if the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html">CallContext</a></code> object currently in use is specified. However, follow the description in the API Reference if the asynchronous processing function does not return <code>bool</code>, or has a special note.</li>
+<li>In some cases, with callbacks from within the function before returning from the function, <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a37d0edaec50e3e942e8bbafd89cc401b">CallContext::RegisterCompletionCallback</a>()</code> was used to set the callback function, and RMC asynchronous processing was called. (These cases include those where an RMC was called while disconnected from the server.) The specifications have been changed so that the system calls back from <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code>, instead of calling back from within the function.</li>
+<li>Previously, the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code>, <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#af891ae9986e9f9b373f58b6b26ee385a">Scheduler::DispatchAll</a>()</code>, and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a5625249d6e466a2b1c9007f3bf9cfe3d">CallContext::Wait</a>()</code> functions could not be called in parallel from multiple threads, but now you can call these functions when in thread-safe mode. (Multiple <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#a5625249d6e466a2b1c9007f3bf9cfe3d">CallContext::Wait</a>()</code> functions or <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> functions can also be called in parallel. The functions will not block each other when they are called.) Along with this change, the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> function, which previously returned the number of remaining jobs that can be executed, will always return <code>0</code>.</li>
+<li>Added <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_call_context.html#afb9b82d3ade575bda81ec58eedf4b093">CallContext::WaitWithoutDispatch</a>()</code>. Because this function does not call <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> internally, <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code> can be called in parallel, even when you are not in thread-safe mode.</li>
+<li>Added <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#ace9158c968e2cff23bdb5f3c79b788aa">Scheduler::GetReadyJobsSize</a>()</code>. This function returns the current number of executable jobs.</li>
+<li>Added <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_threaded_job.html">ThreadedJob</a></code>. This function enables you to execute optional processing asynchronously in another thread.</li>
+<li>If the NEX function that is not thread-safe is called from multiple threads when you are not in thread-safe mode, a warning is now issued in the debugging log, and execution stops with an assertion failure at the same time. This mechanism is enabled outside of release builds. Also added <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_critical_section.html#ac55b95ac43cf7853f4c1e9694ec1afa6">CriticalSection::SetEnableDetectRaceCondition</a>()</code> and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_critical_section.html#ae4c21f5048a42b04816908a9e6978bfb">CriticalSection::GetEnableDetectRaceCondition</a>()</code>. This function disables the check mechanism for this thread conflict. The function can only be used for test purposes.</li>
+<li>Added <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html#a38a552ca8849399f24bc19339b1ef5d7">String::GetLiteralStringAs</a>()</code> and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_string_1_1_literal_string_holder.html">String::LiteralStringHolder</a></code>. This function can be used to easily convert from a <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html">String</a></code> object to a <code>char</code> or <code>char16_t</code>.</li>
+<li>Revised the function so that memory allocation is not performed when storing a short string in <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html">String</a></code>. The behavior of <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html#af620491b2915cdb0bb81b0c206267e97">String::String</a>(String::NoAllocTag)</code> is now the same as for the default constructor. Previously, memory allocation occurred when the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html">String</a></code> object was replaced, but memory allocation no longer occurs if the object is replaced by fewer characters than the buffer that is already allocated.</li>
+<li>Added <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html#aaedbfb41f8a0aeb343313578bb799dfb">String::ShrinkToFit</a>()</code>. It truncates the internal buffer to the length of the string.</li>
+<li>Added <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html#a6ed84bf044fff6b921aee00d1650963f">String::Capacity</a>()</code>. It returns the length of the string (not including the terminating character) that can be stored without reallocating memory.</li>
+<li>While the <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html#a932693b2e171aab8867fcdc0c38d09c5">String::Reserve</a>()</code> function previously included the terminating character when specifying the length, the specifications have been changed to omit the terminating character.</li>
+<li>The <code>String::SetBufferPtr()</code> function is now private.</li>
+<li>The <code>String::SetStringToPreReservedBuffer()</code> function is now private.</li>
+<li>While <code>Bind()</code>, the class that inherits <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_service_client.html#a508e73b62eabce5933e66988331a4830">ServiceClient::Bind</a>()</code> and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_service_client.html">ServiceClient</a></code>, could only be called one time for each object, <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_credentials.html">Credentials</a></code> has now been changed so that it is possible to call <code>Bind()</code> again to rebind <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_credentials.html">Credentials</a></code> that have already been bound. In addition, <code>Unbind()</code> can now be called without calling <code>Bind()</code>.</li>
+<li>Reduced the CPU load for <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_scheduler.html#a9621e1fee801a2ced9e04d875b91ce78">Scheduler::Dispatch</a>()</code>. The CPU time is reduced by approximately 30% during routine calls.</li>
+<li>Added <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_single_step_job.html#a9b6fa6a6d16550aa80e2a5cae2e47a06">SingleStepJob::OnCancelled</a>()</code>. If <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_single_step_job.html#a9b6fa6a6d16550aa80e2a5cae2e47a06">SingleStepJob::OnCancelled</a>()</code> is overridden, it will be called when asynchronous processing is canceled.</li>
+</ul>
+</div>
+<div class="section" id="id137">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>When using the keywords feature for auto-matchmaking, you can now only create one matchmaking session for the same keyword. Specify <code>AUTO_MATCHMAKE_OPTION_UNIQUE_GATHERING_BY_CODEWORD</code> in <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_auto_matchmake_param.html#a1c10d9d00ed2063d2e05f578cb552d07">AutoMatchmakeParam::SetAutoMatchmakeOption</a>()</code> to use this feature.</li>
+<li>The constant name for the maximum size of the principal ID list that can be specified when searching for matchmaking sessions by principal ID was inappropriate, so the previous <code>MAX_MATCHMAKE_BROWSE_SIZE_BY_PARTICIPANT</code> was replaced with <code>MAX_PRINCIPALID_SIZE_TO_FIND_MATCHMAKE_SESSION</code>. The original <code>MAX_MATCHMAKE_BROWSE_SIZE_BY_PARTICIPANT</code> is now private, but can still be used.</li>
+<li>Made <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a6fba3cc691521da8a3d98048b4e1d897">MatchMakingClient::GetParticipantsURLs</a>()</code> public. This function is meant to be used with <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_v_socket.html#aab22762f2181ffd6c37edcfabab165db">VSocket::ProbeStations</a>()</code>.</li>
+<li>Previously, <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a6fba3cc691521da8a3d98048b4e1d897">MatchMakingClient::GetParticipantsURLs</a>()</code> would get an empty <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_station_u_r_l.html">StationURL</a></code> list if no gathering existed, but it now returns a <code>QERROR(RendezVous, SessionVoid)</code> result in such cases. While the function will get the result even if is not a participant in the gathering, the result will be <code>QERROR(RendezVous, PermissionDenied)</code> when it is not a participant in the gathering.</li>
+<li>The various <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a53174bea283308375a5c52e38ea33715">MatchMakingClient::EndParticipation</a>()</code>, <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a6f3cc3cd79b0cea80e7ee5cc3c628b04">MatchMakingClient::GetDetailedParticipants</a>()</code>, <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#a12aea48959686e801efb1cd05c350b06">MatchMakingClient::GetSessionURLs</a>()</code>, <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_match_making_client.html#ac344a14dec4c7a741ffd5b259fb8d9e9">MatchMakingClient::MigrateGatheringOwnership</a>()</code>, and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a537ee191610f3414daad633e358d42a4">MatchmakeExtensionClient::UpdateProgressScore</a>()</code> functions now return <code>QERROR(Core, InvalidArgument)</code> as the result when <code>INVALID_GATHERINGID</code> is passed as the argument. In this case, the process will be stopped by an assertion failure for all cases other than the release build. The previous behavior was to return <code>false</code> and not start asynchronous processing.</li>
+</ul>
+</div>
+<div class="section" id="id138">
+<h4>DataStore</h4>
+<ul class="simple">
+<li>You can now specify <code>NULL</code> for the <code><em>dataId</em></code> parameter in the DataStoreClient::PostObject() function.</li>
+</ul>
+</div>
+<div class="section" id="id139">
+<h4>Service Items</h4>
+<ul class="simple">
+<li>Added <code>facility</code>, <code>error_code</code>, and <code>network_error_code</code> to the WebAPI response body for <a class="reference internal" href="serverservice/webapi_debug.html#webapi-debug-error-simulation-get"><span class="std std-ref">getting registered error simulation settings</span></a>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id140">
+<h3>Revisions to Documentation</h3>
+<div class="section" id="id141">
+<h4>General</h4>
+<ul class="simple">
+<li>Added that <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_back_end_services.html#ab4da975678d07c19be230fb96398320c">NgsFacade::RegisterNotificationEventHandler</a>()</code> must be called before calling <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html#a88027e43cd2641ffbb0497a04352e406">NgsFacade::Login</a>()</code> to get all of the notification events.</li>
+<li>Added <a class="reference internal" href="common/overall.html#overall-common-error"><span class="std std-ref">Common Errors</span></a>. This section describes the common errors that occur for all functions.</li>
+<li>Changed the recommended thread mode from <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99a7ed455ff56476229d7bc883888cc5bff">Core::ThreadModeUnsafeTransportBuffer</a></code> to <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_core.html#a23a4fc92d694f2cb78464ac7878bae99a906d5d9f7d0056954a4bef3a3c97bc17">Core::ThreadModeSafeTransportBuffer</a></code>.</li>
+<li>The description of <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html#a064f4b151e3506b5e09f79519eaa5f8d">String::CopyString</a>()</code> stated that it returns the length not including the terminating null character, but the API reference has been revised to state that it does include the terminating null character.</li>
+<li>Added that <code>true</code> is returned if <code>Credentials</code> is passed to the <code>Bind()</code> function for classes that inherit <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_service_client.html#a508e73b62eabce5933e66988331a4830">ServiceClient::Bind</a>()</code>, and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_service_client.html">ServiceClient</a></code> is not <code>NULL</code>. Also added that calling <code>Unbind()</code> explicitly is not required.</li>
+</ul>
+</div>
+<div class="section" id="id142">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>Revised the description of <a class="reference internal" href="serverservice/matchmake.html#matchmake-handle-game-server-maintenance"><span class="std std-ref">Handling Maintenance Start Notification Events</span></a> to match the behavior in NEX4.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-1-2-2017-04-24">
+<span id="ver-4-1-2"></span><h2>Version 4.1.2 (2017-04-24)</h2>
+<div class="section" id="id143">
+<h3>Additions and Changes</h3>
+<div class="section" id="id144">
+<h4>General</h4>
+<ul class="simple">
+<li>Previously, libcurl link settings in Visual Studio were configured in the property settings on the application side. In NX Add-On 3.1.0 and later, dynamic links (.nso format) will change to static links (.a format). Therefore, the SDK version will be determined with the NEX property sheet, and the appropriate libcurl links will be made. Due to this change, libcurl link settings by means of the application property sheet are not required.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-1-1-2017-02-24">
+<span id="ver-4-1-1"></span><h2>Version 4.1.1 (2017-02-24)</h2>
+<div class="section" id="id145">
+<h3>Additions and Changes</h3>
+<div class="section" id="id146">
+<h4>General</h4>
+<ul class="simple">
+<li>Added an overload function for <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html#a88027e43cd2641ffbb0497a04352e406">NgsFacade::Login</a>()</code>, to log in to the game server using <code>nn::account::NetworkServiceAccountId</code>. Nintendo has stopped recommending the use of <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ngs_facade.html#a88027e43cd2641ffbb0497a04352e406">NgsFacade::Login</a>()</code> to specify <code>nn::account::UserHandle</code> because it required the account library and the NEX library to be called alternately, making implementation complicated. For more information about getting network-service account IDs and ID tokens, see the sample code and the NintendoSDK documentation.</li>
+<li>Links to <code>libRendezVousCommon</code>, <code>libParseTree</code>, and <code>libDDLTypes</code> were necessary until now, but they have been removed. Note that continued use of these links will result in errors.</li>
+</ul>
+</div>
+<div class="section" id="id147">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>Added <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#ac70d4fa3dac9ee87ab5ceda1f812f625">MatchmakeExtensionClient::FindPersistentGatheringByOwner</a>()</code>, to search for a persistent gathering by its owner.</li>
+<li>We no longer recommend using <code>MatchMakingClient::FindByID()</code>. Use <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a3acd52596dc218553549749deadf378d">MatchmakeExtensionClient::FindMatchmakeSessionByGatheringId</a>()</code> or <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#ac3546ff01a02a7573370b48e9bae845f">MatchmakeExtensionClient::FindPersistentGatheringByGatheringId</a>()</code> instead, depending on the type of gathering you want to search for.</li>
+<li>We no longer recommend using <code>MatchMakingClient::FindByOwner()</code>. Use <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a3cce1ed33673d1a09027faa1034a1eab">MatchmakeExtensionClient::FindMatchmakeSessionByOwner</a>()</code> or <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#ac70d4fa3dac9ee87ab5ceda1f812f625">MatchmakeExtensionClient::FindPersistentGatheringByOwner</a>()</code> instead, depending on the type of gathering you want to search for.</li>
+<li>Overload functions that use <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_gathering_holder.html">GatheringHolder</a></code> for <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a8fb60f3d80bc0aac4218111be9262c05">MatchmakeExtensionClient::AutoMatchmake()</a></code>, <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#af971831a2fa90c7e2196a7ceb001ccae">MatchmakeExtensionClient::CreateMatchmakeSession()</a></code>, and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a5976c36a85bc45f9e39f3e4f27369d67">MatchmakeExtensionClient::BrowseMatchmakeSession()</a></code> have been made private because we no longer recommend using it. Use an overloaded function that does not use <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_gathering_holder.html">GatheringHolder</a></code>.</li>
+</ul>
+</div>
+<div class="section" id="id148">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>Changed the areas when an unrecommended matchmaking API was used, to use a recommended API.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id149">
+<h3>Bug Fixes</h3>
+<ul class="simple">
+<li>Fixed a problem when the error simulator would not work normally even when using NMAS or WebAPI to configure the settings.</li>
+<li>Fixed a problem where you could not use an alias name, for areas such as the login, when configuring the error simulator from NMAS or WebAPI.</li>
+<li>Fixed the URL for WebAPI in the Programming Manual. It had previously been for CTR and Cafe's NEX 3.x, but it is now for NEX 4.x.</li>
+<li>Fixed the information about displaying the error applet for <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_back_end_services.html#abcc207d756734515947dd14a1e948cb7">NgsFacade::IsConnected</a>()</code> in the API Reference because it was not appropriate.</li>
+<li>Fixed the problem where no constants defined using <code>static const</code> were listed in the API reference.</li>
+<li>Fixed a problem where <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html#ac5303df6e4bfbefffd800e44f2f7d932">MatchmakeSession::GetCodeword</a>()</code> was not listed in the API Reference.</li>
+</ul>
+</div>
+<div class="section" id="id150">
+<h3>Revisions to Documentation</h3>
+<div class="section" id="id151">
+<h4>General</h4>
+<ul class="simple">
+<li>Revised the content from Items to Check Every Frame; brought that content together under <a class="reference internal" href="common/polling_item.html#polling-item-explain"><span class="std std-ref">Required and Recommended Periodic Item Checks</span></a>.</li>
+<li>Removed descriptions for the copy behavior in the retail product and Lotcheck environments for application settings. For more information about these behaviors, see the <em>NEX Guide</em>.</li>
+<li>Listed the login username and password, that can be used when running samples in Windows, to the Readme.</li>
+</ul>
+</div>
+<div class="section" id="id152">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>Revised the description of the API to use when using matchmaking score calculation settings.</li>
+<li>Changes were made to use recommended APIs for the portion that described the use of unrecommended matchmaking APIs in the Programming Manual.</li>
+</ul>
+</div>
+<div class="section" id="id153">
+<h4>Ranking</h4>
+<ul class="simple">
+<li>Added descriptions of <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a38940608650733bee24f7f56ba7e6151">RankingClient::GetRankingByPIDList</a>()</code> and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a6faa4df8e06d0bed9e3ef06da4af3432">RankingClient::GetRankingByUniqueIdList</a>()</code> to the Programming Manual.</li>
+<li>Provided greater detail in the API Reference for <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a38940608650733bee24f7f56ba7e6151">RankingClient::GetRankingByPIDList</a>()</code> and <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_ranking_client.html#a6faa4df8e06d0bed9e3ef06da4af3432">RankingClient::GetRankingByUniqueIdList</a>()</code>.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-0-3-2017-01-3">
+<span id="ver-4-0-3"></span><h2>Version 4.0.3 (2017-01-03)</h2>
+<div class="section" id="id154">
+<h3>Bug Fixes</h3>
+<div class="section" id="id155">
+<h4>General</h4>
+<ul class="simple">
+<li>Fixed a bug where the system would crash when logging in to the game server if a LAN cable was plugged in or unplugged, or if using a wireless environment with a poor signal.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-0-2-2016-12-16">
+<span id="ver-4-0-2"></span><h2>Version 4.0.2 (2016-12-16)</h2>
+<div class="section" id="id156">
+<h3>Additions and Changes</h3>
+<div class="section" id="id157">
+<h4>General</h4>
+<ul class="simple">
+<li>Master updates are now possible, starting from this version.</li>
+<li>Eliminated the exporting of the NEX internal log in NX release builds.</li>
+</ul>
+</div>
+<div class="section" id="id158">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>You can now set the country code by using ISO 3166-1 alpha-2 in <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_param.html#ad452e7b7122a6e7c4bf024bb4533d7ab">MatchmakeParam::SetCountryCode</a>()</code>.</li>
+</ul>
+</div>
+<div class="section" id="id159">
+<h4>Sample Demos</h4>
+<ul class="simple">
+<li>Changed the implementation to use <code>nn::account::EnsureNetworkServiceAccountAvailable()</code> instead of <code>nn::account::IsNetworkServiceAccountAvailable()</code> in the context of the NEX login to comply with the guidelines.</li>
+<li>Changed to display the user selection UI using <code>nn::account::ShowUserSelector()</code>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id160">
+<h3>Bug Fixes</h3>
+<div class="section" id="id161">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>Fixed a bug where user and system passwords, session keys, and description strings were not being reset by <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html#ae3e2f626308d5c27fc83a8eaa1e137a7">MatchmakeSession::Reset</a>()</code>.</li>
+<li>Fixed a bug where an error would occur when the number of matchmaking sessions returned by <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a4d4239193de656663034af8246e88aba">MatchmakeExtensionClient::FindMatchmakeSessionByParticipant</a>()</code> exceeded 101. The specification now allows for a maximum of 1000 returns.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id162">
+<h3>Revisions to Documentation</h3>
+<div class="section" id="id163">
+<h4>Matchmaking</h4>
+<ul class="simple">
+<li>Added a notation for the use of overlay notifications on the Nintendo Switch for server maintenance notifications.</li>
+<li>Added that matchmaking will not be blocked during server maintenance for NEX4, and that you should contact Nintendo when you need to handle maintenance notification events.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-0-1-2016-12-02">
+<span id="ver-4-0-1"></span><h2>Version 4.0.1 (2016-12-02)</h2>
+<div class="section" id="id164">
+<h3>Additions and Changes</h3>
+<div class="section" id="id165">
+<h4>General</h4>
+<ul class="simple">
+<li>A master cannot be submitted at this time.</li>
+<li>Added a move constructor and a move substitution operator to <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_string.html">String</a></code>.</li>
+</ul>
+</div>
+<div class="section" id="id166">
+<h4>Utilities</h4>
+<ul class="simple">
+<li>Fixed a bug where data associated with a unique ID was not deleted when a user was using a service like Ranking2, and after using <code><a href="../external.html?file=../Api/classnn_1_1nex_1_1_utility_client.html#a0dfaa8083317da836429ee7dafbd73f0">UtilityClient::AssociateNexUniqueIdWithMyPrincipalId</a>()</code> to associate the unique ID that another user was using.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id167">
+<h3>Bug Fixes</h3>
+<div class="section" id="id168">
+<h4>General</h4>
+<ul class="simple">
+<li>Fixed a bug where an assertion failure would occur when starting NEX communication, without completing the network connection.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id169">
+<h3>Revisions to Documentation</h3>
+<div class="section" id="id170">
+<h4>Common</h4>
+<ul class="simple">
+<li>Changed the design of the programming manual.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="version-4-0-0-2016-10-20">
+<span id="ver-4-0-0"></span><h2>Version 4.0.0 (2016-10-20)</h2>
+<div class="section" id="id171">
+<h3>Additions and Changes</h3>
+<div class="section" id="id172">
+<h4>General</h4>
+<ul class="simple">
+<li>Masters cannot be submitted in this version.</li>
+<li>For a detailed revision history, see <a class="reference internal" href="difference_from_nex_3_x.html#difference-from-nex-3-x-top"><span class="std std-ref">Changes From NEX 3.x</span></a>.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

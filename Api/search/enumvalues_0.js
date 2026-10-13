@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['acceptinvitation',['AcceptInvitation',['../namespacenn_1_1nex_1_1_participation_events.html#a34c12346f97933265119230ba2a59fa5aaaf98cc4c51b7eb0030e11128f6006cf',1,'nn::nex::ParticipationEvents']]],
+  ['accessdenied',['AccessDenied',['../namespacenn_1_1nex_1_1_core_error_code.html#adda246dceadf2bf33a1aaa1ffddb266aaa53f3a92a15cde2e740f7e5bf8df10a5',1,'nn::nex::CoreErrorCode']]],
+  ['accesserror',['AccessError',['../namespacenn_1_1nex_1_1_smart_device_voice_chat_error_code.html#a7c88fa4ee13d68926d998fc413ce5aa6acea7d574e97faaa46adac810420ba827',1,'nn::nex::SmartDeviceVoiceChatErrorCode']]],
+  ['accountdisabled',['AccountDisabled',['../namespacenn_1_1nex_1_1_rendez_vous_error_code.html#a37924669db11cc60e743c243ca63669aad7adcce03679ca45a72703f5cb56bf2a',1,'nn::nex::RendezVousErrorCode']]],
+  ['accountexpired',['AccountExpired',['../namespacenn_1_1nex_1_1_rendez_vous_error_code.html#a37924669db11cc60e743c243ca63669aa7239c5b21b030592476b737d32657cd9',1,'nn::nex::RendezVousErrorCode']]],
+  ['accountlibraryerror',['AccountLibraryError',['../namespacenn_1_1nex_1_1_authentication_error_code.html#abef9c311ec141315a8792dfecf502a2da448e8093433936976ff44ea4098a348d',1,'nn::nex::AuthenticationErrorCode::AccountLibraryError()'],['../namespacenn_1_1nex_1_1_smart_device_voice_chat_error_code.html#a7c88fa4ee13d68926d998fc413ce5aa6abf271c00ff63d22d72e8c3b80d3225cb',1,'nn::nex::SmartDeviceVoiceChatErrorCode::AccountLibraryError()']]],
+  ['accounttemporarilydisabled',['AccountTemporarilyDisabled',['../namespacenn_1_1nex_1_1_rendez_vous_error_code.html#a37924669db11cc60e743c243ca63669aa65dcedd19a279155dbd72497dda539e4',1,'nn::nex::RendezVousErrorCode::AccountTemporarilyDisabled()'],['../namespacenn_1_1nex_1_1_smart_device_voice_chat_error_code.html#a7c88fa4ee13d68926d998fc413ce5aa6a4ff3a7fce7f8e90ab0e7de4912d29a3b',1,'nn::nex::SmartDeviceVoiceChatErrorCode::AccountTemporarilyDisabled()']]],
+  ['addedtogathering',['AddedToGathering',['../namespacenn_1_1nex_1_1_notification_events.html#a501ae863a600a423505a654e532908e8a3cc0266204bf5dd45e907ac3ecde2f78',1,'nn::nex::NotificationEvents']]],
+  ['allownoparticipant',['AllowNoParticipant',['../namespacenn_1_1nex_1_1_gathering_flags.html#a9d37791f6e2f51cd60c37125ab810830a6483f83a8558fe1a2159d24901dc0a83',1,'nn::nex::GatheringFlags']]],
+  ['alreadyexists',['AlreadyExists',['../namespacenn_1_1nex_1_1_matchmake_referee_error_code.html#a6f28e549d6f5c7d94f145ca29281470aad9be55b8d654dfa88a13a13a24b9d400',1,'nn::nex::MatchmakeRefereeErrorCode']]],
+  ['alreadyinitialized',['AlreadyInitialized',['../namespacenn_1_1nex_1_1_f_p_d_error_code.html#a71f0d76ab27b201875ccd301cb2b1791a45a295b34fa39e87ede24690724bc379',1,'nn::nex::FPDErrorCode']]],
+  ['alreadylocked',['AlreadyLocked',['../namespacenn_1_1nex_1_1_data_store_error_code.html#afd3c8baf9d0df12b11b117f8c6a8d94aa55f4762b576b2a67655a0f2a8a002c02',1,'nn::nex::DataStoreErrorCode']]],
+  ['alreadyparticipatedgathering',['AlreadyParticipatedGathering',['../namespacenn_1_1nex_1_1_rendez_vous_error_code.html#a37924669db11cc60e743c243ca63669aac40dadf51b9e65c602bcf9e3305c63b3',1,'nn::nex::RendezVousErrorCode']]],
+  ['always',['Always',['../classnn_1_1nex_1_1_event_log.html#aeec6c9932a7149899504d2f049db3c4fafa270207e19f1d9d21af4ee3802e19e0',1,'nn::nex::EventLog']]],
+  ['apicallsummaryresult_5flimitover',['ApiCallSummaryResult_LimitOver',['../namespacenn_1_1nex_1_1_debug_constants.html#a59856d95e7ef7e4e309ecb37916931fba74f11160a15ae148147b1b29c7b2ad54',1,'nn::nex::DebugConstants']]],
+  ['apicallsummaryresult_5fnormal',['ApiCallSummaryResult_Normal',['../namespacenn_1_1nex_1_1_debug_constants.html#a59856d95e7ef7e4e309ecb37916931fbab451d6f25a46ef7de5ae10104ee019f6',1,'nn::nex::DebugConstants']]],
+  ['applicationnotsupported',['ApplicationNotSupported',['../namespacenn_1_1nex_1_1_smart_device_voice_chat_error_code.html#a7c88fa4ee13d68926d998fc413ce5aa6ab21d488ada638491a1a338e1c4159154',1,'nn::nex::SmartDeviceVoiceChatErrorCode']]],
+  ['applicationversionisold',['ApplicationVersionIsOld',['../namespacenn_1_1nex_1_1_authentication_error_code.html#abef9c311ec141315a8792dfecf502a2da562b796381656589296034fd81d200f0',1,'nn::nex::AuthenticationErrorCode']]],
+  ['authentication',['Authentication',['../namespacenn_1_1nex_1_1q_result_facility.html#a6e037f7e3e12b7a9cfbb35c79edee12fa612d15672b52425b9866ba83ff612500',1,'nn::nex::qResultFacility']]],
+  ['auto_5fmatchmake_5foption_5fnone',['AUTO_MATCHMAKE_OPTION_NONE',['../namespacenn_1_1nex.html#a933b9518dd7459ab4c8b18f335c6a565ae629dcf7b8cea23cfb2fc006da63de37',1,'nn::nex']]],
+  ['auto_5fmatchmake_5foption_5funique_5fgathering_5fby_5fcodeword',['AUTO_MATCHMAKE_OPTION_UNIQUE_GATHERING_BY_CODEWORD',['../namespacenn_1_1nex.html#a933b9518dd7459ab4c8b18f335c6a565a68d475ba29c5e52243bb45971798829b',1,'nn::nex']]],
+  ['available',['Available',['../classnn_1_1nex_1_1_call_context.html#a433aaff77760936e25974908ed81db16a3fdc2e468eae9393255e805e44ca728a',1,'nn::nex::CallContext']]]
+];

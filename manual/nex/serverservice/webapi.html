@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>11. WebAPI — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<span class="target" id="webapi-top"></span><div class="section" id="webapi">
+<h1>11. WebAPI</h1>
+<p>Some of the server services in NEX can be used through WebAPI.</p>
+<p><strong>Contents</strong></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="webapi_common.html">11.1. Using WebAPI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="webapi_common.html#id1">11.1.1. Purpose of WebAPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_common.html#id2">11.1.2. Accessing WebAPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_common.html#url">11.1.3. Resource URL Path</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_common.html#id3">11.1.4. Request</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_common.html#id4">11.1.4.1. Request Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_common.html#id5">11.1.4.2. Parameters and Request Body</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_common.html#id7">11.1.5. Response</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_common.html#id8">11.1.5.1. Status Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_common.html#id9">11.1.5.2. Content</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_common.html#id10">11.1.6. Handling Special Request and Response Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_common.html#base64">11.1.6.1. Base64 Encoding</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_common.html#id11">11.1.7. Requests via WebAPI Gateway</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_common.html#id12">11.1.7.1. Sample Request via WebAPI Gateway</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="webapi_matchmake.html">11.2. Matchmaking</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="webapi_matchmake.html#id2">11.2.1. General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_matchmake.html#api">11.2.2. API for the Range Broadening Auto-Matchmaking Feature</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#id3">11.2.2.1. Getting Range Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-get-ranges">11.2.2.2. Getting All Range Settings and Auto-Matchmaking Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-get-range-error">11.2.2.3. Getting Out-of-Range Error Count</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#id6">11.2.2.4. Changing Range Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-delete-range">11.2.2.5. Resetting Auto-Matchmaking Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-delete-range-name">11.2.2.6. Resetting Range Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#id9">11.2.2.7. Getting Matchmaking Session Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#id10">11.2.2.8. Getting All Matchmaking Session Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-change-session-setting">11.2.2.9. Changing Matchmaking Session Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-score-based">11.2.3. API for Auto-Matchmaking by Scoring Feature</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-set-score-conversion-setting">11.2.3.1. Setting the Score Conversion Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-get-score-conversion-setting">11.2.3.2. Getting the Score Conversion Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-set-score-mapping-setting">11.2.3.3. Configuring the Score-Conversion Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-get-score-mapping-setting">11.2.3.4. Getting the Score-Conversion Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-scoresimurator">11.2.3.5. Score Simulator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-set-override-ip-addresses">11.2.3.6. Adding and Deleting Debug-Use IP Addresses for Principal IDs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-set-override-ip-addresses-all">11.2.3.7. Setting Debug-Use IP Addresses for Principal IDs All At the Same Time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-get-override-ip-addresses">11.2.3.8. Getting the Debug-Use IP Address for Each Principal ID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#id28">11.2.3.9. Setting Debug-Use IP Addresses for Principal IDs All At the Same Time</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_matchmake.html#id29">11.2.4. Matchmaking Referee</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#id30">11.2.4.1. Getting Matchmaking Referee Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#id31">11.2.4.2. Getting All Matchmaking Referee Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-change-referee-setting">11.2.4.3. Changing Matchmaking Referee Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-get-referee-stats">11.2.4.4. Getting Personal Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_matchmake.html#matchmake-webapi-reset-referee-stats">11.2.4.5. Resetting Personal Statistics</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="webapi_ranking2.html">11.3. Ranking2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="webapi_ranking2.html#id2">11.3.1. General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_ranking2.html#api">11.3.2. Settings API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id3">11.3.2.1. Getting Category Type Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id4">11.3.2.2. Changing Category Type Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id5">11.3.2.3. Initializing Category Type Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id6">11.3.2.4. Getting Category Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id7">11.3.2.5. Changing Category Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id8">11.3.2.6. Initializing Category Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id9">11.3.2.7. Getting Categories</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_ranking2.html#id10">11.3.3. Season Data API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id11">11.3.3.1. Getting Season Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#ranking2-webapi-season-change">11.3.3.2. Modifying Season Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#ranking2-webapi-season-forward">11.3.3.3. Force-Incrementing the Season Number</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#ranking2-webapi-season-init">11.3.3.4. Initializing Season Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_ranking2.html#id15">11.3.4. Ranking API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id16">11.3.4.1. Getting Rankings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id17">11.3.4.2. Getting Scores</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id18">11.3.4.3. Uploading Scores</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#ranking2-webapi-score-delete">11.3.4.4. Deleting Score Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_ranking2.html#id20">11.3.5. Common User Data API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id21">11.3.5.1. Getting Common User Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id22">11.3.5.2. Uploading Common User Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id23">11.3.5.3. Deleting Common User Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_ranking2.html#id24">11.3.6. Invalid Scores API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id25">11.3.6.1. Getting Invalid Scores</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id26">11.3.6.2. Uploading Invalid Scores</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id27">11.3.6.3. Deleting Invalid Scores</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_ranking2.html#ranking2-chart-data-set-settings-section">11.3.7. Ranking Chart Data Settings API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id29">11.3.7.1. Getting Ranking Chart Data Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#ranking2-chart-data-set-settings">11.3.7.2. Changing Ranking Chart Data Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id31">11.3.7.3. Batch Setting Ranking Chart Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id32">11.3.7.4. Deleting Ranking Chart Data Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_ranking2.html#ranking2-chart-data-api">11.3.8. Ranking Chart Data API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id34">11.3.8.1. Getting Ranking Chart Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id35">11.3.8.2. Forced Update of Ranking Chart Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#id36">11.3.8.3. Deleting Ranking Chart Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_ranking2.html#id37">11.3.9. Population API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_ranking2.html#ranking2-population">11.3.9.1. Data Population</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="webapi_datastore.html">11.4. DataStores</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="webapi_datastore.html#id2">11.4.1. General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_datastore.html#api">11.4.2. Standard API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_datastore.html#id3">11.4.2.1. Getting Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_datastore.html#webapi-datastore-metainfo-put">11.4.2.2. Changing Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_datastore.html#id5">11.4.2.3. Deleting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_datastore.html#webapi-datastore-metainfo-search">11.4.2.4. Searching for Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_datastore.html#id7">11.4.2.5. Uploading Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_datastore.html#url">11.4.2.6. Getting the URL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_datastore.html#id13">11.4.2.7. Getting Passwords</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_datastore.html#id14">11.4.2.8. Rating Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_datastore.html#id17">11.4.2.9. Persisting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_datastore.html#webapi-datastore-data-code">11.4.2.10 Converting Data Code Strings</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="webapi_subscriber.html">11.5. Subscriber</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="webapi_subscriber.html#id2">11.5.1. General Information</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="webapi_debug.html">11.6. Debug Assistance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="webapi_debug.html#id2">11.6.1. General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_debug.html#webapi-debug-error-simulation">11.6.2. Error Simulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_debug.html#webapi-debug-error-simulation-get">11.6.2.1. Getting Registered Error Simulation Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_debug.html#id">11.6.2.2. Getting Principal IDs With Registered Error Simulation Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_debug.html#webapi-debug-error-simulation-set">11.6.2.3. Registering Error Simulation Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_debug.html#id6">11.6.2.4. Deleting Error Simulation Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_debug.html#webapi-debug-error-simulation-log-get">11.6.2.5. Getting Error Simulation Execution Logs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_debug.html#id8">11.6.2.6. Getting Principal IDs With Saved Error Simulation Execution Logs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_debug.html#webapi-debug-result-code">11.6.2.7. Getting Result Information</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="webapi_utility.html">11.7. Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="webapi_utility.html#id2">11.7.1. General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webapi_utility.html#webapi-utility-application-setting">11.7.2. Managing Application Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapi_utility.html#webapi-utility-application-setting-get-index">11.7.2.1. Getting Setting Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_utility.html#webapi-utility-application-setting-get">11.7.2.2. Getting the Value for a Specified Setting Index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_utility.html#webapi-utility-application-setting-get-all">11.7.2.3. Getting All Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_utility.html#webapi-utility-application-setting-post">11.7.2.4. Adding a Setting Value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_utility.html#webapi-utility-application-setting-delete">11.7.2.5. Deleting the Value Set to a Setting Index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_utility.html#webapi-utility-application-setting-delete-all">11.7.2.6. Deleting All Setting Values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_utility.html#webapi-utility-application-setting-replace">11.7.2.7. Clearing and Resetting an Existing Value for the Specified Setting Index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapi_utility.html#webapi-utility-application-setting-all">11.7.2.8. Clearing and Resetting All Existing Setting Values</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+</body>
+</html>

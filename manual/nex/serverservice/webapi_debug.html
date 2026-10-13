@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>11.6. Debug Assistance — NX NEX 4.6.9 Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="webapi-debug-top">
+<span id="id1"></span><h1>11.6. WebAPI Debug Assistance</h1>
+<div class="section" id="id2">
+<h2>11.6.1. General Information</h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%"/>
+<col width="61%"/>
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Module name</td>
+<td>debug</td>
+</tr>
+<tr class="row-even"><td>API version</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="webapi-debug-error-simulation">
+<span id="id3"></span><h2>11.6.2. Error Simulation</h2>
+<p>The function names included in WebAPI parameters and responses for error simulation are the names as used in the game server, and these names differ from the function names called from the application. For more information about the correspondence with the function names as called from the application, see <a class="reference internal" href="debug.html#debug-api-table"><span class="std std-ref">9.5. Function Name Correspondence Tables</span></a>.</p>
+<p><a class="reference external" href="https://developer.nintendo.com/group/development/g1kr9vj6/tech-info/announcement?articleId=313079193"><strong>Note:</strong> Calling functions from the application has been deprecated.</a></p>
+<div class="section" id="webapi-debug-error-simulation-get">
+<span id="id4"></span><h3>11.6.2.1. Getting Registered Error Simulation Settings</h3>
+<p>This process gets the registered error simulation settings.</p>
+<p>When error simulation settings expire, they are deleted from the game server and are not included in the result of WebAPI.</p>
+<dl class="get">
+<dt id="get--nex-debug-v2-simulations-(principal_id)-(rmc_name)">
+<code class="descname">GET </code><code class="descname">/nex/debug/v2/simulations/</code><span class="sig-paren">(</span><em>principal_id</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em>rmc_name</em><span class="sig-paren">)</span></dt>
+<dd><p>This request gets the error simulation settings that have been registered for the specified principal ID and API function.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>principal_<wbr/>id</strong></td>
+<td>Principal ID. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>rmc_<wbr/>name</strong></td>
+<td>Server API function name. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/debug/v2/simulations/1001/DataStoreProtocol%3A%3ASearchObject</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%"/>
+<col width="8%"/>
+<col width="82%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>simulations</td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td>simulation</td>
+<td>simulations</td>
+<td>The error simulation settings.</td>
+</tr>
+<tr class="row-even"><td>rmc_<wbr/>name</td>
+<td>simulation</td>
+<td>Server API function name.</td>
+</tr>
+<tr class="row-odd"><td>count</td>
+<td>simulation</td>
+<td>The number of remaining times to apply the error simulation settings.</td>
+</tr>
+<tr class="row-even"><td>exec_<wbr/>order</td>
+<td>simulation</td>
+<td>The order in which to apply the error simulation settings. If more than one set of error simulation settings have been registered for the same API function, they are applied in order from the smallest.</td>
+</tr>
+<tr class="row-odd"><td>return_<wbr/>code</td>
+<td>simulation</td>
+<td>Return code.</td>
+</tr>
+<tr class="row-even"><td>facility</td>
+<td>simulation</td>
+<td>The facility.</td>
+</tr>
+<tr class="row-odd"><td>error_<wbr/>code</td>
+<td>simulation</td>
+<td>The name of the error code.</td>
+</tr>
+<tr class="row-even"><td>network_<wbr/>error_<wbr/>code</td>
+<td>simulation</td>
+<td>Network error code.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;debug&gt;</span>
+    <span class="nt">&lt;simulations</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;simulation&gt;</span>
+        <span class="nt">&lt;rmc_name&gt;</span>DataStoreProtocol::SearchObject<span class="nt">&lt;/rmc_name&gt;</span>
+        <span class="nt">&lt;count&gt;</span>1<span class="nt">&lt;/count&gt;</span>
+        <span class="nt">&lt;exec_order&gt;</span>0<span class="nt">&lt;/exec_order&gt;</span>
+        <span class="nt">&lt;return_code&gt;</span>2154364932<span class="nt">&lt;/return_code&gt;</span>
+        <span class="nt">&lt;facility&gt;</span>DataStore<span class="nt">&lt;/facility&gt;</span>
+        <span class="nt">&lt;error_code&gt;</span>NotFound<span class="nt">&lt;/error_code&gt;</span>
+        <span class="nt">&lt;network_error_code&gt;</span>1204<span class="nt">&lt;/network_error_code&gt;</span>
+      <span class="nt">&lt;/simulation&gt;</span>
+      <span class="nt">&lt;simulation&gt;</span>
+        <span class="nt">&lt;rmc_name&gt;</span>DataStoreProtocol::SearchObject<span class="nt">&lt;/rmc_name&gt;</span>
+        <span class="nt">&lt;count&gt;</span>2<span class="nt">&lt;/count&gt;</span>
+        <span class="nt">&lt;exec_order&gt;</span>1<span class="nt">&lt;/exec_order&gt;</span>
+        <span class="nt">&lt;return_code&gt;</span>2154364930<span class="nt">&lt;/return_code&gt;</span>
+        <span class="nt">&lt;facility&gt;</span>DataStore<span class="nt">&lt;/facility&gt;</span>
+        <span class="nt">&lt;error_code&gt;</span>InvalidArgument<span class="nt">&lt;/error_code&gt;</span>
+        <span class="nt">&lt;network_error_code&gt;</span>1202<span class="nt">&lt;/network_error_code&gt;</span>
+      <span class="nt">&lt;/simulation&gt;</span>
+    <span class="nt">&lt;/simulations&gt;</span>
+  <span class="nt">&lt;/debug&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-debug-v2-simulations-(principal_id)">
+<code class="descname">GET </code><code class="descname">/nex/debug/v2/simulations/</code><span class="sig-paren">(</span><em>principal_id</em><span class="sig-paren">)</span></dt>
+<dd><p>This request gets the settings for all error simulations that have been registered for the specified principal ID.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>principal_<wbr/>id</strong></td>
+<td>Principal ID. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/debug/v2/simulations/1001</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;debug&gt;</span>
+    <span class="nt">&lt;simulations</span> <span class="na">length=</span><span class="s">"3"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;simulation&gt;</span>
+        <span class="nt">&lt;rmc_name&gt;</span>DataStoreProtocol::SearchObject<span class="nt">&lt;/rmc_name&gt;</span>
+        <span class="nt">&lt;count&gt;</span>1<span class="nt">&lt;/count&gt;</span>
+        <span class="nt">&lt;exec_order&gt;</span>0<span class="nt">&lt;/exec_order&gt;</span>
+        <span class="nt">&lt;return_code&gt;</span>2154364932<span class="nt">&lt;/return_code&gt;</span>
+        <span class="nt">&lt;facility&gt;</span>DataStore<span class="nt">&lt;/facility&gt;</span>
+        <span class="nt">&lt;error_code&gt;</span>NotFound<span class="nt">&lt;/error_code&gt;</span>
+        <span class="nt">&lt;network_error_code&gt;</span>1204<span class="nt">&lt;/network_error_code&gt;</span>
+      <span class="nt">&lt;/simulation&gt;</span>
+      <span class="nt">&lt;simulation&gt;</span>
+        <span class="nt">&lt;rmc_name&gt;</span>DataStoreProtocol::SearchObject<span class="nt">&lt;/rmc_name&gt;</span>
+        <span class="nt">&lt;count&gt;</span>2<span class="nt">&lt;/count&gt;</span>
+        <span class="nt">&lt;exec_order&gt;</span>1<span class="nt">&lt;/exec_order&gt;</span>
+        <span class="nt">&lt;return_code&gt;</span>2154364930<span class="nt">&lt;/return_code&gt;</span>
+        <span class="nt">&lt;facility&gt;</span>DataStore<span class="nt">&lt;/facility&gt;</span>
+        <span class="nt">&lt;error_code&gt;</span>InvalidArgument<span class="nt">&lt;/error_code&gt;</span>
+        <span class="nt">&lt;network_error_code&gt;</span>1202<span class="nt">&lt;/network_error_code&gt;</span>
+      <span class="nt">&lt;/simulation&gt;</span>
+      <span class="nt">&lt;simulation&gt;</span>
+        <span class="nt">&lt;rmc_name&gt;</span>MatchmakeExtensionProtocol::BrowseMatchmakeSession<span class="nt">&lt;/rmc_name&gt;</span>
+        <span class="nt">&lt;count&gt;</span>1<span class="nt">&lt;/count&gt;</span>
+        <span class="nt">&lt;exec_order&gt;</span>0<span class="nt">&lt;/exec_order&gt;</span>
+        <span class="nt">&lt;return_code&gt;</span>2147549194<span class="nt">&lt;/return_code&gt;</span>
+        <span class="nt">&lt;facility&gt;</span>Core<span class="nt">&lt;/facility&gt;</span>
+        <span class="nt">&lt;error_code&gt;</span>InvalidArgument<span class="nt">&lt;/error_code&gt;</span>
+        <span class="nt">&lt;network_error_code&gt;</span>111<span class="nt">&lt;/network_error_code&gt;</span>
+      <span class="nt">&lt;/simulation&gt;</span>
+    <span class="nt">&lt;/simulations&gt;</span>
+  <span class="nt">&lt;/debug&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id">
+<h3>11.6.2.2. Getting Principal IDs With Registered Error Simulation Settings</h3>
+<p>This process gets the principal IDs for which error simulation settings have been registered.</p>
+<dl class="get">
+<dt id="get--nex-debug-v2-simulation_pids">
+<code class="descname">GET </code><code class="descname">/nex/debug/v2/simulation_pids</code></dt>
+<dd><p>This request gets all principal IDs for which error simulation settings have been registered.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/debug/v2/simulation_pids</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="38%"/>
+<col width="26%"/>
+<col width="36%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>principal_<wbr/>ids</td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td>principal_<wbr/>id</td>
+<td>principal_<wbr/>ids</td>
+<td>The principal ID.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;debug&gt;</span>
+    <span class="nt">&lt;principal_ids</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;principal_id&gt;</span>1001<span class="nt">&lt;/principal_id&gt;</span>
+      <span class="nt">&lt;principal_id&gt;</span>1002<span class="nt">&lt;/principal_id&gt;</span>
+    <span class="nt">&lt;/principal_ids&gt;</span>
+  <span class="nt">&lt;/debug&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="webapi-debug-error-simulation-set">
+<span id="id5"></span><h3>11.6.2.3. Registering Error Simulation Settings</h3>
+<p>This process registers error simulation settings.</p>
+<dl class="put">
+<dt id="put--nex-debug-v2-simulations">
+<code class="descname">PUT </code><code class="descname">/nex/debug/v2/simulations</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-debug-v2-simulations-put">
+<code class="descname">POST </code><code class="descname">/nex/debug/v2/simulations/put</code></dt>
+<dd><p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%"/>
+<col width="7%"/>
+<col width="76%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>change</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>principal_<wbr/>id</strong></td>
+<td>change</td>
+<td>The principal ID. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>rmc_<wbr/>name</strong></td>
+<td>change</td>
+<td>Server API function name. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>timeout</td>
+<td>change</td>
+<td>The validity period (in seconds) of the error simulation settings. The default value is one hour.</td>
+</tr>
+<tr class="row-even"><td>param</td>
+<td>change</td>
+<td>The parent element for the content of the simulation settings to register. More than one can be specified. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>return_<wbr/>code</td>
+<td>param</td>
+<td>Return code.</td>
+</tr>
+<tr class="row-even"><td>facility</td>
+<td>param</td>
+<td>The facility. If <code>facility</code> is specified, you must specify either <code>success_<wbr/>code </code>or <code> error_<wbr/>code</code>.</td>
+</tr>
+<tr class="row-odd"><td>success_<wbr/>code</td>
+<td>param</td>
+<td>The name for the success code. (Example: "Success")</td>
+</tr>
+<tr class="row-even"><td>error_<wbr/>code</td>
+<td>param</td>
+<td>The name for the error code. (Example: "InvalidArgument")</td>
+</tr>
+<tr class="row-odd"><td>network_<wbr/>error_<wbr/>code</td>
+<td>param</td>
+<td>Network error code.</td>
+</tr>
+<tr class="row-even"><td><strong>count</strong></td>
+<td>param</td>
+<td>The number of times to apply the error simulation settings. Configured in the child element. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>By specifying more than one <code>param</code> value, you can change the error that is returned to the client depending on how many times the API function has been called.</p>
+<p>You can specify any one of <code>return_code</code>, <code>facility</code>, and <code>network_error_code</code>. For the available information that can be obtained, see <a class="reference internal" href="#webapi-debug-result-code"><span class="std std-ref">11.6.2.7. Getting Result Information</span></a>.</p>
+<p>If neither <code>return_code</code>, <code>facility</code>, nor <code>network_error_code</code> has been specified, the API executes normally. Say you want the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#add817538c1616d7104e559252d7dad26">DataStoreClient::SearchObject</a>()</code> function to return the error <code>QERROR(DataStore, InvalidArgument)</code> the first time it is called, to execute normally the second time, and to return the error <code>QERROR(DataStore, Unknown)</code> the third time. To realize this sequence where normal execution is sandwiched between errors, do not specify any error for that second call when you register the error simulation settings.</p>
+<p><strong>Request Example:</strong></p>
+<p>In the following example settings, errors are returned as registered in the error simulation settings by the system with the principal ID 1001 when it calls the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_data_store_logic_server_client.html#add817538c1616d7104e559252d7dad26">DataStoreClient::SearchObject</a>()</code> function (the name of the function within the library is <code>DataStoreProtocol::SearchObject() )</code>.</p>
+<ul class="simple">
+<li>1st Call: Returns an error with a return code of <code>2154364932</code> (corresponding to <code>QERROR(DataStore, NotFound)</code>).</li>
+<li>2nd Call: Returns the error <code>QERROR(DataStore, Unknown)</code>.</li>
+<li>3rd Call: Returns an error with a network error code of <code>006-1201</code> (corresponding to <code>QERROR(DataStore, Unknown)</code>).</li>
+<li>4th Call: Returns an error with a network error code of <code>006-1202</code> (corresponding to <code>QERROR(DataStore, InvalidArgument)</code>).</li>
+</ul>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/debug/v2/simulations/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;principal_id&gt;1001&lt;/principal_id&gt;
+  &lt;rmc_name&gt;DataStoreProtocol::SearchObject&lt;/rmc_name&gt;
+  &lt;param&gt;
+    &lt;count&gt;1&lt;/count&gt;
+    &lt;return_code&gt;2154364932&lt;/return_code&gt;
+  &lt;/param&gt;
+  &lt;param&gt;
+    &lt;count&gt;1&lt;/count&gt;
+    &lt;facility&gt;DataStore&lt;/facility&gt;
+    &lt;error_code&gt;Unknown&lt;/error_code&gt;
+  &lt;/param&gt;
+  &lt;param&gt;
+    &lt;count&gt;1&lt;/count&gt;
+    &lt;network_error_code&gt;006-1201&lt;/network_error_code&gt;
+  &lt;/param&gt;
+  &lt;param&gt;
+    &lt;count&gt;1&lt;/count&gt;
+    &lt;network_error_code&gt;61202&lt;/network_error_code&gt;
+  &lt;/param&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;debug&gt;</span>
+    <span class="nt">&lt;simulations&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"4"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/simulations&gt;</span>
+  <span class="nt">&lt;/debug&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><var>length</var> is the number of error simulation settings that have been registered.</p>
+</dd></dl>
+</div>
+<div class="section" id="id6">
+<h3>11.6.2.4. Deleting Error Simulation Settings</h3>
+<p>This process deletes the registered error simulation settings.</p>
+<dl class="post">
+<dt id="post--nex-debug-v2-simulations-delete">
+<code class="descname">POST </code><code class="descname">/nex/debug/v2/simulations/delete</code></dt>
+<dd><p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%"/>
+<col width="8%"/>
+<col width="72%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>delete</strong></td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>principal_<wbr/>id</strong></td>
+<td>delete</td>
+<td>The principal ID. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td>rmc_<wbr/>name</td>
+<td>delete</td>
+<td>Server API function name.</td>
+</tr>
+</tbody>
+</table>
+<p>If both a principal ID and an API function name have been specified, only the simulation settings registered to that ID and that name are deleted.</p>
+<p>If only a principal ID has been specified, all simulation settings registered to that ID are deleted.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/nex/debug/v2/simulations/delete</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;delete&gt;
+  &lt;principal_id&gt;1001&lt;/principal_id&gt;
+  &lt;rmc_name&gt;DataStoreProtocol::SearchObject&lt;/rmc_name&gt;
+&lt;/delete&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="webapi-debug-error-simulation-log-get">
+<span id="id7"></span><h3>11.6.2.5. Getting Error Simulation Execution Logs</h3>
+<p>This process gets the logs of executions of the error simulation settings.</p>
+<p>When an execution log has expired, it is deleted from the game server and is not included in the result of WebAPI.</p>
+<dl class="get">
+<dt id="get--nex-debug-v2-simulation_logs-(principal_id)">
+<code class="descname">GET </code><code class="descname">/nex/debug/v2/simulation_logs/</code><span class="sig-paren">(</span><em>principal_id</em><span class="sig-paren">)</span></dt>
+<dd><p>This request gets the execution logs for the error simulation settings applied to the specified principal ID.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>principal_<wbr/>id</strong></td>
+<td>Principal ID. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/debug/v2/simulation_logs/1001</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%"/>
+<col width="22%"/>
+<col width="53%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>simulation_<wbr/>logs</td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td>simulation_<wbr/>log</td>
+<td>simulation_<wbr/>logs</td>
+<td>The execution logs of the error simulation settings.</td>
+</tr>
+<tr class="row-even"><td>rmc_<wbr/>name</td>
+<td>simulation_<wbr/>log</td>
+<td>Server API function name.</td>
+</tr>
+<tr class="row-odd"><td>return_<wbr/>code</td>
+<td>simulation_<wbr/>log</td>
+<td>The return code returned to the client.</td>
+</tr>
+<tr class="row-even"><td>datetime</td>
+<td>simulation_<wbr/>log</td>
+<td>The date and time when the error simulation settings were applied.</td>
+</tr>
+<tr class="row-odd"><td>facility</td>
+<td>simulation_<wbr/>log</td>
+<td>The facility.</td>
+</tr>
+<tr class="row-even"><td>error_<wbr/>code</td>
+<td>simulation_<wbr/>log</td>
+<td>The name of the error code.</td>
+</tr>
+<tr class="row-odd"><td>network_<wbr/>error_<wbr/>code</td>
+<td>simulation_<wbr/>log</td>
+<td>Network error code.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+ <span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+ <span class="nt">&lt;nex&gt;</span>
+   <span class="nt">&lt;debug&gt;</span>
+     <span class="nt">&lt;simulation_logs</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+       <span class="nt">&lt;simulation_log&gt;</span>
+         <span class="nt">&lt;rmc_name&gt;</span>MatchmakeExtensionProtocol::BrowseMatchmakeSession<span class="nt">&lt;/rmc_name&gt;</span>
+         <span class="nt">&lt;return_code&gt;</span>2147549194<span class="nt">&lt;/return_code&gt;</span>
+         <span class="nt">&lt;datetime&gt;</span>2015-01-09T12:24:03Z<span class="nt">&lt;/datetime&gt;</span>
+         <span class="nt">&lt;facility&gt;</span>Core<span class="nt">&lt;/facility&gt;</span>
+         <span class="nt">&lt;error_code&gt;</span>InvalidArgument<span class="nt">&lt;/error_code&gt;</span>
+         <span class="nt">&lt;network_error_code&gt;</span>1202<span class="nt">&lt;/network_error_code&gt;</span>
+       <span class="nt">&lt;/simulation_log&gt;</span>
+       <span class="nt">&lt;simulation_log&gt;</span>
+         <span class="nt">&lt;rmc_name&gt;</span>DataStoreProtocol::SearchObject<span class="nt">&lt;/rmc_name&gt;</span>
+         <span class="nt">&lt;return_code&gt;</span>2154364932<span class="nt">&lt;/return_code&gt;</span>
+         <span class="nt">&lt;datetime&gt;</span>2015-01-09T12:24:03Z<span class="nt">&lt;/datetime&gt;</span>
+         <span class="nt">&lt;facility&gt;</span>DataStore<span class="nt">&lt;/facility&gt;</span>
+         <span class="nt">&lt;error_code&gt;</span>NotFound<span class="nt">&lt;/error_code&gt;</span>
+         <span class="nt">&lt;network_error_code&gt;</span>1204<span class="nt">&lt;/network_error_code&gt;</span>
+       <span class="nt">&lt;/simulation_log&gt;</span>
+     <span class="nt">&lt;/simulation_logs&gt;</span>
+   <span class="nt">&lt;/debug&gt;</span>
+ <span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id8">
+<h3>11.6.2.6. Getting Principal IDs With Saved Error Simulation Execution Logs</h3>
+<p>This process gets the principal IDs for which error simulation execution logs have been saved.</p>
+<dl class="get">
+<dt id="get--nex-debug-v2-simulation_log_pids">
+<code class="descname">GET </code><code class="descname">/nex/debug/v2/simulation_log_pids</code></dt>
+<dd><p>This request gets all principal IDs for which error simulation execution logs have been saved.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/debug/v2/simulation_log_pids</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="38%"/>
+<col width="26%"/>
+<col width="36%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>principal_<wbr/>ids</td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td>principal_<wbr/>id</td>
+<td>principal_<wbr/>ids</td>
+<td>The principal ID.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;debug&gt;</span>
+    <span class="nt">&lt;principal_ids</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;principal_id&gt;</span>1001<span class="nt">&lt;/principal_id&gt;</span>
+      <span class="nt">&lt;principal_id&gt;</span>1002<span class="nt">&lt;/principal_id&gt;</span>
+    <span class="nt">&lt;/principal_ids&gt;</span>
+  <span class="nt">&lt;/debug&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="webapi-debug-result-code">
+<span id="id9"></span><h3>11.6.2.7. Getting Result Information</h3>
+<p>This process gets information about the result returned by the NEX API. This process includes the following result information.</p>
+<ul class="simple">
+<li>The facility</li>
+<li>Success code name and error code name</li>
+<li>Return code</li>
+<li>The last four digits of the network error code</li>
+</ul>
+<p>The following errors are not included in the result of WebAPI.</p>
+<ul class="simple">
+<li>Errors returned by <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_system_error.html">SystemError</a></code></li>
+</ul>
+<dl class="get">
+<dt id="get--nex-debug-v2-result_codes">
+<code class="descname">GET </code><code class="descname">/nex/debug/v2/result_codes</code></dt>
+<dd><p>This process gets information about the result returned by the NEX API.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/debug/v2/result_codes</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%"/>
+<col width="27%"/>
+<col width="42%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>result_<wbr/>codes</td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td>result_<wbr/>code</td>
+<td>result_<wbr/>codes</td>
+<td>Information about the result.</td>
+</tr>
+<tr class="row-even"><td>network_<wbr/>error_<wbr/>code</td>
+<td>result_<wbr/>code</td>
+<td>Network error code.</td>
+</tr>
+<tr class="row-odd"><td>return_<wbr/>code</td>
+<td>result_<wbr/>code</td>
+<td>Return code.</td>
+</tr>
+<tr class="row-even"><td>facility</td>
+<td>result_<wbr/>code</td>
+<td>The facility.</td>
+</tr>
+<tr class="row-odd"><td>success_<wbr/>code</td>
+<td>result_<wbr/>code</td>
+<td>The name of the success code.</td>
+</tr>
+<tr class="row-even"><td>error_<wbr/>code</td>
+<td>result_<wbr/>code</td>
+<td>The name of the error code.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;debug&gt;</span>
+    <span class="nt">&lt;result_codes</span> <span class="na">length=</span><span class="s">"203"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;result_code&gt;</span>
+        <span class="nt">&lt;network_error_code&gt;</span>801<span class="nt">&lt;/network_error_code&gt;</span>
+        <span class="nt">&lt;error_code&gt;</span>NASAuthenticateError<span class="nt">&lt;/error_code&gt;</span>
+        <span class="nt">&lt;return_code&gt;</span>2154299393<span class="nt">&lt;/return_code&gt;</span>
+        <span class="nt">&lt;facility&gt;</span>Authentication<span class="nt">&lt;/facility&gt;</span>
+      <span class="nt">&lt;/result_code&gt;</span>
+      <span class="nt">&lt;result_code&gt;</span>
+        <span class="nt">&lt;network_error_code&gt;</span>802<span class="nt">&lt;/network_error_code&gt;</span>
+        <span class="nt">&lt;error_code&gt;</span>TokenParseError<span class="nt">&lt;/error_code&gt;</span>
+        <span class="nt">&lt;return_code&gt;</span>2154299394<span class="nt">&lt;/return_code&gt;</span>
+        <span class="nt">&lt;facility&gt;</span>Authentication<span class="nt">&lt;/facility&gt;</span>
+      <span class="nt">&lt;/result_code&gt;</span>
+
+      (Omitted because there are so many.)
+
+    <span class="nt">&lt;/result_codes&gt;</span>
+  <span class="nt">&lt;/debug&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

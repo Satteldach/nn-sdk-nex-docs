@@ -1,0 +1,2931 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../template/js/common/manualLib.js"></script>
+<script type="text/javascript" src="../../tocData.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+
+<title>11.2. Matchmaking — NX NEX Documentation</title>
+</head>
+
+<body data-reassemble="autoindex=yes,forcenolabel=yes">
+
+<div class="body" role="main">
+<div class="section" id="webapi-matchmake-top">
+<span id="id1"></span><h1>11.2. Matchmaking</h1>
+<div class="section" id="id2">
+<h2>11.2.1. General Information</h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%"/>
+<col width="61%"/>
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Module name</td>
+<td>matchmake</td>
+</tr>
+<tr class="row-even"><td>API version</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="api">
+<span id="matchmake-webapi-broaden-range"></span><h2>11.2.2. API for the Range Broadening Auto-Matchmaking Feature</h2>
+<p>These functions are used when using the auto-matchmaking feature with range broadening. For more information about this feature, see the descriptions of specifying <code>MATCHMAKE_SELECTION_METHOD_BROADEN_RANGE</code> and <code>MATCHMAKE_SELECTION_METHOD_BROADEN_RANGE_WITH_PROGRESS_SCORE</code> in <a class="reference internal" href="matchmake.html#matchmake-update-selectionmethod"><span class="std std-ref">4.8.1. Selecting the Matchmaking Session</span></a>.</p>
+<div class="section" id="id3">
+<h3>11.2.2.1. Getting Range Settings</h3>
+<p>This process gets the range settings.</p>
+<dl class="get">
+<dt id="get--nex-matchmake-v2-range-(name)">
+<code class="descname">GET </code><code class="descname">/nex/matchmake/v2/range/</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span></dt>
+<dd><p>Gets the range settings specified under <tt><var>name</var></tt>.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>name</strong></td>
+<td>Specifies the range settings to get. For more information, see the following table. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>name</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%"/>
+<col width="73%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>threshold</td>
+<td>Specifies the range threshold.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/matchmake/v2/range/threshold</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;ranges</span> <span class="na">length=</span><span class="s">"13"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>0<span class="nt">&lt;/threshold&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1100<span class="nt">&lt;/threshold&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1240<span class="nt">&lt;/threshold&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1400<span class="nt">&lt;/threshold&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1520<span class="nt">&lt;/threshold&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1620<span class="nt">&lt;/threshold&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1720<span class="nt">&lt;/threshold&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1815<span class="nt">&lt;/threshold&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1925<span class="nt">&lt;/threshold&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>2040<span class="nt">&lt;/threshold&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>2180<span class="nt">&lt;/threshold&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>2300<span class="nt">&lt;/threshold&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>10000<span class="nt">&lt;/threshold&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+    <span class="nt">&lt;/ranges&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="matchmake-webapi-get-ranges">
+<span id="id4"></span><h3>11.2.2.2. Getting All Range Settings and Auto-Matchmaking Results</h3>
+<p>This process gets all range settings and auto-matchmaking results.</p>
+<dl class="get">
+<dt id="get--nex-matchmake-v2-ranges">
+<code class="descname">GET </code><code class="descname">/nex/matchmake/v2/ranges</code></dt>
+<dd><p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/matchmake/v2/ranges</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%"/>
+<col width="4%"/>
+<col width="92%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>ranges</td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td>range</td>
+<td>ranges</td>
+<td>Container for range settings and auto-matchmaking results, which are child elements.</td>
+</tr>
+<tr class="row-even"><td>threshold</td>
+<td>range</td>
+<td>Specifies the threshold. The range is defined as the threshold value of the previous range plus one, up to this value. In the preceding response example, if this value is 1520, the corresponding range would be 1401 to 1520. However, you do not add one to the smallest threshold value. In the preceding response example, if this value is 1100, the corresponding range would be 0 to 1100, not 1 to 1100. When this value is set to the smallest threshold, there are no applicable ranges and the results 1 through 3 are always <code>0</code>.</td>
+</tr>
+<tr class="row-odd"><td>result1</td>
+<td>range</td>
+<td>The first result. The number of matchmaking sessions that match the search criteria and are within the same range.</td>
+</tr>
+<tr class="row-even"><td>result2</td>
+<td>range</td>
+<td>The second result. The number of matchmaking sessions that match the search criteria and were found within the broadened range but not within the same range.</td>
+</tr>
+<tr class="row-odd"><td>result3</td>
+<td>range</td>
+<td>The third result. The number of matchmaking sessions that match the search criteria but were not found in the same or broadened range.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;ranges</span> <span class="na">length=</span><span class="s">"13"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>0<span class="nt">&lt;/threshold&gt;</span>
+        <span class="nt">&lt;result1&gt;</span>0<span class="nt">&lt;/result1&gt;</span>
+        <span class="nt">&lt;result2&gt;</span>0<span class="nt">&lt;/result2&gt;</span>
+        <span class="nt">&lt;result3&gt;</span>0<span class="nt">&lt;/result3&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1100<span class="nt">&lt;/threshold&gt;</span>
+        <span class="nt">&lt;result1&gt;</span>0<span class="nt">&lt;/result1&gt;</span>
+        <span class="nt">&lt;result2&gt;</span>0<span class="nt">&lt;/result2&gt;</span>
+        <span class="nt">&lt;result3&gt;</span>0<span class="nt">&lt;/result3&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1240<span class="nt">&lt;/threshold&gt;</span>
+        <span class="nt">&lt;result1&gt;</span>0<span class="nt">&lt;/result1&gt;</span>
+        <span class="nt">&lt;result2&gt;</span>0<span class="nt">&lt;/result2&gt;</span>
+        <span class="nt">&lt;result3&gt;</span>0<span class="nt">&lt;/result3&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1400<span class="nt">&lt;/threshold&gt;</span>
+        <span class="nt">&lt;result1&gt;</span>0<span class="nt">&lt;/result1&gt;</span>
+        <span class="nt">&lt;result2&gt;</span>0<span class="nt">&lt;/result2&gt;</span>
+        <span class="nt">&lt;result3&gt;</span>0<span class="nt">&lt;/result3&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1520<span class="nt">&lt;/threshold&gt;</span>
+        <span class="nt">&lt;result1&gt;</span>0<span class="nt">&lt;/result1&gt;</span>
+        <span class="nt">&lt;result2&gt;</span>0<span class="nt">&lt;/result2&gt;</span>
+        <span class="nt">&lt;result3&gt;</span>0<span class="nt">&lt;/result3&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1620<span class="nt">&lt;/threshold&gt;</span>
+        <span class="nt">&lt;result1&gt;</span>0<span class="nt">&lt;/result1&gt;</span>
+        <span class="nt">&lt;result2&gt;</span>0<span class="nt">&lt;/result2&gt;</span>
+        <span class="nt">&lt;result3&gt;</span>0<span class="nt">&lt;/result3&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1720<span class="nt">&lt;/threshold&gt;</span>
+        <span class="nt">&lt;result1&gt;</span>0<span class="nt">&lt;/result1&gt;</span>
+        <span class="nt">&lt;result2&gt;</span>0<span class="nt">&lt;/result2&gt;</span>
+        <span class="nt">&lt;result3&gt;</span>0<span class="nt">&lt;/result3&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1815<span class="nt">&lt;/threshold&gt;</span>
+        <span class="nt">&lt;result1&gt;</span>0<span class="nt">&lt;/result1&gt;</span>
+        <span class="nt">&lt;result2&gt;</span>0<span class="nt">&lt;/result2&gt;</span>
+        <span class="nt">&lt;result3&gt;</span>0<span class="nt">&lt;/result3&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>1925<span class="nt">&lt;/threshold&gt;</span>
+        <span class="nt">&lt;result1&gt;</span>0<span class="nt">&lt;/result1&gt;</span>
+        <span class="nt">&lt;result2&gt;</span>0<span class="nt">&lt;/result2&gt;</span>
+        <span class="nt">&lt;result3&gt;</span>0<span class="nt">&lt;/result3&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>2040<span class="nt">&lt;/threshold&gt;</span>
+        <span class="nt">&lt;result1&gt;</span>0<span class="nt">&lt;/result1&gt;</span>
+        <span class="nt">&lt;result2&gt;</span>0<span class="nt">&lt;/result2&gt;</span>
+        <span class="nt">&lt;result3&gt;</span>0<span class="nt">&lt;/result3&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>2180<span class="nt">&lt;/threshold&gt;</span>
+        <span class="nt">&lt;result1&gt;</span>0<span class="nt">&lt;/result1&gt;</span>
+        <span class="nt">&lt;result2&gt;</span>0<span class="nt">&lt;/result2&gt;</span>
+        <span class="nt">&lt;result3&gt;</span>0<span class="nt">&lt;/result3&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>2300<span class="nt">&lt;/threshold&gt;</span>
+        <span class="nt">&lt;result1&gt;</span>0<span class="nt">&lt;/result1&gt;</span>
+        <span class="nt">&lt;result2&gt;</span>0<span class="nt">&lt;/result2&gt;</span>
+        <span class="nt">&lt;result3&gt;</span>0<span class="nt">&lt;/result3&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+      <span class="nt">&lt;range&gt;</span>
+        <span class="nt">&lt;threshold&gt;</span>10000<span class="nt">&lt;/threshold&gt;</span>
+        <span class="nt">&lt;result1&gt;</span>0<span class="nt">&lt;/result1&gt;</span>
+        <span class="nt">&lt;result2&gt;</span>0<span class="nt">&lt;/result2&gt;</span>
+        <span class="nt">&lt;result3&gt;</span>0<span class="nt">&lt;/result3&gt;</span>
+      <span class="nt">&lt;/range&gt;</span>
+    <span class="nt">&lt;/ranges&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="matchmake-webapi-get-range-error">
+<span id="id5"></span><h3>11.2.2.3. Getting Out-of-Range Error Count</h3>
+<p>This process gets the number of times an out-of-range value was sent to the server by a client. The value is the attribute value in the <code>MATCHMAKE_SESSION_BROADEN_RANGE_ATTRIBUTE_INDEX</code> index of the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_session.html">MatchmakeSession</a></code> object. When this occurs, <code>QERROR(RendezVous, OutOfRatingRange)</code> is returned to the client.</p>
+<dl class="get">
+<dt id="get--nex-matchmake-v2-range_error">
+<code class="descname">GET </code><code class="descname">/nex/matchmake/v2/range_error</code></dt>
+<dd><p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/matchmake/v2/range_error</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%"/>
+<col width="22%"/>
+<col width="58%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>range_error</td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td>under_min_threshold</td>
+<td>range_error</td>
+<td>Number of times a value smaller than the minimum threshold was sent.</td>
+</tr>
+<tr class="row-even"><td>over_max_threshold</td>
+<td>range_error</td>
+<td>Number of times a value larger than the maximum threshold was sent.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;range_error&gt;</span>
+      <span class="nt">&lt;under_min_threshold&gt;</span>0<span class="nt">&lt;/under_min_threshold&gt;</span>
+      <span class="nt">&lt;over_max_threshold&gt;</span>0<span class="nt">&lt;/over_max_threshold&gt;</span>
+    <span class="nt">&lt;/range_error&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id6">
+<h3>11.2.2.4. Changing Range Settings</h3>
+<p>This process changes the range settings. When these functions are used, the auto-matchmaking results from <a class="reference internal" href="#matchmake-webapi-get-ranges"><span class="std std-ref">11.2.2.2. Getting All Range Settings and Auto-Matchmaking Results</span></a> and the out-of-range count from <a class="reference internal" href="#matchmake-webapi-get-range-error"><span class="std std-ref">11.2.2.3. Getting the Out-of-Range Error Count</span></a> are reset to zero.</p>
+<dl class="put">
+<dt id="put--nex-matchmake-v2-range">
+<code class="descname">PUT </code><code class="descname">/nex/matchmake/v2/range</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-matchmake-v2-range-put">
+<code class="descname">POST </code><code class="descname">/nex/matchmake/v2/range/put</code></dt>
+<dd><p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%"/>
+<col width="17%"/>
+<col width="67%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>change</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>thresholds</strong></td>
+<td>change</td>
+<td>The container for threshold values, which are child elements. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>threshold</strong></td>
+<td>thresholds</td>
+<td>Specifies the threshold. Specify two or more elements with values of 0 or higher and no duplicates. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/matchmake/v2/range</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;thresholds&gt;
+    &lt;threshold&gt;0&lt;/threshold&gt;
+    &lt;threshold&gt;1500&lt;/threshold&gt;
+    &lt;threshold&gt;3000&lt;/threshold&gt;
+    &lt;threshold&gt;5000&lt;/threshold&gt;
+    &lt;threshold&gt;9000&lt;/threshold&gt;
+    &lt;threshold&gt;20000&lt;/threshold&gt;
+    &lt;threshold&gt;100000&lt;/threshold&gt;
+  &lt;/thresholds&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;ranges&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"7"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/ranges&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of changed threshold values.</p>
+</dd></dl>
+</div>
+<div class="section" id="matchmake-webapi-delete-range">
+<span id="id7"></span><h3>11.2.2.5. Resetting Auto-Matchmaking Results</h3>
+<p>This process resets the auto-matchmaking results. The auto-matchmaking results from <a class="reference internal" href="#matchmake-webapi-get-ranges"><span class="std std-ref">11.2.2.2. Getting All Range Settings and Auto-Matchmaking Results</span></a> and the out-of-range count from <a class="reference internal" href="#matchmake-webapi-get-range-error"><span class="std std-ref">11.2.2.3. Getting the Out-of-Range Error Count</span></a> are reset to zero.</p>
+<dl class="delete">
+<dt id="delete--nex-matchmake-v2-range">
+<code class="descname">DELETE </code><code class="descname">/nex/matchmake/v2/range</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-matchmake-v2-range-delete">
+<code class="descname">POST </code><code class="descname">/nex/matchmake/v2/range/delete</code></dt>
+<dd><p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/matchmake/v2/range</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;ranges&gt;</span>
+      <span class="nt">&lt;reset</span> <span class="na">length=</span><span class="s">"7"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/ranges&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of auto-matchmaking results that were reset.</p>
+</dd></dl>
+</div>
+<div class="section" id="matchmake-webapi-delete-range-name">
+<span id="id8"></span><h3>11.2.2.6. Resetting Range Settings</h3>
+<p>This process resets the range settings.</p>
+<dl class="delete">
+<dt id="delete--nex-matchmake-v2-range-(name)">
+<code class="descname">DELETE </code><code class="descname">/nex/matchmake/v2/range/</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-matchmake-v2-range-(name)-delete">
+<code class="descname">POST </code><code class="descname">/nex/matchmake/v2/range/</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><code class="descname">/delete</code></dt>
+<dd><p>Resets the range settings specified under <tt><var>name</var></tt>.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>name</strong></td>
+<td>Specifies the range settings to reset. For more information, see the following table. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>name</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%"/>
+<col width="94%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>results</td>
+<td>Auto-matchmaking result. Zero (0) after reset. The number of the out-of-range count from <a class="reference internal" href="#matchmake-webapi-get-range-error"><span class="std std-ref">11.2.2.3. Getting the Out-of Range Error Count</span></a> is also reset to zero. The functionality is the same as in <a class="reference internal" href="#matchmake-webapi-delete-range"><span class="std std-ref">11.2.2.5. Resetting the Auto-Matchmaking Result</span></a>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/matchmake/v2/range/results</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;ranges&gt;</span>
+      <span class="nt">&lt;reset</span> <span class="na">length=</span><span class="s">"7"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/ranges&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of range settings to reset.</p>
+</dd></dl>
+</div>
+<div class="section" id="id9">
+<h3>11.2.2.7. Getting Matchmaking Session Settings</h3>
+<p>This process gets the matchmaking session settings.</p>
+<dl class="get">
+<dt id="get--nex-matchmake-v2-session_setting-(name)">
+<code class="descname">GET </code><code class="descname">/nex/matchmake/v2/session_setting/</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span></dt>
+<dd><p>Gets the settings of one matchmaking session.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%"/>
+<col width="78%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>name</strong></td>
+<td>Specifies the matchmaking session settings to get. For more information, see the following table. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>name</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%"/>
+<col width="78%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>broaden_range_upper</td>
+<td>When broadening the range, the number of ranges to broaden upward.</td>
+</tr>
+<tr class="row-odd"><td>broaden_range_lower</td>
+<td>When broadening the range, the number of ranges to broaden downward.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/matchmake/v2/session_setting/broaden_range_upper</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;session_settings</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;session_setting&gt;</span>
+        <span class="nt">&lt;name&gt;</span>broaden_range_upper<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>2<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/session_setting&gt;</span>
+    <span class="nt">&lt;/session_settings&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-matchmake-v2-session_setting-">
+<code class="descname">GET </code><code class="descname">/nex/matchmake/v2/session_setting/</code></dt>
+<dd><p>Gets multiple matchmaking session settings.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%"/>
+<col width="82%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>names</strong></td>
+<td>Specifies the matchmaking session settings to get. You can specify multiple values, delimited by commas. See the previous table. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/matchmake/v2/session_setting?names=broaden_range_upper,broaden_range_lower</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;session_settings</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;session_setting&gt;</span>
+        <span class="nt">&lt;name&gt;</span>broaden_range_upper<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>2<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/session_setting&gt;</span>
+      <span class="nt">&lt;session_setting&gt;</span>
+        <span class="nt">&lt;name&gt;</span>broaden_range_lower<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>2<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/session_setting&gt;</span>
+    <span class="nt">&lt;/session_settings&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id10">
+<h3>11.2.2.8. Getting All Matchmaking Session Settings</h3>
+<p>This process gets all matchmaking session settings.</p>
+<dl class="get">
+<dt id="get--nex-matchmake-v2-session_settings">
+<code class="descname">GET </code><code class="descname">/nex/matchmake/v2/session_settings</code></dt>
+<dd><p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/matchmake/v2/session_settings</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;session_settings</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;session_setting&gt;</span>
+        <span class="nt">&lt;name&gt;</span>broaden_range_lower<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>2<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/session_setting&gt;</span>
+      <span class="nt">&lt;session_setting&gt;</span>
+        <span class="nt">&lt;name&gt;</span>broaden_range_upper<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>2<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/session_setting&gt;</span>
+    <span class="nt">&lt;/session_settings&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="matchmake-webapi-change-session-setting">
+<span id="id11"></span><h3>11.2.2.9. Changing Matchmaking Session Settings</h3>
+<p>This process changes the matchmaking session settings.</p>
+<dl class="put">
+<dt id="put--nex-matchmake-v2-session_setting">
+<code class="descname">PUT </code><code class="descname">/nex/matchmake/v2/session_setting</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-matchmake-v2-session_setting-put">
+<code class="descname">POST </code><code class="descname">/nex/matchmake/v2/session_setting/put</code></dt>
+<dd><p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%"/>
+<col width="21%"/>
+<col width="59%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>change</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>param</td>
+<td>change</td>
+<td>Specifies the data to change. More than one can be specified. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>name</strong></td>
+<td>param</td>
+<td>Specifies the matchmaking session settings. For more information, see the following table. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>value</strong></td>
+<td>param</td>
+<td>Value. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>name</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%"/>
+<col width="78%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>broaden_range_upper</td>
+<td>When broadening the range, the number of ranges to broaden upward.</td>
+</tr>
+<tr class="row-odd"><td>broaden_range_lower</td>
+<td>When broadening the range, the number of ranges to broaden downward.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/matchmake/v2/session_setting/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;param&gt;
+    &lt;name&gt;broaden_range_upper&lt;/name&gt;
+    &lt;value&gt;1&lt;/value&gt;
+  &lt;/param&gt;
+  &lt;param&gt;
+    &lt;name&gt;broaden_range_lower&lt;/name&gt;
+    &lt;value&gt;1&lt;/value&gt;
+  &lt;/param&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;session_settings&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"3"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/session_settings&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of changed matchmaking session settings.</p>
+</dd></dl>
+</div>
+</div>
+<div class="section" id="matchmake-webapi-score-based">
+<span id="id12"></span><h2>11.2.3. API for Auto-Matchmaking by Scoring Feature</h2>
+<p>These functions are used when using the auto-matchmaking feature with scoring. For more information about this feature, see the description of specifying <code>MATCHMAKE_SELECTION_METHOD_SCORE_BASED</code> in <a class="reference internal" href="matchmake.html#matchmake-update-selectionmethod"><span class="std std-ref">4.8.1. Selecting the Matchmaking Session</span></a>.</p>
+<div class="section" id="matchmake-webapi-set-score-conversion-setting">
+<span id="id13"></span><h3>11.2.3.1. Setting the Score Conversion Settings</h3>
+<p>This section describes how to configure score conversion settings and matching settings. The score conversion settings are determined from values for each <code><var>type</var></code> such as rating value difference and distance from the other player. You can configure multiple settings using <code>setting_index</code> and specify which settings to use from the client. Scores are specified corresponding to a value range set by specifying <code><var>begin</var></code> and <code><var>end</var></code>. For example, you could configure these settings to give a score of 100 if the rating values differ by 0 to 99, and a score of 50 if they differ by 100 to 199. If the value is not included in any of the configured ranges, the default score is used. The default score can be set by specifying –1 for both <code><var>begin</var></code> and <code><var>end</var></code>. If the default score is not set, zero is used for the default score. The sum of the scores calculated for each <code><var>type</var></code> is the total score. The matchmaking session with the highest total score is selected. By setting <code>SCORE_CONVERSION_TYPE_MINIMUM_MATCH_SCORE</code>, a matchmaking session is selected only if it exceeds a specified total score.</p>
+<p>Specify a value for <code>CANDIDATE_COUNT_FOR_CREATING_NEW_SESSION</code> to disable matching if at least the specified number of matchmaking sessions are not found. Intentionally disabling matching in this way makes it possible to wait for more matchmaking sessions to be started and then select a suitable session. Also, specifying a value for <code>CANDIDATE_COUNT_FOR_RANDOM_SELECTION</code> makes it possible to matchmake by sorting by score and then randomly sorting the top n results (where n is the specified value). Use these settings when you want to prevent matchmaking sessions in which high scores were achieved from repeatedly being selected.</p>
+<dl class="put">
+<dt id="put--nex-matchmake-v2-score_settings">
+<code class="descname">PUT </code><code class="descname">/nex/matchmake/v2/score_settings</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-matchmake-v2-score_settings-put">
+<code class="descname">POST </code><code class="descname">/nex/matchmake/v2/score_settings/put</code></dt>
+<dd><p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%"/>
+<col width="8%"/>
+<col width="82%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>score_settings</strong></td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>score_setting</strong></td>
+<td>score_settings</td>
+<td>Score setting. Multiple settings can be specified, up to a maximum of 400. However, a maximum of 64 settings can be specified for a particular <code><var>setting_index</var></code> and <code><var>type</var></code>. Specify <code>0</code> to make the setting empty.</td>
+</tr>
+<tr class="row-even"><td><strong>setting_index</strong></td>
+<td>score_setting</td>
+<td>Setting index. You can specify a value greater than or equal to <code>0</code> and less than or equal to <code>0xffffffff</code>. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>type</strong></td>
+<td>score_setting</td>
+<td>The type of parameters for score conversions. For more information, see the following table. You can specify a value from 1 to 9. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>begin</strong></td>
+<td>score_setting</td>
+<td>The lower bound of the range including this value. Specify <code>-1</code> when specifying a default score. You can specify a value from <code>0</code> to <code>0x7fffffff</code> or <code>-1</code>. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>end</strong></td>
+<td>score_setting</td>
+<td>The upper bound of the range excluding this value. Specify <code>-1</code> when specifying a default score. You can specify a value from <code>0</code> to <code>0x7fffffff</code> or <code>-1</code>. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td>score</td>
+<td>score_setting</td>
+<td>The score or setting value. You can specify a value from -10000 to 10000. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>type</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%"/>
+<col width="1%"/>
+<col width="76%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>SCORE_CONVERSION_TYPE_MINIMUM_MATCH_SCORE</strong></td>
+<td>1</td>
+<td>Minimum score for a match. Any score below this value will not match. Only the default score can be specified. If not specified, a value of 0 is used.</td>
+</tr>
+<tr class="row-odd"><td><strong>SCORE_CONVERSION_TYPE_RATING_VALUE_DIFF</strong></td>
+<td>2</td>
+<td>Conversion of a rating value difference to a score.</td>
+</tr>
+<tr class="row-even"><td><strong>SCORE_CONVERSION_TYPE_DISCONNECTION_RATE_DIFF</strong></td>
+<td>3</td>
+<td>Conversion of a disconnect rate percentage (%) difference to a score.</td>
+</tr>
+<tr class="row-odd"><td><strong>SCORE_CONVERSION_TYPE_VIOLATION_RATE_DIFF</strong></td>
+<td>4</td>
+<td>Conversion of a violation rate percentage (%) difference to a score.</td>
+</tr>
+<tr class="row-even"><td><strong>SCORE_CONVERSION_TYPE_DISTANCE</strong></td>
+<td>5</td>
+<td>Conversion of a distance (km) to a score. If the distance cannot be obtained using GeoIP, or <code>false</code> has been specified to the <code>MatchmakeParam::SetUseGeoIp()</code> function, the default score is used.</td>
+</tr>
+<tr class="row-odd"><td><strong>SCORE_CONVERSION_TYPE_MATCH_COUNTRY</strong></td>
+<td>6</td>
+<td>The score when the countries are the same. If the countries match, the score when the value is 1 is used. If they do not match, the score when the value is 0 is used.</td>
+</tr>
+<tr class="row-even"><td><strong>SCORE_CONVERSION_TYPE_MATCH_COUNTRY_WITHOUT_DISTANCE</strong></td>
+<td>7</td>
+<td>The score when there is no distance information, but the countries match. If the countries match, the score when the value is 1 is used. If they do not match, the score when the value is 0 is used.</td>
+</tr>
+<tr class="row-odd"><td><strong>SCORE_CONVERSION_TYPE_MATCHMAKE_SESSION_DURATION</strong></td>
+<td>8</td>
+<td>Conversion of the matchmaking session duration (in seconds) to a score. By increasing the score value as time elaspes, you can prevent the situation where matchmaking players cannot be found.</td>
+</tr>
+<tr class="row-even"><td><strong>SCORE_CONVERSION_TYPE_MATCHMAKE_SESSION_PROGRESS</strong></td>
+<td>9</td>
+<td>Conversion of the matchmaking session game progress to a score.</td>
+</tr>
+<tr class="row-odd"><td><strong>CANDIDATE_COUNT_FOR_CREATING_NEW_SESSION</strong></td>
+<td>101</td>
+<td>If the number of matchmaking session candidates found is less than <em>n</em> (where <em>n</em> is the specified value), treat it as if no matches were found. Here, only a default score can be specified. If not specified, a value of 1 is used.</td>
+</tr>
+<tr class="row-even"><td><strong>CANDIDATE_COUNT_FOR_RANDOM_SELECTION</strong></td>
+<td>102</td>
+<td>Randomly shuffle the first <em>n</em> matchmaking session candidates that were found (where <em>n</em> is the specified value). Here, only a default score can be specified. If not specified, a value of 1 is used.</td>
+</tr>
+</tbody>
+</table>
+<p>As with <code>SCORE_CONVERSION_TYPE_RATING_VALUE_DIFF</code>, <code>SCORE_CONVERSION_TYPE_DISCONNECTION_RATE_DIFF</code>, and <code>SCORE_CONVERSION_TYPE_VIOLATION_RATE_DIFF</code>, it converts the difference in value between the current and other user into a score. There are no particular restrictions on the range of values. Using this to compare the parameters other than disconnection rate and violation rate is not a problem. For distance calculation, the latitude and longitude at the city level are estimated from the IP addresses of the matchmaking session owner and the other player who searches the session, and the distance is calculated from those coordinates, taking the Internet path into consideration. The calculation does not use the path through the North or South Poles, and it is set to be somewhat difficult crossing the Eurasian continent. The reason for this is that communication actually passes through North America between Japan and Europe, and between Europe and Australia. As distances increase, so does RTT. In fact, RTT varies greatly for individual environments, but in typical cases, it is approximately 200 ms for 10,000 km, 300 ms for 20,000 km, and 400 ms for 30,000 km.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/matchmake/v2/score_settings</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;score_settings&gt;
+  &lt;score_setting&gt;
+    &lt;setting_index&gt;0&lt;/setting_index&gt;
+    &lt;type&gt;1&lt;/type&gt;
+    &lt;begin&gt;-1&lt;/begin&gt;
+    &lt;end&gt;-1&lt;/end&gt;
+    &lt;score&gt;100&lt;/score&gt;
+  &lt;/score_setting&gt;
+  &lt;score_setting&gt;
+    &lt;setting_index&gt;0&lt;/setting_index&gt;
+    &lt;type&gt;2&lt;/type&gt;
+    &lt;begin&gt;0&lt;/begin&gt;
+    &lt;end&gt;100&lt;/end&gt;
+    &lt;score&gt;100&lt;/score&gt;
+  &lt;/score_setting&gt;
+  &lt;score_setting&gt;
+    &lt;setting_index&gt;0&lt;/setting_index&gt;
+    &lt;type&gt;2&lt;/type&gt;
+    &lt;begin&gt;100&lt;/begin&gt;
+    &lt;end&gt;200&lt;/end&gt;
+    &lt;score&gt;50&lt;/score&gt;
+  &lt;/score_setting&gt;
+  &lt;score_setting&gt;
+    &lt;setting_index&gt;0&lt;/setting_index&gt;
+    &lt;type&gt;3&lt;/type&gt;
+    &lt;begin&gt;0&lt;/begin&gt;
+    &lt;end&gt;10&lt;/end&gt;
+    &lt;score&gt;100&lt;/score&gt;
+  &lt;/score_setting&gt;
+  &lt;score_setting&gt;
+    &lt;setting_index&gt;0&lt;/setting_index&gt;
+    &lt;type&gt;3&lt;/type&gt;
+    &lt;begin&gt;10&lt;/begin&gt;
+    &lt;end&gt;20&lt;/end&gt;
+    &lt;score&gt;50&lt;/score&gt;
+  &lt;/score_setting&gt;
+&lt;/score_settings&gt;
+</pre></div>
+</div>
+<p>In this example, the minimum score for a match is 100. It gets a score of 100 if the rating value difference is between 0 and 99, and a score of 50 if it is between 100 and 199. If the rating value difference is greater than that, the score is 0. Also, a score of 100 is assigned if the difference in the disconnection rate is between 0 and 9, and a score of 50 if it is between 10 and 19. If the disconnect rate difference is greater than that, the score is 0.</p>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;score_settings&gt;</span>
+      <span class="nt">&lt;set</span> <span class="na">length=</span><span class="s">"5"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/score_settings&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of <code><var>score_settings</var></code> set.</p>
+</dd></dl>
+<p><strong>Example settings when the maximum score allocated for distance and country set to 1000</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="41%"/>
+<col width="41%"/>
+<col width="18%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Distance's <code><var>begin</var></code></th>
+<th class="head">Distance's <code><var>end</var></code></th>
+<th class="head">score</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>1250</td>
+<td>750</td>
+</tr>
+<tr class="row-odd"><td>1250</td>
+<td>2500</td>
+<td>600</td>
+</tr>
+<tr class="row-even"><td>2500</td>
+<td>5000</td>
+<td>450</td>
+</tr>
+<tr class="row-odd"><td>5000</td>
+<td>10000</td>
+<td>300</td>
+</tr>
+<tr class="row-even"><td>10000</td>
+<td>20,000</td>
+<td>150</td>
+</tr>
+</tbody>
+</table>
+<p>The score is 250 if the countries match, and the score is 500 if the countries match with no distance information.</p>
+<p><strong>Typical distances between regions</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="41%"/>
+<col width="41%"/>
+<col width="18%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Region 1</th>
+<th class="head">Region 2</th>
+<th class="head">Distance (km)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Tokyo</td>
+<td>London</td>
+<td>25000</td>
+</tr>
+<tr class="row-odd"><td>Tokyo</td>
+<td>New York</td>
+<td>16000</td>
+</tr>
+<tr class="row-even"><td>Tokyo</td>
+<td>San Francisco</td>
+<td>11,000</td>
+</tr>
+<tr class="row-odd"><td>Tokyo</td>
+<td>Sydney</td>
+<td>8000</td>
+</tr>
+<tr class="row-even"><td>Tokyo</td>
+<td>Singapore</td>
+<td>5500</td>
+</tr>
+<tr class="row-odd"><td>Tokyo</td>
+<td>Taipei</td>
+<td>2500</td>
+</tr>
+<tr class="row-even"><td>London</td>
+<td>San Francisco</td>
+<td>14000</td>
+</tr>
+<tr class="row-odd"><td>London</td>
+<td>New York</td>
+<td>8500</td>
+</tr>
+<tr class="row-even"><td>London</td>
+<td>Moscow</td>
+<td>4500</td>
+</tr>
+<tr class="row-odd"><td>London</td>
+<td>Berlin</td>
+<td>1500</td>
+</tr>
+<tr class="row-even"><td>Sydney</td>
+<td>London</td>
+<td>25500</td>
+</tr>
+<tr class="row-odd"><td>Sydney</td>
+<td>New York</td>
+<td>17500</td>
+</tr>
+<tr class="row-even"><td>Sydney</td>
+<td>San Francisco</td>
+<td>13000</td>
+</tr>
+<tr class="row-odd"><td>Sydney</td>
+<td>Singapore</td>
+<td>6500</td>
+</tr>
+<tr class="row-even"><td>San Francisco</td>
+<td>New York</td>
+<td>5500</td>
+</tr>
+<tr class="row-odd"><td>San Francisco</td>
+<td>Vancouver</td>
+<td>2000</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="matchmake-webapi-ex-scorevalues">
+<span id="id14"></span><h4>11.2.3.1.1. Value Settings</h4>
+<p>Settings for auto-matchmaking by scoring may not always produce the intended behavior depending on the value set for the minimum match score (<code>SCORE_CONVERSION_TYPE_MINIMUM_MATCH_SCORE</code>). If you set a minimum match score that is easily exceeded by the overall score, no new matchmaking sessions will be created. Users will end up joining existing matchmaking sessions with vacancies, which cancels out the effect of using auto-matchmaking by scoring in the first place. You must configure the settings such that the match score is low for users who are geographically far apart and have different connection speeds and disconnection rates so that they are not matched together.</p>
+<div class="section" id="id15">
+<h5>11.2.3.1.1.1. Example 1: Distance Base</h5>
+<p>Prioritize the geographical distance between users. The following settings allow connections between Japan and the US but do not allow connections between Japan and Europe.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%"/>
+<col width="65%"/>
+<col width="6%"/>
+<col width="6%"/>
+<col width="6%"/>
+<col width="4%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">settingIndex</th>
+<th class="head">type</th>
+<th class="head">begin</th>
+<th class="head">end</th>
+<th class="head">score</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>1(SCORE_CONVERSION_TYPE_MINIMUM_MATCH_SCORE)</td>
+<td>-1</td>
+<td>-1</td>
+<td>50</td>
+<td>*1</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>5(SCORE_CONVERSION_TYPE_DISTANCE)</td>
+<td>-1</td>
+<td>-1</td>
+<td>0</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>5</td>
+<td>0</td>
+<td>1250</td>
+<td>90</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>5</td>
+<td>1250</td>
+<td>2500</td>
+<td>80</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>5</td>
+<td>2500</td>
+<td>5000</td>
+<td>70</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>5</td>
+<td>5000</td>
+<td>10000</td>
+<td>60</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>5</td>
+<td>10000</td>
+<td>20,000</td>
+<td>50</td>
+<td>*2</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>6(SCORE_CONVERSION_TYPE_MATCH_COUNTRY)</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>6</td>
+<td>1</td>
+<td>2</td>
+<td>10</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>7(SCORE_CONVERSION_TYPE_MATCH_COUNTRY_WITHOUT_DISTANCE)</td>
+<td>0</td>
+<td>1</td>
+<td>50</td>
+<td>*3</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>7</td>
+<td>1</td>
+<td>2</td>
+<td>60</td>
+<td>*4</td>
+</tr>
+</tbody>
+</table>
+<p>Note the score for <code>SCORE_CONVERSION_TYPE_MATCH_COUNTRY_WITHOUT_DISTANCE</code>, where the distance cannot be calculated and the countries do not match (the row marked with *2). If this value was set to 0, users would not be matched unless they were in the same country. This value must be increased so that it matches the minimum match score threshold (row *1). To disallow connections between Japan and the US, delete row *2, change the scores in rows *1 and *3 to 60, and change the score in row *4 to 70.</p>
+</div>
+<div class="section" id="id16">
+<h5>11.2.3.1.1.2. Example 2: Distance + Difference in Ratings Base</h5>
+<p>This example adds the difference in ratings to the geographical distance-based scoring method used in the previous example. There are 10 rating levels (0 to 9), and users with a difference of more than 3 between ratings are not matched.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="67%"/>
+<col width="6%"/>
+<col width="6%"/>
+<col width="6%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">settingIndex</th>
+<th class="head">type</th>
+<th class="head">begin</th>
+<th class="head">end</th>
+<th class="head">score</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>1(SCORE_CONVERSION_TYPE_MINIMUM_MATCH_SCORE)</td>
+<td>-1</td>
+<td>-1</td>
+<td>150</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>5(SCORE_CONVERSION_TYPE_DISTANCE)</td>
+<td>-1</td>
+<td>-1</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>5</td>
+<td>0</td>
+<td>1250</td>
+<td>90</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>5</td>
+<td>1250</td>
+<td>2500</td>
+<td>80</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>5</td>
+<td>2500</td>
+<td>5000</td>
+<td>70</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>5</td>
+<td>5000</td>
+<td>10000</td>
+<td>60</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>5</td>
+<td>10000</td>
+<td>20,000</td>
+<td>50</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>6(SCORE_CONVERSION_TYPE_MATCH_COUNTRY)</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>6</td>
+<td>1</td>
+<td>2</td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>7(SCORE_CONVERSION_TYPE_MATCH_COUNTRY_WITHOUT_DISTANCE)</td>
+<td>0</td>
+<td>1</td>
+<td>50</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>7</td>
+<td>1</td>
+<td>2</td>
+<td>60</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>2(SCORE_CONVERSION_TYPE_RATING_VALUE_DIFF)</td>
+<td>0</td>
+<td>1</td>
+<td>120</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>2</td>
+<td>1</td>
+<td>2</td>
+<td>110</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+<td>100</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>2</td>
+<td>3</td>
+<td>10</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>The score for matching by differences in ratings is set to a value of 100 or more, and the minimum threshold score for matching is set to 150. Users are not matched if the ratings score is 0, regardless of their geographical distance from each other. Also, users separated by a distance of 20,000 km or more are not matched because the threshold is not crossed even when the rating value difference is 0.</p>
+</div>
+<div class="section" id="id17">
+<h5>11.2.3.1.1.3. Example 3: Distance + Difference in Ratings + Difference in Disconnection Rate</h5>
+<p>This example adds the difference disconnection rate to the geographical distance plus the difference in the ratings-based scoring method. Users are not matched if their disconnection rates differ by more than 30%.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%"/>
+<col width="67%"/>
+<col width="6%"/>
+<col width="6%"/>
+<col width="6%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">settingIndex</th>
+<th class="head">type</th>
+<th class="head">begin</th>
+<th class="head">end</th>
+<th class="head">score</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>1(SCORE_CONVERSION_TYPE_MINIMUM_MATCH_SCORE)</td>
+<td>-1</td>
+<td>-1</td>
+<td>250</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>5(SCORE_CONVERSION_TYPE_DISTANCE)</td>
+<td>-1</td>
+<td>-1</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>5</td>
+<td>0</td>
+<td>1250</td>
+<td>90</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>5</td>
+<td>1250</td>
+<td>2500</td>
+<td>80</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>5</td>
+<td>2500</td>
+<td>5000</td>
+<td>70</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>5</td>
+<td>5000</td>
+<td>10000</td>
+<td>60</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>5</td>
+<td>10000</td>
+<td>20,000</td>
+<td>50</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>6(SCORE_CONVERSION_TYPE_MATCH_COUNTRY)</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>6</td>
+<td>1</td>
+<td>2</td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>7(SCORE_CONVERSION_TYPE_MATCH_COUNTRY_WITHOUT_DISTANCE)</td>
+<td>0</td>
+<td>1</td>
+<td>50</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>7</td>
+<td>1</td>
+<td>2</td>
+<td>60</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>2(SCORE_CONVERSION_TYPE_RATING_VALUE_DIFF)</td>
+<td>0</td>
+<td>1</td>
+<td>120</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>2</td>
+<td>1</td>
+<td>2</td>
+<td>110</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+<td>100</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>2</td>
+<td>3</td>
+<td>10</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>3(SCORE_CONVERSION_TYPE_DISCONNECTION_RATE_DIFF)</td>
+<td>0</td>
+<td>10</td>
+<td>110</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>3</td>
+<td>10</td>
+<td>20</td>
+<td>100</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>3</td>
+<td>20</td>
+<td>101</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>Similar to the difference in ratings example, this example sets the scores for matching by differences in disconnection rates to a value of <tt>100</tt> or more, and sets the minimum threshold score for matching to <tt>250</tt>. With these settings, if the score due to the disconnection rate parameter is <tt>0</tt>, users are not matched regardless of their geographical distance from each other or their ratings. Also, users separated by a distance of 20,000 km or more are not matched because the threshold is not crossed even when the differences in disconnection rates and rating values are both 0.</p>
+</div>
+<div class="section" id="id18">
+<h5>11.2.3.1.1.4 Example 4: Distance + Difference in Ratings + Difference in Disconnection Rate + Matchmaking Session Duration</h5>
+<p>In the preceding examples, there are cases where depending on matchmaking conditions, users may never be matched into a matchmaking session. To avoid this, you can increase the match score according to the duration of the existing matchmaking session. To use this setting, you must either destroy each matchmaking session as soon as the game is over or use the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_update_matchmake_session_param.html#a28c8e89508e5d3a27bc96d4fe02770c0">UpdateMatchmakeSessionParam::SetOpenParticipation</a>()</code> and <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_update_matchmake_session_param.html#ad03835a373e2603de8352ec832e224a5">UpdateMatchmakeSessionParam::SetStartedTime</a>()</code> functions to open the matchmaking session to participation and update the session start time to the current time when you call the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_extension_client.html#a86c9743e0df5dae846efd2f78b321a68">MatchmakeExtensionClient::UpdateMatchmakeSession</a>()</code> function.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%"/>
+<col width="63%"/>
+<col width="6%"/>
+<col width="11%"/>
+<col width="6%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">settingIndex</th>
+<th class="head">type</th>
+<th class="head">begin</th>
+<th class="head">end</th>
+<th class="head">score</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>1(SCORE_CONVERSION_TYPE_MINIMUM_MATCH_SCORE)</td>
+<td>-1</td>
+<td>-1</td>
+<td>250</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>5(SCORE_CONVERSION_TYPE_DISTANCE)</td>
+<td>-1</td>
+<td>-1</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>5</td>
+<td>0</td>
+<td>1250</td>
+<td>90</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>5</td>
+<td>1250</td>
+<td>2500</td>
+<td>80</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>5</td>
+<td>2500</td>
+<td>5000</td>
+<td>70</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>5</td>
+<td>5000</td>
+<td>10000</td>
+<td>60</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>5</td>
+<td>10000</td>
+<td>20,000</td>
+<td>50</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>6(SCORE_CONVERSION_TYPE_MATCH_COUNTRY)</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>6</td>
+<td>1</td>
+<td>2</td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>7(SCORE_CONVERSION_TYPE_MATCH_COUNTRY_WITHOUT_DISTANCE)</td>
+<td>0</td>
+<td>1</td>
+<td>50</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>7</td>
+<td>1</td>
+<td>2</td>
+<td>60</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>2(SCORE_CONVERSION_TYPE_RATING_VALUE_DIFF)</td>
+<td>0</td>
+<td>1</td>
+<td>120</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>2</td>
+<td>1</td>
+<td>2</td>
+<td>110</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+<td>100</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>2</td>
+<td>3</td>
+<td>10</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>3(SCORE_CONVERSION_TYPE_DISCONNECTION_RATE_DIFF)</td>
+<td>0</td>
+<td>10</td>
+<td>110</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>3</td>
+<td>10</td>
+<td>20</td>
+<td>100</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>3</td>
+<td>20</td>
+<td>101</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>8(SCORE_CONVERSION_TYPE_MATCHMAKE_SESSION_DURATION)</td>
+<td>0</td>
+<td>30</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>8</td>
+<td>30</td>
+<td>60</td>
+<td>50</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>8</td>
+<td>60</td>
+<td>120</td>
+<td>150</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>8</td>
+<td>120</td>
+<td>2147483647</td>
+<td>250</td>
+</tr>
+</tbody>
+</table>
+<p>With these settings, 50 is added to the score if it is 30 to 60 seconds after the time when the matching session could be joined; 150 is added to the score if it is 60 to 120 seconds more, and 250 is added if it is 120 seconds or more after that time. The result is that the minimum score is attained even if all other items have scores of 0, and a match can be made for sure.</p>
+<p>Contact SDSG at support@noa.nintendo.com if you have difficulty setting the values for your matchmaking algorithm even after consulting the examples.</p>
+</div>
+<div class="section" id="candidate-count-for-creating-new-session-candidate-count-for-random-selection">
+<h5>11.2.3.1.1.5. Example 5: Using CANDIDATE_COUNT_FOR_CREATING_NEW_SESSION and CANDIDATE_COUNT_FOR_RANDOM_SELECTION</h5>
+<p>Here, we don't treat a match as having been found if the number of matchmaking session candidates is less than 5. However, if at least 5 sessions are found, we randomly sort the 5 sessions with the highest score and then select one to join.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%"/>
+<col width="63%"/>
+<col width="6%"/>
+<col width="11%"/>
+<col width="6%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">settingIndex</th>
+<th class="head">type</th>
+<th class="head">begin</th>
+<th class="head">end</th>
+<th class="head">score</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>101(CANDIDATE_COUNT_FOR_CREATING_NEW_SESSION)</td>
+<td>-1</td>
+<td>-1</td>
+<td>5</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>102(CANDIDATE_COUNT_FOR_RANDOM_SELECTION)</td>
+<td>-1</td>
+<td>-1</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="nmas-csv">
+<h5>11.2.3.1.1.6. Example of a CSV File That Can Be Set on NMAS</h5>
+<p>You can also set these values on NMAS using a CSV file. To set the values used in example 3 (Distance + Difference in Ratings + Difference in Disconnection Rate), the CSV file would look like the following.</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>#settingIndex,type,begin,end,score
+0,1,-1,-1,250
+0,5,-1,-1,0
+0,5,0,1250,90
+0,5,1250,2500,80
+0,5,2500,5000,70
+0,5,5000,10000,60
+0,5,10000,20000,50
+0,6,0,1,0
+0,6,1,2,10
+0,7,0,1,50
+0,7,1,2,60
+0,2,0,1,120
+0,2,1,2,110
+0,2,2,3,100
+0,2,3,10,0
+0,3,0,10,110
+0,3,10,20,100
+0,3,20,101,0
+</pre></div>
+</div>
+<p>Use the tool for converting between CSV to XML to convert between the two formats with <a class="reference external" href="../webapi/ScoreBasedXMLSettingCSVConverter.html">ScoreBased XML Setting CSV Converter</a>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="matchmake-webapi-get-score-conversion-setting">
+<span id="id19"></span><h3>11.2.3.2. Getting the Score Conversion Settings</h3>
+<p>This process gets the score conversion settings.</p>
+<dl class="get">
+<dt id="get--nex-matchmake-v2-score_settings">
+<code class="descname">GET </code><code class="descname">/nex/matchmake/v2/score_settings</code></dt>
+<dd><p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/matchmake/v2/score_settings</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;score_settings</span> <span class="na">length=</span><span class="s">"5"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;score_setting&gt;</span>
+        <span class="nt">&lt;setting_index&gt;</span>0<span class="nt">&lt;/setting_index&gt;</span>
+        <span class="nt">&lt;type&gt;</span>1<span class="nt">&lt;/type&gt;</span>
+        <span class="nt">&lt;begin&gt;</span>-1<span class="nt">&lt;/begin&gt;</span>
+        <span class="nt">&lt;end&gt;</span>-1<span class="nt">&lt;/end&gt;</span>
+        <span class="nt">&lt;score&gt;</span>100<span class="nt">&lt;/score&gt;</span>
+      <span class="nt">&lt;/score_setting&gt;</span>
+      <span class="nt">&lt;score_setting&gt;</span>
+        <span class="nt">&lt;setting_index&gt;</span>0<span class="nt">&lt;/setting_index&gt;</span>
+        <span class="nt">&lt;type&gt;</span>2<span class="nt">&lt;/type&gt;</span>
+        <span class="nt">&lt;begin&gt;</span>0<span class="nt">&lt;/begin&gt;</span>
+        <span class="nt">&lt;end&gt;</span>100<span class="nt">&lt;/end&gt;</span>
+        <span class="nt">&lt;score&gt;</span>100<span class="nt">&lt;/score&gt;</span>
+      <span class="nt">&lt;/score_setting&gt;</span>
+      <span class="nt">&lt;score_setting&gt;</span>
+        <span class="nt">&lt;setting_index&gt;</span>0<span class="nt">&lt;/setting_index&gt;</span>
+        <span class="nt">&lt;type&gt;</span>2<span class="nt">&lt;/type&gt;</span>
+        <span class="nt">&lt;begin&gt;</span>100<span class="nt">&lt;/begin&gt;</span>
+        <span class="nt">&lt;end&gt;</span>200<span class="nt">&lt;/end&gt;</span>
+        <span class="nt">&lt;score&gt;</span>50<span class="nt">&lt;/score&gt;</span>
+      <span class="nt">&lt;/score_setting&gt;</span>
+      <span class="nt">&lt;score_setting&gt;</span>
+        <span class="nt">&lt;setting_index&gt;</span>0<span class="nt">&lt;/setting_index&gt;</span>
+        <span class="nt">&lt;type&gt;</span>3<span class="nt">&lt;/type&gt;</span>
+        <span class="nt">&lt;begin&gt;</span>0<span class="nt">&lt;/begin&gt;</span>
+        <span class="nt">&lt;end&gt;</span>10<span class="nt">&lt;/end&gt;</span>
+        <span class="nt">&lt;score&gt;</span>100<span class="nt">&lt;/score&gt;</span>
+      <span class="nt">&lt;/score_setting&gt;</span>
+      <span class="nt">&lt;score_setting&gt;</span>
+        <span class="nt">&lt;setting_index&gt;</span>0<span class="nt">&lt;/setting_index&gt;</span>
+        <span class="nt">&lt;type&gt;</span>3<span class="nt">&lt;/type&gt;</span>
+        <span class="nt">&lt;begin&gt;</span>10<span class="nt">&lt;/begin&gt;</span>
+        <span class="nt">&lt;end&gt;</span>20<span class="nt">&lt;/end&gt;</span>
+        <span class="nt">&lt;score&gt;</span>50<span class="nt">&lt;/score&gt;</span>
+      <span class="nt">&lt;/score_setting&gt;</span>
+    <span class="nt">&lt;/score_settings&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="matchmake-webapi-set-score-mapping-setting">
+<span id="id20"></span><h3>11.2.3.3. Configuring the Score-Conversion Settings</h3>
+<p>This process uses the score-conversion settings to configure the settings that are referenced before values are evaluated. By converting values like the difference in ratings before they are evaluated, it becomes easier to configure difference settings. You can configure multiple settings using <code>setting_index</code> and specify which settings to use from the client. Specify a range of values to convert using <code><var>begin</var></code> and <code><var>end</var></code> for each <code><var>type</var></code>. If the value is not included in any of the configured ranges, the default value is used. The default value can be set by specifying –1 for both <code><var>begin</var></code> and <code><var>end</var></code>. The default value is set for each <code><var>setting_index</var></code> and <code><var>type</var></code>. If a default value is not set, <code>0</code> is used as the default. If there are no conversion settings corresponding to the <code><var>setting_index</var></code> and <code><var>type</var></code> specified by the client, the values are not converted and used without modification.</p>
+<dl class="put">
+<dt id="put--nex-matchmake-v2-score_mappings">
+<code class="descname">PUT </code><code class="descname">/nex/matchmake/v2/score_mappings</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-matchmake-v2-score_mappings-put">
+<code class="descname">POST </code><code class="descname">/nex/matchmake/v2/score_mappings/put</code></dt>
+<dd><p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%"/>
+<col width="7%"/>
+<col width="83%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>score_mappings</strong></td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>score_mapping</strong></td>
+<td>score_mappings</td>
+<td>Conversion settings. Multiple settings can be specified, up to a maximum of 400. However, a maximum of 64 settings can be specified for a particular <code><var>setting_index</var></code> and <code><var>type</var></code>. Specify <code>0</code> to make the setting empty.</td>
+</tr>
+<tr class="row-even"><td><strong>setting_index</strong></td>
+<td>score_mapping</td>
+<td>Setting index. You can specify a value greater than or equal to <code>0</code> and less than or equal to <code>0xffffffff</code>. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>type</strong></td>
+<td>score_mapping</td>
+<td>The type of parameter for value conversion. For more information, see the following table. You can specify a value from 1 to 9. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>begin</strong></td>
+<td>score_mapping</td>
+<td>The lower bound of the range including this value. Specify <code>-1</code> when specifying a default value. You can specify a value from <code>0</code> to <code>0x7fffffff</code> or <code>-1</code>. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>end</strong></td>
+<td>score_mapping</td>
+<td>The upper bound of the range excluding this value. Specify <code>-1</code> when specifying a default value. You can specify a value from <code>0</code> to <code>0x7fffffff</code> or <code>-1</code>. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>value</strong></td>
+<td>score_mapping</td>
+<td>The value after conversion. If <code>-1</code> is specified, no conversion is performed and the preconversion value is used. You can specify a value from <code>0</code> to <code>0x7fffffff</code> or <code>-1</code>. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>type</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="1%"/>
+<col width="72%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>SCORE_MAPPING_TYPE_RATING_VALUE</strong></td>
+<td>2</td>
+<td>Conversion of the rating value.</td>
+</tr>
+<tr class="row-odd"><td><strong>SCORE_MAPPING_TYPE_DISCONNECTION_RATE</strong></td>
+<td>3</td>
+<td>Conversion of the disconnection rate percentage (%).</td>
+</tr>
+<tr class="row-even"><td><strong>SCORE_MAPPING_TYPE_VIOLATION_RATE</strong></td>
+<td>4</td>
+<td>Conversion of the violation rate percentage (%).</td>
+</tr>
+</tbody>
+</table>
+<p>Other <code><var>type</var></code> settings are ignored.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/matchmake/v2/score_mappings</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;score_mappings&gt;
+  &lt;score_mapping&gt;
+    &lt;setting_index&gt;0&lt;/setting_index&gt;
+    &lt;type&gt;3&lt;/type&gt;
+    &lt;begin&gt;-1&lt;/begin&gt;
+    &lt;end&gt;-1&lt;/end&gt;
+    &lt;value&gt;0&lt;/value&gt;
+  &lt;/score_mapping&gt;
+  &lt;score_mapping&gt;
+    &lt;setting_index&gt;0&lt;/setting_index&gt;
+    &lt;type&gt;3&lt;/type&gt;
+    &lt;begin&gt;0&lt;/begin&gt;
+    &lt;end&gt;1&lt;/end&gt;
+    &lt;value&gt;0&lt;/value&gt;
+  &lt;/score_mapping&gt;
+  &lt;score_mapping&gt;
+    &lt;setting_index&gt;0&lt;/setting_index&gt;
+    &lt;type&gt;3&lt;/type&gt;
+    &lt;begin&gt;1&lt;/begin&gt;
+    &lt;end&gt;5&lt;/end&gt;
+    &lt;value&gt;10&lt;/value&gt;
+  &lt;/score_mapping&gt;
+  &lt;score_mapping&gt;
+    &lt;setting_index&gt;0&lt;/setting_index&gt;
+    &lt;type&gt;3&lt;/type&gt;
+    &lt;begin&gt;5&lt;/begin&gt;
+    &lt;end&gt;10&lt;/end&gt;
+    &lt;value&gt;20&lt;/value&gt;
+  &lt;/score_mapping&gt;
+  &lt;score_mapping&gt;
+    &lt;setting_index&gt;0&lt;/setting_index&gt;
+    &lt;type&gt;3&lt;/type&gt;
+    &lt;begin&gt;10&lt;/begin&gt;
+    &lt;end&gt;101&lt;/end&gt;
+    &lt;value&gt;30&lt;/value&gt;
+  &lt;/score_mapping&gt;
+&lt;/score_mappings&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;score_mappings&gt;</span>
+      <span class="nt">&lt;set</span> <span class="na">length=</span><span class="s">"5"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/score_mappings&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of configured <code><var>score_mappings</var></code>.</p>
+</dd></dl>
+<div class="section" id="id21">
+<h4>11.2.3.3.1. Value Settings</h4>
+<p>Depending on the game design, ratings may not be linear, and there may be many people who never disconnect or only disconnect once, meaning few people have a high disconnection rate.</p>
+<p>By configuring score-conversion settings before converting scores, you can convert these kinds of nonlinear values to linear values so that differences are easier to handle. These examples assume an Elo ratings system for the ratings. The disconnection rate is treated as a percentage and computed in steps of 1%.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%"/>
+<col width="66%"/>
+<col width="6%"/>
+<col width="7%"/>
+<col width="6%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">settingIndex</th>
+<th class="head">type</th>
+<th class="head">begin</th>
+<th class="head">end</th>
+<th class="head">value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>2(SCORE_MAPPING_TYPE_RATING_VALUE)</td>
+<td>-1</td>
+<td>-1</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>2</td>
+<td>0</td>
+<td>1110</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>2</td>
+<td>1110</td>
+<td>1240</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>2</td>
+<td>1240</td>
+<td>1400</td>
+<td>2</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>2</td>
+<td>1400</td>
+<td>1520</td>
+<td>3</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>2</td>
+<td>1520</td>
+<td>1720</td>
+<td>4</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>2</td>
+<td>1720</td>
+<td>1815</td>
+<td>5</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>2</td>
+<td>1815</td>
+<td>1925</td>
+<td>6</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>2</td>
+<td>1925</td>
+<td>2040</td>
+<td>7</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>2</td>
+<td>2040</td>
+<td>2180</td>
+<td>8</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>2</td>
+<td>2180</td>
+<td>10000</td>
+<td>9</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>3(SCORE_MAPPING_TYPE_DISCONNECTION_RATE)</td>
+<td>-1</td>
+<td>-1</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>3</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>3</td>
+<td>1</td>
+<td>5</td>
+<td>10</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>3</td>
+<td>5</td>
+<td>10</td>
+<td>20</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>3</td>
+<td>10</td>
+<td>101</td>
+<td>30</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id22">
+<h5>11.2.3.3.1.1. Example of a CSV File That Can Be Set on NMAS</h5>
+<p>In this example of the configuration of score-conversion settings, data is in the form of a CSV file that can be set on NMAS like the following.</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>#setting_index,type,begin,end,value
+0,2,-1,-1,0
+0,2,0,1110,0
+0,2,1110,1240,1
+0,2,1240,1400,2
+0,2,1400,1520,3
+0,2,1520,1720,4
+0,2,1720,1815,5
+0,2,1815,1925,6
+0,2,1925,2040,7
+0,2,2040,2180,8
+0,2,2180,10000,9
+0,3,-1,-1,0
+0,3,0,1,0
+0,3,1,5,10
+0,3,5,10,20
+0,3,10,101,30
+</pre></div>
+</div>
+<p>Use the tool for converting between CSV to XML to convert between the two formats with <a class="reference external" href="../webapi/ScoreBasedXMLSettingCSVConverter.html">ScoreBased XML Setting CSV Converter</a>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="matchmake-webapi-get-score-mapping-setting">
+<span id="id24"></span><h3>11.2.3.4. Getting the Score-Conversion Settings</h3>
+<p>This process gets the score-conversion settings.</p>
+<dl class="get">
+<dt id="get--nex-matchmake-v2-score_mappings">
+<code class="descname">GET </code><code class="descname">/nex/matchmake/v2/score_mappings</code></dt>
+<dd><p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/matchmake/v2/score_mappings</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;score_mappings</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;score_mapping&gt;</span>
+        <span class="nt">&lt;setting_index&gt;</span>0<span class="nt">&lt;/setting_index&gt;</span>
+        <span class="nt">&lt;type&gt;</span>1<span class="nt">&lt;/type&gt;</span>
+        <span class="nt">&lt;begin&gt;</span>-1<span class="nt">&lt;/begin&gt;</span>
+        <span class="nt">&lt;end&gt;</span>-1<span class="nt">&lt;/end&gt;</span>
+        <span class="nt">&lt;value&gt;</span>100<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/score_mapping&gt;</span>
+      <span class="nt">&lt;score_mapping&gt;</span>
+        <span class="nt">&lt;setting_index&gt;</span>0<span class="nt">&lt;/setting_index&gt;</span>
+        <span class="nt">&lt;type&gt;</span>2<span class="nt">&lt;/type&gt;</span>
+        <span class="nt">&lt;begin&gt;</span>0<span class="nt">&lt;/begin&gt;</span>
+        <span class="nt">&lt;end&gt;</span>100<span class="nt">&lt;/end&gt;</span>
+        <span class="nt">&lt;value&gt;</span>100<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/score_mapping&gt;</span>
+    <span class="nt">&lt;/score_mappings&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="matchmake-webapi-scoresimurator">
+<span id="id25"></span><h3>11.2.3.5. Score Simulator</h3>
+<p>This is a simulator for calculating scores from two matchmaking parameters, according to the current score settings and the score-conversion settings.</p>
+<dl class="put">
+<dt id="put--nex-matchmake-v2-score_simulator">
+<code class="descname">PUT </code><code class="descname">/nex/matchmake/v2/score_simulator</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-matchmake-v2-score_simulator-put">
+<code class="descname">POST </code><code class="descname">/nex/matchmake/v2/score_simulator/put</code></dt>
+<dd><p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%"/>
+<col width="15%"/>
+<col width="65%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>score_simulator</strong></td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>setting_index</strong></td>
+<td>score_simulator</td>
+<td>Setting index. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>duration</strong></td>
+<td>score_simulator</td>
+<td>Time elapsed in the matchmaking session (in seconds). Can be omitted. The default is <code>0</code>.</td>
+</tr>
+<tr class="row-odd"><td><strong>progress</strong></td>
+<td>score_simulator</td>
+<td>Matchmaking session game progress [0 to 100]. Can be omitted. The default is <code>0</code>.</td>
+</tr>
+<tr class="row-even"><td><strong>use_geo_ip</strong></td>
+<td>score_simulator</td>
+<td>Whether to use GeoIP. (1: Use, 0: Do not use) Can be omitted. The default is <code>0</code>.</td>
+</tr>
+<tr class="row-odd"><td><strong>player_param</strong></td>
+<td>score_simulator</td>
+<td>The container for matchmaking parameters, which are child elements. Two are required. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>country_code</strong></td>
+<td>player_param</td>
+<td>Two-character country code, complying with ISO 3166-1 alpha-2. Can be omitted.</td>
+</tr>
+<tr class="row-odd"><td><strong>rating_value</strong></td>
+<td>player_param</td>
+<td>Rating value. Can be omitted.</td>
+</tr>
+<tr class="row-even"><td><strong>disconnection_rate</strong></td>
+<td>player_param</td>
+<td>Disconnection rate. Can be omitted.</td>
+</tr>
+<tr class="row-odd"><td><strong>violation_rate</strong></td>
+<td>player_param</td>
+<td>Violation rate. Can be omitted.</td>
+</tr>
+<tr class="row-even"><td><strong>ip_address</strong></td>
+<td>player_param</td>
+<td>IP address. Can be omitted. When omitted, it is treated the same as when no location information is extracted.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/matchmake/v2/score_simulator</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;score_simulator&gt;
+  &lt;player_param&gt;
+    &lt;country_code&gt;JP&lt;/country_code&gt;
+    &lt;rating_value&gt;5&lt;/rating_value&gt;
+    &lt;disconnection_rate&gt;0&lt;/disconnection_rate&gt;
+    &lt;violation_rate&gt;0&lt;/violation_rate&gt;
+    &lt;ip_address&gt;203.180.164.24&lt;/ip_address&gt;
+  &lt;/player_param&gt;
+  &lt;player_param&gt;
+    &lt;country_code&gt;US&lt;/country_code&gt;
+    &lt;rating_value&gt;5&lt;/rating_value&gt;
+    &lt;disconnection_rate&gt;0&lt;/disconnection_rate&gt;
+    &lt;violation_rate&gt;0&lt;/violation_rate&gt;
+    &lt;ip_address&gt;205.166.76.112&lt;/ip_address&gt;
+  &lt;/player_param&gt;
+  &lt;setting_index&gt;0&lt;/setting_index&gt;
+  &lt;duration&gt;0&lt;/duration&gt;
+  &lt;progress&gt;0&lt;/progress&gt;
+  &lt;use_geo_ip&gt;1&lt;/use_geo_ip&gt;
+&lt;/score_simulator&gt;
+</pre></div>
+</div>
+<p><strong>Response Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%"/>
+<col width="16%"/>
+<col width="63%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>nex</strong></td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td><strong>matchmake</strong></td>
+<td>nex</td>
+<td>Component element.</td>
+</tr>
+<tr class="row-even"><td><strong>score_simulator</strong></td>
+<td>matchmake</td>
+<td>Method element.</td>
+</tr>
+<tr class="row-odd"><td><strong>total_score</strong></td>
+<td>score_simulator</td>
+<td>Total score.</td>
+</tr>
+<tr class="row-even"><td><strong>distance</strong></td>
+<td>score_simulator</td>
+<td>Distance (in kilometers) between two points. If –1, the distance is not used.</td>
+</tr>
+<tr class="row-odd"><td><strong>is_match</strong></td>
+<td>score_simulator</td>
+<td>Whether the score exceeds the minimum for matchmaking. (0: Does not exceed, 1: Exceeds.)</td>
+</tr>
+<tr class="row-even"><td><strong>type_scores</strong></td>
+<td>score_simulator</td>
+<td>Container for <code>type_score</code> child elements.</td>
+</tr>
+<tr class="row-odd"><td><strong>type_score</strong></td>
+<td>type_scores</td>
+<td>Score by type.</td>
+</tr>
+<tr class="row-even"><td><strong>type</strong></td>
+<td>type_score</td>
+<td>The value of <code><var>type</var></code>. See value for <code><var>type</var></code> of <code>score_settings</code>.</td>
+</tr>
+<tr class="row-odd"><td>score</td>
+<td>type_score</td>
+<td>Score for each type.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;score_simulator&gt;</span>
+      <span class="nt">&lt;total_score&gt;</span>1000<span class="nt">&lt;/total_score&gt;</span>
+      <span class="nt">&lt;distance&gt;</span>11076<span class="nt">&lt;/distance&gt;</span>
+      <span class="nt">&lt;is_match&gt;</span>1<span class="nt">&lt;/is_match&gt;</span>
+      <span class="nt">&lt;type_scores</span> <span class="na">length=</span><span class="s">"3"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;type_score&gt;</span>
+          <span class="nt">&lt;type&gt;</span>2<span class="nt">&lt;/type&gt;</span>
+          <span class="nt">&lt;score&gt;</span>200<span class="nt">&lt;/score&gt;</span>
+        <span class="nt">&lt;/type_score&gt;</span>
+        <span class="nt">&lt;type_score&gt;</span>
+          <span class="nt">&lt;type&gt;</span>3<span class="nt">&lt;/type&gt;</span>
+          <span class="nt">&lt;score&gt;</span>200<span class="nt">&lt;/score&gt;</span>
+        <span class="nt">&lt;/type_score&gt;</span>
+        <span class="nt">&lt;type_score&gt;</span>
+          <span class="nt">&lt;type&gt;</span>5<span class="nt">&lt;/type&gt;</span>
+          <span class="nt">&lt;score&gt;</span>600<span class="nt">&lt;/score&gt;</span>
+        <span class="nt">&lt;/type_score&gt;</span>
+      <span class="nt">&lt;/type_scores&gt;</span>
+    <span class="nt">&lt;/score_simulator&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+<div class="section" id="ip">
+<h4>11.2.3.5.1. Examples of IP Addresses</h4>
+<p>The following table provides examples of the IP addresses of various municipal government agencies and universities.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="57%"/>
+<col width="43%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">City</th>
+<th class="head">IP Address</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Tokyo</td>
+<td>133.11.0.0</td>
+</tr>
+<tr class="row-odd"><td>Osaka</td>
+<td>133.1.138.144</td>
+</tr>
+<tr class="row-even"><td>Taipei</td>
+<td>140.112.8.116</td>
+</tr>
+<tr class="row-odd"><td>Singapore</td>
+<td>137.132.21.27</td>
+</tr>
+<tr class="row-even"><td>Sydney</td>
+<td>129.78.5.11</td>
+</tr>
+<tr class="row-odd"><td>New York</td>
+<td>128.59.105.24</td>
+</tr>
+<tr class="row-even"><td>San Francisco</td>
+<td>130.212.10.204</td>
+</tr>
+<tr class="row-odd"><td>Vancouver</td>
+<td>137.82.130.49</td>
+</tr>
+<tr class="row-even"><td>London</td>
+<td>128.86.130.195</td>
+</tr>
+<tr class="row-odd"><td>Paris</td>
+<td>193.55.96.121</td>
+</tr>
+<tr class="row-even"><td>Berlin</td>
+<td>160.45.170.10</td>
+</tr>
+<tr class="row-odd"><td>Moscow</td>
+<td>188.44.50.103</td>
+</tr>
+</tbody>
+</table>
+<p>An example of an IP address from which location information cannot be extracted is <code>127.0.0.1</code>.</p>
+<p>You can check the longitude and latitude that can be extracted from this IP address at https://www.maxmind.com/ja/geoip-demo.</p>
+</div>
+</div>
+<div class="section" id="matchmake-webapi-set-override-ip-addresses">
+<span id="id-ip"></span><h3>11.2.3.6. Adding and Deleting Debug-Use IP Addresses for Principal IDs</h3>
+<p>This process adds a debug-use IP address to the existing settings to use when extrapolating location with GeoIP. To delete an IP address, specify an empty element tag. The specified IP address is used in place of the real IP address of the device corresponding to the principal ID. If an IP address is specified for that device by the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_param.html#ae98420ddbdce8bc406a55265b20ca26f">MatchmakeParam::SetOverrideIpAddress()</a></code> function, that IP address is given priority. When the IP address is deleted, there is no error even if a corresponding IP address does not exist.</p>
+<p>The location information of the owner of a matchmaking session is saved when that session is created. If the user with the corresponding principal ID creates a matchmaking session before this IP address for debugging has been configured, the location information for that session will not be updated.</p>
+<p>This setting is only enabled in the development environment.</p>
+<dl class="put">
+<dt id="put--nex-matchmake-v2-override_ip_addresses">
+<code class="descname">PUT </code><code class="descname">/nex/matchmake/v2/override_ip_addresses</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-matchmake-v2-override_ip_addresses-put">
+<code class="descname">POST </code><code class="descname">/nex/matchmake/v2/override_ip_addresses/put</code></dt>
+<dd><p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%"/>
+<col width="14%"/>
+<col width="72%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>change</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>address_settings</strong></td>
+<td>change</td>
+<td>The container for the child element data to change. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>address_setting</strong></td>
+<td>address_settings</td>
+<td>Specifies the data to change. More than one can be specified. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>pid</strong></td>
+<td>address_setting</td>
+<td>Principal ID. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>ip_address</strong></td>
+<td>address_setting</td>
+<td>An IP address for debugging. If this setting is an empty tag, the IP address set for debugging will be deleted. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/matchmake/v2/override_ip_addresses/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;address_settings&gt;
+    &lt;address_setting&gt;
+      &lt;pid&gt;10000&lt;/pid&gt;
+      &lt;ip_address&gt;127.0.0.1&lt;/ip_address&gt;
+    &lt;/address_setting&gt;
+    &lt;address_setting&gt;
+      &lt;pid&gt;10001&lt;/pid&gt;
+      &lt;ip_address/&gt;
+    &lt;/address_setting&gt;
+  &lt;/address_settings&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;override_ip_addresses&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/override_ip_addresses&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of IP addresses for debugging use that were added or deleted.</p>
+</dd></dl>
+</div>
+<div class="section" id="matchmake-webapi-set-override-ip-addresses-all">
+<span id="id26"></span><h3>11.2.3.7. Setting Debug-Use IP Addresses for Principal IDs All At the Same Time</h3>
+<p>This batch process first clears and then adds debug-use IP addresses used for extrapolation of location with GeoIP. The specified IP address is used in place of the real IP address of the device corresponding to the principal ID. If an IP address is specified for that device by the <code><a href="../../external.html?file=../Api/classnn_1_1nex_1_1_matchmake_param.html#ae98420ddbdce8bc406a55265b20ca26f">MatchmakeParam::SetOverrideIpAddress()</a></code> function, that IP address is given priority.</p>
+<p>The location information of the owner of a matchmaking session is saved when that session is created. If the user with the corresponding principal ID creates a matchmaking session before this IP address for debugging has been configured, the location information for that session will not be updated.</p>
+<p>This setting is only enabled in the development environment.</p>
+<dl class="put">
+<dt id="put--nex-matchmake-v2-override_ip_addresses-all">
+<code class="descname">PUT </code><code class="descname">/nex/matchmake/v2/override_ip_addresses/all</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-matchmake-v2-override_ip_addresses-all-put">
+<code class="descname">POST </code><code class="descname">/nex/matchmake/v2/override_ip_addresses/all/put</code></dt>
+<dd><p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%"/>
+<col width="21%"/>
+<col width="59%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>change</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>address_settings</strong></td>
+<td>change</td>
+<td>The container for the child element data to change. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>address_setting</strong></td>
+<td>address_settings</td>
+<td>Specifies the data to change. Multiple items can be specified.</td>
+</tr>
+<tr class="row-odd"><td><strong>pid</strong></td>
+<td>address_setting</td>
+<td>Principal ID. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>ip_address</strong></td>
+<td>address_setting</td>
+<td>An IP address for debugging. Ignored if it is an empty element tag. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/matchmake/v2/override_ip_addresses/all</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;address_settings&gt;
+    &lt;address_setting&gt;
+      &lt;pid&gt;10000&lt;/pid&gt;
+      &lt;ip_address&gt;127.0.0.1&lt;/ip_address&gt;
+    &lt;/address_setting&gt;
+  &lt;/address_settings&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;override_ip_addresses&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/override_ip_addresses&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of IP addresses for debugging use that were configured.</p>
+</dd></dl>
+</div>
+<div class="section" id="matchmake-webapi-get-override-ip-addresses">
+<span id="id27"></span><h3>11.2.3.8. Getting the Debug-Use IP Address for Each Principal ID</h3>
+<p>This process gets the debug-use IP address used for extrapolation of location with GeoIP.</p>
+<dl class="get">
+<dt id="get--nex-matchmake-v2-override_ip_addresses-(pid)">
+<code class="descname">GET </code><code class="descname">/nex/matchmake/v2/override_ip_addresses/</code><span class="sig-paren">(</span><em>pid</em><span class="sig-paren">)</span></dt>
+<dd><p>This process specifies a principal ID to get the debug-use IP address used for extrapolation of location with GeoIP.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%"/>
+<col width="74%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>pid</strong></td>
+<td>The principal ID. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<p>Gets the debug-use IP address for the principal ID 10000.</p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/matchmake/v2/override_ip_addresses/10000</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;override_ip_addresses&gt;</span>
+      <span class="nt">&lt;address_settings</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;address_setting&gt;</span>
+          <span class="nt">&lt;pid&gt;</span>10000<span class="nt">&lt;/pid&gt;</span>
+          <span class="nt">&lt;ip_address&gt;</span>127.0.0.1<span class="nt">&lt;/ip_address&gt;</span>
+        <span class="nt">&lt;/address_setting&gt;</span>
+      <span class="nt">&lt;/address_settings&gt;</span>
+    <span class="nt">&lt;/override_ip_addresses&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p>Responses are returned, sorted in order of principal ID. If no debug-use IP addresses have been set, <tt><var>ip_address</var></tt> is an empty element tag.</p>
+</dd></dl>
+<dl class="get">
+<dt id="get--nex-matchmake-v2-override_ip_addresses-all">
+<code class="descname">GET </code><code class="descname">/nex/matchmake/v2/override_ip_addresses/all</code></dt>
+<dd></dd></dl>
+<dl class="get">
+<dt id="get--nex-matchmake-v2-override_ip_addresses">
+<code class="descname">GET </code><code class="descname">/nex/matchmake/v2/override_ip_addresses</code></dt>
+<dd><p>This process gets all debug-use IP addresses used for extrapolation of location with GeoIP.</p>
+<p><strong>Parameters:</strong></p>
+<p>None.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/matchmake/v2/override_ip_addresses/all</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;override_ip_addresses&gt;</span>
+      <span class="nt">&lt;address_settings</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;address_setting&gt;</span>
+          <span class="nt">&lt;ip_address&gt;</span>127.0.0.1<span class="nt">&lt;/ip_address&gt;</span>
+          <span class="nt">&lt;pid&gt;</span>10000<span class="nt">&lt;/pid&gt;</span>
+        <span class="nt">&lt;/address_setting&gt;</span>
+        <span class="nt">&lt;address_setting&gt;</span>
+          <span class="nt">&lt;ip_address&gt;</span>127.0.0.2<span class="nt">&lt;/ip_address&gt;</span>
+          <span class="nt">&lt;pid&gt;</span>10001<span class="nt">&lt;/pid&gt;</span>
+        <span class="nt">&lt;/address_setting&gt;</span>
+      <span class="nt">&lt;/address_settings&gt;</span>
+    <span class="nt">&lt;/override_ip_addresses&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id28">
+<h3>11.2.3.9. Setting Debug-Use IP Addresses for Principal IDs All At the Same Time</h3>
+<dl class="delete">
+<dt id="delete--nex-matchmake-v2-override_ip_addresses-all">
+<code class="descname">DELETE </code><code class="descname">/nex/matchmake/v2/override_ip_addresses/all</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-matchmake-v2-override_ip_addresses-all-delete">
+<code class="descname">POST </code><code class="descname">/nex/matchmake/v2/override_ip_addresses/all/delete</code></dt>
+<dd><p>This process deletes all debug-use IP addresses used for extrapolation of location with GeoIP.</p>
+<p>To use the POST method, you need to specify <code>Content-Length: 0</code> in the HTTP header.</p>
+<p><strong>Parameters:</strong></p>
+<p>None.</p>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/matchmake/v2/override_ip_addresses/all</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;override_ip_addresses&gt;</span>
+      <span class="nt">&lt;deleted</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/override_ip_addresses&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of IP addresses for debugging use that were deleted.</p>
+</dd></dl>
+</div>
+</div>
+<div class="section" id="id29">
+<h2>11.2.4. Matchmaking Referee</h2>
+<div class="section" id="id30">
+<h3>11.2.4.1. Getting Matchmaking Referee Settings</h3>
+<p>This process gets the matchmaking referee settings.</p>
+<dl class="get">
+<dt id="get--nex-matchmake-v2-referee_setting-(name)">
+<code class="descname">GET </code><code class="descname">/nex/matchmake/v2/referee_setting/</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span></dt>
+<dd><p>Gets the settings of a single matchmaking referee.</p>
+<p><strong>Parameters:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%"/>
+<col width="78%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>name</strong></td>
+<td>The matchmaking referee settings to get. For more information, see the following table. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>name</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%"/>
+<col width="66%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>history_length</td>
+<td>The number of entries to leave in the recent history. Has a valid range of 1–100. Default value is 100.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/matchmake/v2/referee_setting/history_length</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;referee_settings</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;referee_setting&gt;</span>
+        <span class="nt">&lt;name&gt;</span>history_length<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>100<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/referee_setting&gt;</span>
+    <span class="nt">&lt;/referee_settings&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="id31">
+<h3>11.2.4.2. Getting All Matchmaking Referee Settings</h3>
+<p>This process gets all matchmaking referee settings.</p>
+<dl class="get">
+<dt id="get--nex-matchmake-v2-referee_settings">
+<code class="descname">GET </code><code class="descname">/nex/matchmake/v2/referee_settings</code></dt>
+<dd><p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/matchmake/v2/referee_settings</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;referee_settings</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;referee_setting&gt;</span>
+        <span class="nt">&lt;name&gt;</span>history_length<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>100<span class="nt">&lt;/value&gt;</span>
+      <span class="nt">&lt;/referee_setting&gt;</span>
+    <span class="nt">&lt;/referee_settings&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+<div class="section" id="matchmake-webapi-change-referee-setting">
+<span id="id32"></span><h3>11.2.4.3. Changing Matchmaking Referee Settings</h3>
+<p>This process changes the matchmaking referee settings.</p>
+<dl class="put">
+<dt id="put--nex-matchmake-v2-referee_setting">
+<code class="descname">PUT </code><code class="descname">/nex/matchmake/v2/referee_setting</code></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-matchmake-v2-referee_setting-put">
+<code class="descname">POST </code><code class="descname">/nex/matchmake/v2/referee_setting/put</code></dt>
+<dd><p><strong>Request Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%"/>
+<col width="21%"/>
+<col width="59%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>change</td>
+<td>&nbsp;</td>
+<td>Root element. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td>param</td>
+<td>change</td>
+<td>Specifies the data to change. More than one can be specified. <strong>Required.</strong></td>
+</tr>
+<tr class="row-even"><td><strong>name</strong></td>
+<td>param</td>
+<td>Matchmaking referee setting. For more information, see the following table. <strong>Required.</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>value</strong></td>
+<td>param</td>
+<td>Value. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>name</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%"/>
+<col width="66%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>history_length</td>
+<td>The number of entries to leave in the recent history. Has a valid range of 1–100. Default value is 100.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/nex/matchmake/v2/referee_setting/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+&lt;change&gt;
+  &lt;param&gt;
+    &lt;name&gt;history_length&lt;/name&gt;
+    &lt;value&gt;30&lt;/value&gt;
+  &lt;/param&gt;
+&lt;/change&gt;
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;referee_settings&gt;</span>
+      <span class="nt">&lt;changed</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/referee_settings&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of changed matchmaking referee settings.</p>
+</dd></dl>
+</div>
+<div class="section" id="matchmake-webapi-get-referee-stats">
+<span id="id33"></span><h3>11.2.4.4. Getting Personal Statistics</h3>
+<p>This process gets personal statistics.</p>
+<dl class="get">
+<dt id="get--nex-matchmake-v2-referee_stats-(principal_id)">
+<code class="descname">GET </code><code class="descname">/nex/matchmake/v2/referee_stats/</code><span class="sig-paren">(</span><em>principal_id</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<p>Gets the personal statistics associated with the specified principal ID.</p>
+<blockquote>
+<div><p><strong>Parameters:</strong></p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="22%"/>
+<col width="78%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>principal_id</strong></td>
+<td>Principal ID. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/nex/matchmake/v2/referee_stats/100</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Body:</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%"/>
+<col width="16%"/>
+<col width="63%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Parent Elements</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>referee_stats</strong></td>
+<td>&nbsp;</td>
+<td>Root element.</td>
+</tr>
+<tr class="row-odd"><td><strong>principal_id</strong></td>
+<td>referee_stats</td>
+<td>The principal ID.</td>
+</tr>
+<tr class="row-even"><td><strong>unique_id</strong></td>
+<td>referee_stats</td>
+<td>The NEX unique ID.</td>
+</tr>
+<tr class="row-odd"><td><strong>stats</strong></td>
+<td>referee_stats</td>
+<td>Category-by-category statistical data.</td>
+</tr>
+<tr class="row-even"><td>category</td>
+<td>stats</td>
+<td>Category.</td>
+</tr>
+<tr class="row-odd"><td><strong>rating_value</strong></td>
+<td>stats</td>
+<td>Rating value.</td>
+</tr>
+<tr class="row-even"><td><strong>recent_disconnect</strong></td>
+<td>stats</td>
+<td>The number of disconnections in the most recent 100 rounds.</td>
+</tr>
+<tr class="row-odd"><td><strong>recent_draw</strong></td>
+<td>stats</td>
+<td>The number of draws in the most recent 100 rounds.</td>
+</tr>
+<tr class="row-even"><td><strong>recent_loss</strong></td>
+<td>stats</td>
+<td>The number of losses in the most recent 100 rounds.</td>
+</tr>
+<tr class="row-odd"><td><strong>recent_mismatch</strong></td>
+<td>stats</td>
+<td>The number of reported mismatches in the most recent 100 rounds.</td>
+</tr>
+<tr class="row-even"><td><strong>recent_violation</strong></td>
+<td>stats</td>
+<td>The number of violations in the most recent 100 rounds.</td>
+</tr>
+<tr class="row-odd"><td><strong>recent_win</strong></td>
+<td>stats</td>
+<td>The number of wins in the most recent 100 rounds.</td>
+</tr>
+<tr class="row-even"><td><strong>total_disconnect</strong></td>
+<td>stats</td>
+<td>The total number of disconnections.</td>
+</tr>
+<tr class="row-odd"><td><strong>total_draw</strong></td>
+<td>stats</td>
+<td>The total number of draws.</td>
+</tr>
+<tr class="row-even"><td><strong>total_loss</strong></td>
+<td>stats</td>
+<td>The total number of losses.</td>
+</tr>
+<tr class="row-odd"><td><strong>total_mismatch</strong></td>
+<td>stats</td>
+<td>The total number of reported mismatches.</td>
+</tr>
+<tr class="row-even"><td><strong>total_violation</strong></td>
+<td>stats</td>
+<td>The total number of violations.</td>
+</tr>
+<tr class="row-odd"><td><strong>total_win</strong></td>
+<td>stats</td>
+<td>The total number of wins.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;referee_stats</span> <span class="na">length=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;principal_id&gt;</span>100<span class="nt">&lt;/principal_id&gt;</span>
+      <span class="nt">&lt;unique_id&gt;</span>123456789<span class="nt">&lt;/unique_id&gt;</span>
+      <span class="nt">&lt;stats&gt;</span>
+        <span class="nt">&lt;category&gt;</span>0<span class="nt">&lt;/category&gt;</span>
+        <span class="nt">&lt;rating_value&gt;</span>1500<span class="nt">&lt;/rating_value&gt;</span>
+        <span class="nt">&lt;recent_disconnect&gt;</span>1<span class="nt">&lt;/recent_disconnect&gt;</span>
+        <span class="nt">&lt;recent_draw&gt;</span>2<span class="nt">&lt;/recent_draw&gt;</span>
+        <span class="nt">&lt;recent_loss&gt;</span>3<span class="nt">&lt;/recent_loss&gt;</span>
+        <span class="nt">&lt;recent_mismatch&gt;</span>4<span class="nt">&lt;/recent_mismatch&gt;</span>
+        <span class="nt">&lt;recent_violation&gt;</span>5<span class="nt">&lt;/recent_violation&gt;</span>
+        <span class="nt">&lt;recent_win&gt;</span>6<span class="nt">&lt;/recent_win&gt;</span>
+        <span class="nt">&lt;total_disconnect&gt;</span>1<span class="nt">&lt;/total_disconnect&gt;</span>
+        <span class="nt">&lt;total_draw&gt;</span>2<span class="nt">&lt;/total_draw&gt;</span>
+        <span class="nt">&lt;total_loss&gt;</span>3<span class="nt">&lt;/total_loss&gt;</span>
+        <span class="nt">&lt;total_mismatch&gt;</span>4<span class="nt">&lt;/total_mismatch&gt;</span>
+        <span class="nt">&lt;total_violation&gt;</span>5<span class="nt">&lt;/total_violation&gt;</span>
+        <span class="nt">&lt;total_win&gt;</span>6<span class="nt">&lt;/total_win&gt;</span>
+      <span class="nt">&lt;/stats&gt;</span>
+      <span class="nt">&lt;stats&gt;</span>
+        <span class="nt">&lt;category&gt;</span>1<span class="nt">&lt;/category&gt;</span>
+        <span class="nt">&lt;rating_value&gt;</span>500<span class="nt">&lt;/rating_value&gt;</span>
+        <span class="nt">&lt;recent_disconnect&gt;</span>6<span class="nt">&lt;/recent_disconnect&gt;</span>
+        <span class="nt">&lt;recent_draw&gt;</span>5<span class="nt">&lt;/recent_draw&gt;</span>
+        <span class="nt">&lt;recent_loss&gt;</span>4<span class="nt">&lt;/recent_loss&gt;</span>
+        <span class="nt">&lt;recent_mismatch&gt;</span>3<span class="nt">&lt;/recent_mismatch&gt;</span>
+        <span class="nt">&lt;recent_violation&gt;</span>2<span class="nt">&lt;/recent_violation&gt;</span>
+        <span class="nt">&lt;recent_win&gt;</span>1<span class="nt">&lt;/recent_win&gt;</span>
+        <span class="nt">&lt;total_disconnect&gt;</span>6<span class="nt">&lt;/total_disconnect&gt;</span>
+        <span class="nt">&lt;total_draw&gt;</span>5<span class="nt">&lt;/total_draw&gt;</span>
+        <span class="nt">&lt;total_loss&gt;</span>4<span class="nt">&lt;/total_loss&gt;</span>
+        <span class="nt">&lt;total_mismatch&gt;</span>3<span class="nt">&lt;/total_mismatch&gt;</span>
+        <span class="nt">&lt;total_violation&gt;</span>2<span class="nt">&lt;/total_violation&gt;</span>
+        <span class="nt">&lt;total_win&gt;</span>1<span class="nt">&lt;/total_win&gt;</span>
+      <span class="nt">&lt;/stats&gt;</span>
+    <span class="nt">&lt;/referee_stats&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="matchmake-webapi-reset-referee-stats">
+<span id="id34"></span><h3>11.2.4.5. Resetting Personal Statistics</h3>
+<p>This process resets the personal statistics.</p>
+<dl class="delete">
+<dt id="delete--nex-matchmake-v2-referee_stats-(principal_id)">
+<code class="descname">DELETE </code><code class="descname">/nex/matchmake/v2/referee_stats/</code><span class="sig-paren">(</span><em>principal_id</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+<dl class="post">
+<dt id="post--nex-matchmake-v2-referee_stats-(principal_id)-delete">
+<code class="descname">POST </code><code class="descname">/nex/matchmake/v2/referee_stats/</code><span class="sig-paren">(</span><em>principal_id</em><span class="sig-paren">)</span><code class="descname">/delete</code></dt>
+<dd></dd></dl>
+<p>Resets the personal statistics associated with the specified principal ID.</p>
+<blockquote>
+<div><p><strong>Parameters:</strong></p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="22%"/>
+<col width="78%"/>
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>principal_id</strong></td>
+<td>Principal ID. <strong>Required.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/nex/matchmake/v2/referee_stats/100</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Response Example:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span>  <span class="l">text/xml;charset=utf-8</span>
+
+<span class="cp">&lt;? xml version="1.0" encoding="UTF-8"? &gt;</span>
+<span class="nt">&lt;nex&gt;</span>
+  <span class="nt">&lt;matchmake&gt;</span>
+    <span class="nt">&lt;referee_stats&gt;</span>
+      <span class="nt">&lt;reset</span> <span class="na">length=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/referee_stats&gt;</span>
+  <span class="nt">&lt;/matchmake&gt;</span>
+<span class="nt">&lt;/nex&gt;</span>
+</pre></div>
+</div>
+<p><code><var>length</var></code> is the number of personal statistics that were reset.</p>
+</div></blockquote>
+</div></blockquote>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

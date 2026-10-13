@@ -1,0 +1,229 @@
+﻿<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google" value="notranslate" />
+<script type="text/javascript" src="../../template/js/jquery/jquery.js"></script>
+<link href="../../template/css/template.css" rel="stylesheet" type="text/css" />
+<title>ChartSettings XML CSV Converter</title>
+
+<script language="JavaScript">
+<!--
+
+// IE 8 does not have console unless it is in debug mode
+if(!window.console && typeof window.console.log != 'function') {
+  window.console = { log: function(msg){} };
+}
+
+function FromCSV(string, valuenames)
+{
+	var lines = string.split(/\r\n|\r|\n/);
+
+	var elements = [];
+
+
+	$.each(lines, function(j, line)
+	{
+		console.log(line);
+		if(line.charAt(0) == "#")
+		{
+			return true; // continue
+		}
+		if(line == "")
+		{
+			return false; // break
+		}
+
+		var columns = line.split(",");
+		var element = {};
+		var maxColumns = columns.length
+
+
+		for(i = 0;i<valuenames.length;i++)
+		{
+			if (maxColumns <= i || columns[i] == "")
+			{
+				element[valuenames[i]] = "";
+			}
+			else
+			{
+				element[valuenames[i]] = columns[i].replace(/\"/g, "");
+			}
+		}
+		elements.push(element);
+	});
+
+	return elements;
+}
+
+function ToCSV(elements, valuenames)
+{
+	var csvString = "#" + valuenames.join(",") + "\n";
+
+	$.each(elements, function(j, element)
+	{
+		var columns = [];
+
+		for(i=0;i<valuenames.length;i++)
+		{
+			columns.push(element[valuenames[i]]);
+		}
+
+		csvString += columns.join(",") + "\n";
+	});
+
+	return csvString;
+}
+
+function escapeHTML(html) {
+  return jQuery('<div>').text(html).html();
+}
+
+function FromXML(value, valuenames, tagName)
+{
+	var elements = [];
+	var xmlDoc = 0;
+	try
+	{
+		xmlDoc = $.parseXML( value );
+	} catch(e)
+	{
+		console.log(e);
+		$('#ErrorLog').html("Error: Cannot parse this XML text.");
+		return elements;
+	}
+
+	$xml = $( xmlDoc );
+
+	$($xml).find(tagName).each(function(){
+		var element = {};
+		for(i = 0; i < valuenames.length; i++)
+		{
+			value = $(this).find(valuenames[i]).text();
+			element[valuenames[i]] = value;
+			// console.log(valuenames[i] + "," + value);
+		}
+
+		var length = 0;
+		for (var i in element) {
+			length++;
+		}
+
+		if (length != valuenames.length)
+		{
+			console.log($(this).children());
+			var tags = $(this).html();
+			var message = "Error: Invalid XML, Not Enough Values. Expected: "+ valuenames.length +" Actual: " + length +
+							"<br/>Expected tags: " + valuenames.join(', ') + "<br/>Input: " + escapeHTML(tags);
+			console.log(message);
+			$('#ErrorLog').html(message);
+
+			elements = [];
+			return false; // break
+		}
+
+		elements.push(element);
+	});
+
+	if (elements.length == 0)
+	{
+		$('#ErrorLog').html("Error: Invalid XML text.");
+	}
+
+
+	return elements;
+}
+
+function ToXML(elements, valuenames, tagName, compornentName)
+{
+	var csvString = "<nex><" + compornentName + ">\n"
+	csvString += "<" + tagName + "s>\n";
+
+	$.each(elements, function(i, element)
+	{
+		csvString += " <" + tagName + ">\n";
+
+		for(i=0;i<valuenames.length;i++)
+		{
+			csvString += "  <" + valuenames[i] + ">" + element[valuenames[i]] + "</" + valuenames[i] + ">\n";
+		}
+
+		csvString += " </" + tagName + ">\n";
+	});
+
+	csvString += "</" + tagName + "s>\n";
+	csvString += "</" + compornentName + "></nex>"
+	return csvString;
+}
+
+
+chartSettingsValueNames = ["chart_index", "category", "bins_size", "highest_score", "lowest_score", "highest_bins_score", "lowest_bins_score", "is_median_adjustment", "attribute1", "attribute2", "note"];
+
+function ChartSettingsFromCSV()
+{
+	console.log("ChartSettingsFromCSV");
+	elements = FromCSV($("#ChartSettingsCSV").val(), chartSettingsValueNames);
+	$("#ChartSettingsXML").val(ToXML(elements, chartSettingsValueNames, "chart_setting", "ranking2"));
+	return false;
+}
+
+
+function ChartSettingsFromXML()
+{
+	console.log("ChartSettingsFromXML");
+	elements = FromXML($("#ChartSettingsXML").val(), chartSettingsValueNames, "chart_setting");
+	$("#ChartSettingsCSV").val(ToCSV(elements, chartSettingsValueNames));
+	return false;
+}
+
+function ConvertFromCSV()
+{
+	$('#ErrorLog').html("");
+	return ChartSettingsFromCSV();
+}
+
+function ConvertFromXML()
+{
+	$('#ErrorLog').html("");
+	return ChartSettingsFromXML();
+}
+
+//-->
+</script>
+
+</head>
+
+<body>
+
+<h1>ChartSettings XML CSV Converter</h1>
+<div class="ChartSettings">
+CSV<br/>
+<textarea name="ChartSettingsCSV" id="ChartSettingsCSV" rows=15 cols=100>
+#chart_index,category,bins_size,highest_score,lowest_score,highest_bins_score,lowest_bins_score,is_median_adjustment,attribute1,attribute2,note
+</textarea>
+<br/>
+</div>
+
+<input type="button" name="ButtonCSV" value="CSV To XML" onClick="ConvertFromCSV();"><br/>
+
+
+<div class="ChartSettings">
+XML<br/>
+<textarea name="ChartSettingsXML" id="ChartSettingsXML" rows=20 cols=100>
+</textarea>
+<br/>
+</div>
+
+
+<input type="button" name="ButtonXML" value="XML To CSV" onClick="ConvertFromXML();">
+<form>
+<div id="ErrorLog"></div>
+
+
+</body>
+
+</html>
+
+
